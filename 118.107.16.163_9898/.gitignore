@@ -1,13 +1,13 @@
 /nbproject/
-/thinkphp/
-/vendor/
+# /thinkphp/
+# /vendor/
 /runtime/*
-/addons/*
-/public/assets/libs/
-/public/assets/addons/*
+# /addons/*
+# /public/assets/libs/
+# /public/assets/addons/*
 /public/uploads/*
 .idea
-composer.lock
+# composer.lock
 *.log
 *.css.map
 !.gitkeep

@@ -60,6 +60,7 @@ services:
     volumes:
       - admin_runtime:/var/www/html/runtime
       - admin_uploads:/var/www/html/public/uploads
+      - ./118.107.16.163_9898/.env:/var/www/html/.env:ro
 
   # ============ xnapi (支付/下单 API) ============
   xnapi:

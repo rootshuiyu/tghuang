@@ -13,7 +13,9 @@ RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "upload_max_filesize=20M" > /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini
+    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "output_buffering=4096" > /usr/local/etc/php/conf.d/buffer.ini \
+    && echo "display_errors=Off" >> /usr/local/etc/php/conf.d/buffer.ini
 
 COPY docker/nginx-admin.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord-admin.conf /etc/supervisor.d/admin.ini
