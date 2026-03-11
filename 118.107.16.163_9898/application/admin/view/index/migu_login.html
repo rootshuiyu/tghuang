@@ -1,58 +1,90 @@
-{include file="common/migu_head" /}
-<div class="migu-login-page">
-  <div class="migu-login-box">
-    <h2>咪咕系统</h2>
-    <div class="subtitle">代收核销管理后台</div>
-    <form id="login-form" method="post" autocomplete="off">
-      {:token()}
-      <div class="form-group">
-        <label>用户名</label>
-        <input type="text" name="username" class="form-control" placeholder="请输入用户名" autofocus required>
-      </div>
-      <div class="form-group">
-        <label>密码</label>
-        <input type="password" name="password" class="form-control" placeholder="请输入密码" required>
-      </div>
-      {if condition="config('fastadmin.login_captcha')"}
-      <div class="form-group">
-        <label>验证码</label>
-        <div class="d-flex align-items-center" style="gap:10px;">
-          <input type="text" name="captcha" class="form-control" placeholder="请输入验证码" style="flex:1;" required>
-          <img id="captcha-img" src="{:captcha_src()}" style="height:40px;cursor:pointer;border-radius:4px;" onclick="this.src=this.src.replace(/[?&]r=.*/,'')+'&r='+Math.random();" title="点击刷新">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>咪咕系统 - 登录</title>
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #1f2d3d 0%, #007bff 100%); }
+        .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+        .login-box { width: 400px; }
+        .login-logo b { color: #fff; font-size: 1.6rem; }
+        .card { border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,.25); }
+        .login-card-body { padding: 30px; }
+        .login-card-body .input-group-text { background: #fff; }
+        .btn-primary { background: #007bff; border-color: #007bff; }
+        .btn-primary:hover { background: #0056b3; border-color: #0056b3; }
+        .login-footer { text-align: center; margin-top: 20px; color: rgba(255,255,255,.6); font-size: 12px; }
+    </style>
+</head>
+<body class="login-page">
+<div class="login-box">
+    <div class="login-logo"><b style="color:#fff;">咪咕系统</b></div>
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">代收核销管理后台</p>
+            <form id="login-form" method="post" autocomplete="off">
+                {:token()}
+                <div class="input-group mb-3">
+                    <input type="text" name="username" class="form-control" placeholder="请输入用户名" autofocus required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-user"></span></div></div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" name="password" class="form-control" placeholder="请输入密码" required>
+                    <div class="input-group-append"><div class="input-group-text"><span class="fas fa-lock"></span></div></div>
+                </div>
+                {if condition="config('fastadmin.login_captcha')"}
+                <div class="input-group mb-3">
+                    <input type="text" name="captcha" class="form-control" placeholder="请输入验证码" required>
+                    <div class="input-group-append">
+                        <img id="captcha-img" src="{:captcha_src()}" style="height:38px;cursor:pointer;border-radius:0 4px 4px 0;" onclick="this.src=this.src.replace(/[?&]r=.*/,'')+'&r='+Math.random();" title="点击刷新">
+                    </div>
+                </div>
+                {/if}
+                <div class="row mb-2">
+                    <div class="col-7">
+                        <div class="icheck-primary">
+                            <input type="checkbox" name="keeplogin" value="1" id="keeplogin">
+                            <label for="keeplogin">保持登录 ({$keeyloginhours}小时)</label>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <button type="submit" class="btn btn-primary btn-block">登 录</button>
+                    </div>
+                </div>
+            </form>
         </div>
-      </div>
-      {/if}
-      <div class="form-group d-flex align-items-center justify-content-between">
-        <label class="mb-0"><input type="checkbox" name="keeplogin" value="1"> <small>保持登录 ({$keeyloginhours}小时)</small></label>
-      </div>
-      <button type="submit" class="btn btn-migu btn-login">登 录</button>
-    </form>
+    </div>
     <div class="login-footer">版权所有 &copy; {:date('Y')} 咪咕系统</div>
-  </div>
 </div>
-<script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $('#login-form').on('submit', function(e) {
     e.preventDefault();
-    var $btn = $(this).find('button[type=submit]').prop('disabled', true).text('登录中...');
+    var $btn = $(this).find('button[type=submit]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i>登录中...');
     $.ajax({
-        url: '',
-        type: 'POST',
-        data: $(this).serialize(),
-        dataType: 'json',
+        url: '', type: 'POST', data: $(this).serialize(), dataType: 'json',
         success: function(res) {
             if (res.code === 1) {
-                location.href = '{:url("index/index")}';
+                Swal.fire({icon:'success',title:'登录成功',timer:1000,showConfirmButton:false}).then(function(){
+                    location.href = '{:url("index/index")}';
+                });
             } else {
-                alert(res.msg || '登录失败');
-                $btn.prop('disabled', false).text('登 录');
+                Swal.fire({icon:'error',title:res.msg||'登录失败'});
+                $btn.prop('disabled', false).html('登 录');
                 var $img = $('#captcha-img');
                 if ($img.length) $img.attr('src', $img.attr('src').replace(/[?&]r=.*/, '') + '&r=' + Math.random());
             }
         },
         error: function() {
-            alert('网络错误，请重试');
-            $btn.prop('disabled', false).text('登 录');
+            Swal.fire({icon:'error',title:'网络错误，请重试'});
+            $btn.prop('disabled', false).html('登 录');
         }
     });
 });

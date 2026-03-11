@@ -52,7 +52,6 @@ class Sup extends Backend
      */
     public function index()
     {
-        
         $admin = $this->admin->find($this->auth->id);
         $row = [
             'appid'   => $admin->appid,
@@ -60,7 +59,11 @@ class Sup extends Backend
             'fee'     => $admin->fee,
             'api_url' => sconfig('api_url')
         ];
-        
+
+        if ($this->request->isAjax()) {
+            return json(['code' => 1, 'data' => $row]);
+        }
+
         $this->view->assign("row", $row);
         return $this->view->fetch('yunos/sup/migu_index');
         

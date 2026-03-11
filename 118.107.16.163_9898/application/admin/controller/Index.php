@@ -29,6 +29,12 @@ class Index extends Backend
     
     public function index()
     {
+        $admin = [
+            'nickname' => $this->auth->nickname,
+            'avatar'   => $this->auth->avatar,
+            'is_boss'  => isset($this->is_boss) ? (int)$this->is_boss : 0,
+        ];
+        $this->view->assign('admin', $admin);
         $this->view->assign('menulist', $this->auth->getYunosMenu());
         $this->view->assign('title', sconfig('name'));
         return $this->view->fetch('index/migu_index');

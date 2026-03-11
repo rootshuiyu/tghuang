@@ -1,121 +1,184 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{$title|default='咪咕系统'}</title>
-<link rel="shortcut icon" href="/assets/img/favicon.ico">
-<link rel="stylesheet" href="/assets/libs/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="/assets/libs/font-awesome/css/font-awesome.min.css">
-<link rel="stylesheet" href="/assets/migu/css/migu.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>咪咕系统</title>
+    <link rel="shortcut icon" href="/assets/img/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.11.3/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/datatables.net-buttons-bs4@2.1.0/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="/assets/migu/css/admin.css?v=1.0.7">
 </head>
-<body>
-<div class="migu-frame">
-  <!-- 侧栏 -->
-  <aside class="migu-sidebar">
-    <div class="migu-sidebar-brand">
-      <h1>咪咕系统</h1>
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <!-- Preloader -->
+    <div class="preloader flex-column justify-content-center align-items-center">
+        <i class="fas fa-spinner fa-spin fa-3x" style="color:#007bff;"></i>
     </div>
-    <div class="migu-sidebar-user">
-      <img src="{$admin.avatar|default='/assets/img/avatar.png'}" alt="">
-      <div class="info">
-        {$admin.nickname|default='管理员'}<br>
-        <small>欢迎您的使用</small>
-      </div>
-    </div>
-    <nav class="migu-nav" id="migu-nav">
-      <a href="javascript:;" data-url="{:url('dashboard/index')}" class="active"><i class="fa fa-dashboard"></i> 仪表盘</a>
-      <a href="javascript:;" data-url="{:url('yunos/access/index')}"><i class="fa fa-gamepad"></i> 游戏渠道列表</a>
-      <a href="javascript:;" data-url="{:url('yunos/account/index')}"><i class="fa fa-user-plus"></i> 游戏账号列表</a>
-      <a href="javascript:;" data-url="{:url('yunos/order/index')}"><i class="fa fa-shopping-cart"></i> 支付订单数据</a>
-      <a href="javascript:;" data-url="{:url('yunos/fahuborder/index')}"><i class="fa fa-search"></i> 订单数据查询</a>
-      <a href="javascript:;" data-url="{:url('yunos/commission/index')}"><i class="fa fa-percent"></i> 抽佣点位记录</a>
-      <a href="javascript:;" data-url="{:url('yunos/cashier/index')}"><i class="fa fa-link"></i> 收银台地址</a>
-      <a href="javascript:;" data-url="{:url('yunos/sup/index')}"><i class="fa fa-sitemap"></i> 分后台管理</a>
-      <a href="javascript:;" data-url="{:url('general/config/index')}"><i class="fa fa-cog"></i> 后台配置管理</a>
-      <div class="migu-nav-divider"></div>
+
+    <!-- Navbar -->
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+            </li>
+            <li class="nav-item d-none d-sm-inline-block">
+                <a href="#" class="nav-link" onclick="loadPage('dashboard')">首页</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="far fa-bell"></i>
+                    <span class="badge badge-warning navbar-badge" id="notificationBadge" style="display:none;">0</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <span class="dropdown-item dropdown-header">新订单通知</span>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" onclick="loadPage('payment-orders');">
+                        <i class="fas fa-shopping-cart mr-2"></i> 有新的支付订单查看详情
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item dropdown-footer" onclick="loadPage('payment-orders');">查看所有订单</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <i class="far fa-user"></i>
+                    <span class="d-none d-md-inline ml-1" id="currentUsername">{$admin.nickname|default='管理员'}</span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <a href="{:url('index/logout')}" class="dropdown-item" onclick="if(!confirm('确定要退出登录吗？'))return false;">
+                        <i class="fas fa-sign-out-alt mr-2"></i> 退出登录
+                    </a>
+                </div>
+            </li>
+        </ul>
     </nav>
-    <div class="migu-sidebar-footer">
-      <a href="{:url('index/logout')}" onclick="if(!confirm('确定退出登录?'))return false;"><i class="fa fa-sign-out"></i> 退出后台</a>
-      <span class="migu-version">v1.0.0</span>
-    </div>
-  </aside>
 
-  <!-- 主区域 -->
-  <div class="migu-body">
-    <header class="migu-header">
-      <div class="migu-header-left">
-        <a href="javascript:;" id="goto-home"><i class="fa fa-home"></i> 首页</a>
-        <span id="breadcrumb-text" style="color:#999;">/ 仪表盘</span>
-      </div>
-      <div class="migu-header-right">
-        <div class="migu-notify" id="order-notify" title="新订单通知">
-          <i class="fa fa-bell-o"></i>
-          <span id="notify-text">0</span> 新订单通知
-          <span class="badge badge-danger" id="notify-badge" style="display:none;"></span>
+    <!-- Main Sidebar -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <a href="#" class="brand-link" onclick="loadPage('dashboard')">
+            <span class="brand-text font-weight-light">咪咕系统</span>
+        </a>
+        <div class="sidebar">
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex align-items-center">
+                <div class="user-avatar">
+                    <div class="avatar-circle">
+                        <img src="{$admin.avatar|default='/assets/img/avatar.png'}" alt="头像" class="user-avatar-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                        <i class="fas fa-user-shield" style="display:none;"></i>
+                    </div>
+                </div>
+                <div class="info ml-2">
+                    <a href="#" class="d-block user-name" id="sidebarUsername">{$admin.nickname|default='管理员'}</a>
+                    <small class="user-greeting">欢迎您的使用</small>
+                </div>
+            </div>
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" onclick="loadPage('dashboard')">
+                            <i class="nav-icon fas fa-tachometer-alt"></i><p>仪表盘</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('game-channels')">
+                            <i class="nav-icon fas fa-th"></i><p>游戏渠道列表</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('game-accounts')">
+                            <i class="nav-icon fas fa-plus"></i><p>添加游戏账号</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('game-accounts-list')">
+                            <i class="nav-icon fas fa-list"></i><p>游戏账号列表</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('payment-orders')">
+                            <i class="nav-icon fas fa-credit-card"></i><p>支付订单数据</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('order-search')">
+                            <i class="nav-icon fas fa-search"></i><p>订单数据查询</p>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="commission-records-menu">
+                        <a href="#" class="nav-link" onclick="loadPage('commission-records')">
+                            <i class="nav-icon fas fa-percentage"></i><p>抽佣点位记录</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="loadPage('cashier-urls')">
+                            <i class="nav-icon fas fa-link"></i><p>收银台地址</p>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="admin-management-menu">
+                        <a href="#" class="nav-link" onclick="loadPage('admin-management')">
+                            <i class="fas fa-users-cog nav-icon"></i><p>分后台管理</p>
+                        </a>
+                    </li>
+                    <li class="nav-item" id="system-config-menu">
+                        <a href="#" class="nav-link" onclick="loadPage('system-config')">
+                            <i class="fas fa-sliders-h nav-icon"></i><p>后台配置管理</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{:url('index/logout')}" class="nav-link text-danger" onclick="if(!confirm('确定要退出登录吗？'))return false;">
+                            <i class="nav-icon fas fa-sign-out-alt"></i><p>退出后台</p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <div class="dropdown">
-          <a class="migu-user-btn dropdown-toggle" data-toggle="dropdown" href="#">
-            <i class="fa fa-user-circle"></i> {$admin.nickname|default='管理员'}
-          </a>
-          <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="{:url('index/logout')}" onclick="if(!confirm('确定退出?'))return false;">退出登录</a>
-          </div>
-        </div>
-      </div>
-    </header>
+    </aside>
 
-    <div class="migu-content">
-      <iframe id="main-frame" src="{:url('dashboard/index')}"></iframe>
+    <!-- Content Wrapper -->
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6"><h1 class="m-0" id="pageTitle">仪表盘</h1></div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#" onclick="loadPage('dashboard')">首页</a></li>
+                            <li class="breadcrumb-item active" id="pageBreadcrumb">仪表盘</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="content">
+            <div class="container-fluid" id="main-content"></div>
+        </section>
     </div>
 
-    <footer class="migu-frame-footer">
-      版权所有 &copy; {:date('Y')} <strong>咪咕系统</strong> 保留所有权利
+    <!-- Footer -->
+    <footer class="main-footer">
+        <strong>版权所有 &copy; {:date('Y')} <a href="#">咪咕系统</a></strong> 保留所有权利
+        <div class="float-right d-none d-sm-inline-block"><b>版本</b> 1.0.0</div>
     </footer>
-  </div>
 </div>
 
-<script src="/assets/libs/jquery/dist/jquery.min.js"></script>
-<script src="/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
 <script>
-(function($) {
-    // 侧栏导航
-    $('#migu-nav').on('click', 'a[data-url]', function(e) {
-        e.preventDefault();
-        var url = $(this).data('url');
-        var text = $(this).text().trim();
-        $('#migu-nav a').removeClass('active');
-        $(this).addClass('active');
-        $('#main-frame').attr('src', url);
-        $('#breadcrumb-text').text('/ ' + text);
-    });
-
-    // 首页按钮
-    $('#goto-home').on('click', function() {
-        $('#migu-nav a').removeClass('active').first().addClass('active');
-        $('#main-frame').attr('src', $('#migu-nav a').first().data('url'));
-        $('#breadcrumb-text').text('/ 仪表盘');
-    });
-
-    // 新订单通知
-    $('#order-notify').on('click', function() {
-        $('#migu-nav a[data-url*="order/index"]').trigger('click');
-    });
-
-    function pollNotify() {
-        $.getJSON('{:url("yunos/order/recent_count")}', function(res) {
-            if (res && res.code === 1 && res.count > 0) {
-                $('#notify-text').text(res.count);
-                $('#notify-badge').text(res.count).show();
-            } else {
-                $('#notify-text').text('0');
-                $('#notify-badge').hide();
-            }
-        });
-    }
-    pollNotify();
-    setInterval(pollNotify, 60000);
-})(jQuery);
+window.MIGU_BASE = '{:request()->root()}';
+window.MIGU_IS_BOSS = {$admin.is_boss|default=0};
 </script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.11.3/js/dataTables.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-buttons@2.1.0/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-buttons-bs4@2.1.0/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.7.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-buttons@2.1.0/js/buttons.html5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/assets/migu/js/admin.js?v=2.0.0"></script>
 </body>
 </html>

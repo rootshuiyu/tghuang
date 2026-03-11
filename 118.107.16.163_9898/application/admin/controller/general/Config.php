@@ -81,6 +81,10 @@ class Config extends Backend
             $v['active'] = !$index ? true : false;
             $index++;
         }
+        if ($this->request->isAjax()) {
+            return json(['code' => 1, 'data' => array_values($siteList)]);
+        }
+
         $this->view->assign('siteList', $siteList);
         $this->view->assign('typeList', ConfigModel::getTypeList());
         $this->view->assign('ruleList', ConfigModel::getRegexList());
