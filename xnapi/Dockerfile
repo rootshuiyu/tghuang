@@ -19,10 +19,13 @@ RUN apk add --no-cache \
 RUN echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini
 
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 WORKDIR /var/www/xnapi
 COPY . /var/www/xnapi
 
-RUN mkdir -p runtime/logs runtime/views runtime/cache runtime/sessions runtime/yunos_logs \
+RUN composer install --no-dev --optimize-autoloader --no-interaction \
+    && mkdir -p runtime/logs runtime/views runtime/cache runtime/sessions runtime/yunos_logs \
     && chmod -R 777 runtime
 
 EXPOSE 9588
