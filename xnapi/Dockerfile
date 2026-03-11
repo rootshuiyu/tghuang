@@ -3,12 +3,17 @@ FROM php:8.1-cli-alpine
 RUN apk add --no-cache \
     libpng-dev libjpeg-turbo-dev freetype-dev \
     icu-dev oniguruma-dev libzip-dev \
-    linux-headers \
+    linux-headers libevent-dev openssl-dev \
+    && apk add --no-cache --virtual .build-deps \
+       $PHPIZE_DEPS autoconf gcc g++ make \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) \
        pdo_mysql gd bcmath intl mbstring zip opcache pcntl sockets \
-    && pecl install redis event \
+    && pecl install redis \
+    && pecl install event \
     && docker-php-ext-enable redis \
+    && docker-php-ext-enable --ini-name zz-event.ini event \
+    && apk del .build-deps \
     && rm -rf /var/cache/apk/* /tmp/pear
 
 RUN echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/opcache.ini \
