@@ -78,7 +78,10 @@
 </div>
 
 <script type="text/javascript">
-var require = { config: {:json_encode($config)} };
+var require = {
+    config: {:json_encode($config)},
+    {include file="common/requirejs_paths" /}
+};
 </script>
 {include file="common/script" /}
 <script>
