@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   # ============ MySQL ============
   mysql:
@@ -10,8 +8,6 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-    ports:
-      - "127.0.0.1:3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -25,8 +21,6 @@ services:
   redis:
     image: redis:7-alpine
     restart: always
-    ports:
-      - "127.0.0.1:6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
