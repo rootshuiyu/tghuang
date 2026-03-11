@@ -8,7 +8,6 @@ require.config({
     //在打包压缩时将会把include中的模块合并到主文件中
     include: ['css', 'layer', 'toastr', 'fast', 'backend', 'backend-init', 'table', 'form', 'dragsort', 'addtabs', 'selectpage', 'bootstrap-daterangepicker'],
     paths: {
-        'lang': "empty:",
         'form': 'require-form',
         'table': 'require-table',
         'upload': 'require-upload',

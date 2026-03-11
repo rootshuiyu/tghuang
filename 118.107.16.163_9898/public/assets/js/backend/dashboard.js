@@ -2,8 +2,9 @@ define(['jquery', 'bootstrap', 'backend', 'addtabs', 'table', 'echarts', 'echart
 
     var Controller = {
         index: function () {
-            // 基于准备好的dom，初始化echarts实例
-            var myChart = Echarts.init(document.getElementById('echart'), 'walden');
+            var el = document.getElementById('echart');
+            if (!el) return;
+            var myChart = Echarts.init(el, 'walden');
 
             // 指定图表的配置项和数据
             var option = {
