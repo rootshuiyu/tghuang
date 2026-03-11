@@ -6,7 +6,7 @@
   <div class="migu-card">
     <div class="migu-card-body">
       <form id="config-form" method="post" action="{:url('general/config/edit')}">
-        {token}
+        {:token()}
         <!-- 分组标签 -->
         <ul class="nav nav-tabs mb-3" role="tablist">
           {volist name="siteList" id="group"}
