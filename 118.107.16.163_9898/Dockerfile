@@ -1,7 +1,7 @@
 FROM php:7.4-fpm-alpine
 
 RUN apk add --no-cache \
-    nginx supervisor \
+    nginx supervisor git unzip \
     libpng-dev libjpeg-turbo-dev freetype-dev \
     icu-dev oniguruma-dev libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \

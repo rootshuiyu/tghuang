@@ -3,7 +3,7 @@ FROM php:8.1-cli-alpine
 RUN apk add --no-cache \
     libpng-dev libjpeg-turbo-dev freetype-dev \
     icu-dev oniguruma-dev libzip-dev \
-    linux-headers libevent-dev openssl-dev \
+    linux-headers libevent-dev openssl-dev unzip \
     && apk add --no-cache --virtual .build-deps \
        $PHPIZE_DEPS autoconf gcc g++ make \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
