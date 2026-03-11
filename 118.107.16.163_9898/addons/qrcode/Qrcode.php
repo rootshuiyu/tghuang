@@ -34,8 +34,9 @@ class Qrcode extends Addons
      */
     public function appInit()
     {
-        if (!class_exists('\Endroid\QrCode\QrCode')) {
-            require_once __DIR__ . '/library/qr-code/vendor/autoload.php';
+        $autoload = __DIR__ . '/library/qr-code/vendor/autoload.php';
+        if (!class_exists('\Endroid\QrCode\QrCode') && is_file($autoload)) {
+            require_once $autoload;
         }
     }
 
