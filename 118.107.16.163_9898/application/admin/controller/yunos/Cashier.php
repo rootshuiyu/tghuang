@@ -12,6 +12,7 @@ use app\admin\model\yunos\Access;
 class Cashier extends Backend
 {
     protected $noNeedRight = ['index'];
+    protected $layout = '';
 
     public function _initialize()
     {
@@ -45,6 +46,6 @@ class Cashier extends Backend
             $result = ['total' => count($list), 'rows' => $list];
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('yunos/cashier/migu_index');
     }
 }

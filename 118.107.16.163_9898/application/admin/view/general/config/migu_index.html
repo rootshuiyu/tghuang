@@ -1,0 +1,98 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-cog"></i> 后台配置管理</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body">
+      <form id="config-form" method="post" action="{:url('general/config/edit')}">
+        {token}
+        <!-- 分组标签 -->
+        <ul class="nav nav-tabs mb-3" role="tablist">
+          {volist name="siteList" id="group"}
+          <li class="nav-item">
+            <a class="nav-link {:$group.active?'active':''}" data-toggle="tab" href="#tab-{$group.name}">{$group.title}</a>
+          </li>
+          {/volist}
+        </ul>
+        <div class="tab-content">
+          {volist name="siteList" id="group"}
+          <div class="tab-pane {:$group.active?'show active':''}" id="tab-{$group.name}">
+            {volist name="group.list" id="item"}
+            <div class="form-group row">
+              <label class="col-sm-3 col-form-label text-right">{$item.title}</label>
+              <div class="col-sm-6">
+                {switch name="item.type"}
+                {case value="string"}
+                <input type="text" class="form-control form-control-sm" name="row[{$item.name}]" value="{$item.value}">
+                {/case}
+                {case value="password"}
+                <input type="password" class="form-control form-control-sm" name="row[{$item.name}]" value="{$item.value}" autocomplete="new-password">
+                {/case}
+                {case value="text"}
+                <textarea class="form-control form-control-sm" name="row[{$item.name}]" rows="3">{$item.value}</textarea>
+                {/case}
+                {case value="number"}
+                <input type="number" class="form-control form-control-sm" name="row[{$item.name}]" value="{$item.value}">
+                {/case}
+                {case value="select"}
+                <select class="form-control form-control-sm" name="row[{$item.name}]">
+                {if condition="is_array($item['content'])"}
+                {foreach name="item.content" key="ck" item="cv"}
+                <option value="{$ck}" {in name="item.value" value="$ck"}selected{/in}>{$cv}</option>
+                {/foreach}
+                {/if}
+                </select>
+                {/case}
+                {case value="switch"}
+                <select class="form-control form-control-sm" name="row[{$item.name}]">
+                  <option value="0" {:($item['value']==0?'selected':'')}>关闭</option>
+                  <option value="1" {:($item['value']==1?'selected':'')}>开启</option>
+                </select>
+                {/case}
+                {default /}
+                <input type="text" class="form-control form-control-sm" name="row[{$item.name}]" value="{if condition="is_array($item['value'])"}{:implode(',',$item['value'])}{else /}{$item.value}{/if}">
+                {/switch}
+                {if condition="$item['tip']"}<small class="form-text text-muted">{$item.tip|raw}</small>{/if}
+              </div>
+            </div>
+            {/volist}
+          </div>
+          {/volist}
+        </div>
+        <div class="form-group row mt-3">
+          <div class="col-sm-6 offset-sm-3">
+            <button type="submit" class="btn btn-migu"><i class="fa fa-save"></i> 保存配置</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    $('#config-form').on('submit', function(e) {
+        e.preventDefault();
+        var $btn = $(this).find('button[type=submit]').prop('disabled', true);
+        $.ajax({
+            url: $(this).attr('action'),
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(res) {
+                $btn.prop('disabled', false);
+                if (res.code === 1) {
+                    Migu.toast('保存成功', 'success');
+                } else {
+                    Migu.toast(res.msg || '保存失败', 'error');
+                }
+            },
+            error: function() {
+                $btn.prop('disabled', false);
+                Migu.toast('网络错误', 'error');
+            }
+        });
+    });
+});
+</script>

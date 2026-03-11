@@ -12,6 +12,7 @@ use app\admin\model\yunos\Fund;
 class Commission extends Backend
 {
     protected $noNeedRight = ['index'];
+    protected $layout = '';
     protected $model = null;
     protected $dataLimit = 'personal';
     protected $dataLimitField = 'user_id';
@@ -43,6 +44,6 @@ class Commission extends Backend
             }
             return json(['total' => $list->total(), 'rows' => $list->items()]);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('yunos/commission/migu_index');
     }
 }

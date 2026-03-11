@@ -19,6 +19,7 @@ class Order extends Backend
      * @var \app\admin\model\yunos\Order
      */
     protected $model = null;
+    protected $layout = '';
     protected $searchFields   = ['orderid','syorder','suporder']; //快速搜索
     protected $relationSearch = false;  //关联查询
 
@@ -118,7 +119,7 @@ class Order extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('yunos/order/migu_index');
     }
     
     public function edit($ids = null)

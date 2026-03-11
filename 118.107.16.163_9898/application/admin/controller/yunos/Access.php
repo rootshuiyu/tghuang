@@ -18,6 +18,7 @@ class Access extends Backend
      * @var \app\admin\model\yunos\Access
      */
     protected $model = null;
+    protected $layout = '';
     protected $searchFields   = ['name','code']; //快速搜索
     protected $relationSearch = false;  //关联查询
 
@@ -82,7 +83,7 @@ class Access extends Backend
 
             return json($result);
         }
-        return $this->view->fetch();
+        return $this->view->fetch('yunos/access/migu_index');
     }
     
     /**

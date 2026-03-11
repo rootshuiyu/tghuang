@@ -19,6 +19,7 @@ class Account extends Backend
      * @var \app\admin\model\yunos\Account
      */
     protected $model = null;
+    protected $layout = '';
     protected $searchFields   = ['title','remarks','mid','access.code']; //快速搜索
     protected $relationSearch = false;  //关联查询
 
@@ -111,7 +112,7 @@ class Account extends Backend
                 $v['pool'] = $v->pool($v['pool']);
             }
             $this->view->assign('access', $access);
-            return $this->view->fetch();
+            return $this->view->fetch('yunos/account/migu_index');
         }
         
         $access_id = $this->request->get('access_id');

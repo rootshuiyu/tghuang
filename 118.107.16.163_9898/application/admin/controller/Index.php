@@ -31,7 +31,7 @@ class Index extends Backend
     {
         $this->view->assign('menulist', $this->auth->getYunosMenu());
         $this->view->assign('title', sconfig('name'));
-        return $this->view->fetch();
+        return $this->view->fetch('index/migu_index');
     }
 
     /**
@@ -126,7 +126,7 @@ class Index extends Backend
         $this->view->assign('background', $background);
         $this->view->assign('title', __('Login'));
         Hook::listen("admin_login_init", $this->request);
-        return $this->view->fetch();
+        return $this->view->fetch('index/migu_login');
     }
     
     

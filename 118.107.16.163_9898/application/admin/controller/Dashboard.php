@@ -17,6 +17,7 @@ use think\Db;
  */
 class Dashboard extends Backend
 {
+    protected $layout = '';
 
     /**
      * 查看
@@ -24,7 +25,7 @@ class Dashboard extends Backend
     public function index()
     {
         
-        return $this->view->fetch('dashboard/home');
+        return $this->view->fetch('dashboard/migu_home');
         try {
             \think\Db::execute("SET @@sql_mode='';");
         } catch (\Exception $e) {

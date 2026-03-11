@@ -1,0 +1,31 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-link"></i> 收银台地址</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="cashier-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    var payMap = {qqpay:'QQ支付', wxpay:'微信支付', alipay:'支付宝支付'};
+    Migu.table('#cashier-table', {
+        url: '{:url("yunos/cashier/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'name', title:'渠道名称'},
+            {field:'pay_type_text', title:'支付类型'},
+            {field:'pay_link', title:'收银台链接', formatter: function(v) {
+                if (!v) return '-';
+                return '<span class="text-truncate d-inline-block" style="max-width:320px;" title="' + v + '">' + v + '</span>' +
+                       ' <a href="javascript:;" class="btn-copy" onclick="Migu.copy(\'' + v.replace(/'/g, "\\'") + '\')"><i class="fa fa-copy"></i></a>';
+            }},
+            {field:'switch', title:'状态', formatter: function(v) {
+                return v == 1 ? '<span class="migu-badge migu-badge-success">上线</span>' : '<span class="migu-badge migu-badge-danger">下线</span>';
+            }}
+        ]
+    });
+});
+</script>

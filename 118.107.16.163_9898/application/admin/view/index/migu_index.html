@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{$title|default='咪咕系统'}</title>
+<link rel="shortcut icon" href="/assets/img/favicon.ico">
+<link rel="stylesheet" href="/assets/libs/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="/assets/libs/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="/assets/migu/css/migu.css">
+</head>
+<body>
+<div class="migu-frame">
+  <!-- 侧栏 -->
+  <aside class="migu-sidebar">
+    <div class="migu-sidebar-brand">
+      <h1>咪咕系统</h1>
+    </div>
+    <div class="migu-sidebar-user">
+      <img src="{$admin.avatar|default='/assets/img/avatar.png'}" alt="">
+      <div class="info">
+        {$admin.nickname|default='管理员'}<br>
+        <small>欢迎您的使用</small>
+      </div>
+    </div>
+    <nav class="migu-nav" id="migu-nav">
+      <a href="javascript:;" data-url="{:url('dashboard/index')}" class="active"><i class="fa fa-dashboard"></i> 仪表盘</a>
+      <a href="javascript:;" data-url="{:url('yunos/access/index')}"><i class="fa fa-gamepad"></i> 游戏渠道列表</a>
+      <a href="javascript:;" data-url="{:url('yunos/account/index')}"><i class="fa fa-user-plus"></i> 游戏账号列表</a>
+      <a href="javascript:;" data-url="{:url('yunos/order/index')}"><i class="fa fa-shopping-cart"></i> 支付订单数据</a>
+      <a href="javascript:;" data-url="{:url('yunos/fahuborder/index')}"><i class="fa fa-search"></i> 订单数据查询</a>
+      <a href="javascript:;" data-url="{:url('yunos/commission/index')}"><i class="fa fa-percent"></i> 抽佣点位记录</a>
+      <a href="javascript:;" data-url="{:url('yunos/cashier/index')}"><i class="fa fa-link"></i> 收银台地址</a>
+      <a href="javascript:;" data-url="{:url('yunos/sup/index')}"><i class="fa fa-sitemap"></i> 分后台管理</a>
+      <a href="javascript:;" data-url="{:url('general/config/index')}"><i class="fa fa-cog"></i> 后台配置管理</a>
+      <div class="migu-nav-divider"></div>
+    </nav>
+    <div class="migu-sidebar-footer">
+      <a href="{:url('index/logout')}" onclick="if(!confirm('确定退出登录?'))return false;"><i class="fa fa-sign-out"></i> 退出后台</a>
+      <span class="migu-version">v1.0.0</span>
+    </div>
+  </aside>
+
+  <!-- 主区域 -->
+  <div class="migu-body">
+    <header class="migu-header">
+      <div class="migu-header-left">
+        <a href="javascript:;" id="goto-home"><i class="fa fa-home"></i> 首页</a>
+        <span id="breadcrumb-text" style="color:#999;">/ 仪表盘</span>
+      </div>
+      <div class="migu-header-right">
+        <div class="migu-notify" id="order-notify" title="新订单通知">
+          <i class="fa fa-bell-o"></i>
+          <span id="notify-text">0</span> 新订单通知
+          <span class="badge badge-danger" id="notify-badge" style="display:none;"></span>
+        </div>
+        <div class="dropdown">
+          <a class="migu-user-btn dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="fa fa-user-circle"></i> {$admin.nickname|default='管理员'}
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="{:url('index/logout')}" onclick="if(!confirm('确定退出?'))return false;">退出登录</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="migu-content">
+      <iframe id="main-frame" src="{:url('dashboard/index')}"></iframe>
+    </div>
+
+    <footer class="migu-frame-footer">
+      版权所有 &copy; {:date('Y')} <strong>咪咕系统</strong> 保留所有权利
+    </footer>
+  </div>
+</div>
+
+<script src="/assets/libs/jquery/dist/jquery.min.js"></script>
+<script src="/assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+<script>
+(function($) {
+    // 侧栏导航
+    $('#migu-nav').on('click', 'a[data-url]', function(e) {
+        e.preventDefault();
+        var url = $(this).data('url');
+        var text = $(this).text().trim();
+        $('#migu-nav a').removeClass('active');
+        $(this).addClass('active');
+        $('#main-frame').attr('src', url);
+        $('#breadcrumb-text').text('/ ' + text);
+    });
+
+    // 首页按钮
+    $('#goto-home').on('click', function() {
+        $('#migu-nav a').removeClass('active').first().addClass('active');
+        $('#main-frame').attr('src', $('#migu-nav a').first().data('url'));
+        $('#breadcrumb-text').text('/ 仪表盘');
+    });
+
+    // 新订单通知
+    $('#order-notify').on('click', function() {
+        $('#migu-nav a[data-url*="order/index"]').trigger('click');
+    });
+
+    function pollNotify() {
+        $.getJSON('{:url("yunos/order/recent_count")}', function(res) {
+            if (res && res.code === 1 && res.count > 0) {
+                $('#notify-text').text(res.count);
+                $('#notify-badge').text(res.count).show();
+            } else {
+                $('#notify-text').text('0');
+                $('#notify-badge').hide();
+            }
+        });
+    }
+    pollNotify();
+    setInterval(pollNotify, 60000);
+})(jQuery);
+</script>
+</body>
+</html>

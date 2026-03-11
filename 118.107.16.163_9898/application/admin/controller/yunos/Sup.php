@@ -20,6 +20,7 @@ class Sup extends Backend
      */
     protected $model = null;
     protected $admin = null;
+    protected $layout = '';
     protected $searchFields   = ''; //快速搜索
     protected $relationSearch = false;  //关联查询
     protected $dataLimit = 'personal';
@@ -61,7 +62,7 @@ class Sup extends Backend
         ];
         
         $this->view->assign("row", $row);
-        return $this->view->fetch();
+        return $this->view->fetch('yunos/sup/migu_index');
         
         
         //当前是否为关联查询

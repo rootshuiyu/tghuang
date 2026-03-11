@@ -1,0 +1,30 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-gamepad"></i> 游戏渠道列表</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="access-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    var statusMap = {0:'<span class="migu-badge migu-badge-danger">下线</span>', 1:'<span class="migu-badge migu-badge-success">上线</span>'};
+    var payMap = {qqpay:'QQ支付', wxpay:'微信支付', alipay:'支付宝支付'};
+    Migu.table('#access-table', {
+        url: '{:url("yunos/access/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'code', title:'渠道编码'},
+            {field:'name', title:'渠道名称'},
+            {field:'pay_type', title:'支付类型', formatter: function(v) {
+                if (!v) return '-';
+                return v.split(',').map(function(t) { return payMap[t] || t; }).join(', ');
+            }},
+            {field:'switch', title:'状态', formatter: function(v) { return statusMap[v] || v; }},
+            {field:'createtime', title:'创建时间', formatter: Migu.formatTime}
+        ]
+    });
+});
+</script>

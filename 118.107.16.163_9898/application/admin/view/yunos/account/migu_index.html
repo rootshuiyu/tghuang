@@ -1,0 +1,28 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-user-plus"></i> 游戏账号列表</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="account-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    var switchMap = {0:'<span class="migu-badge migu-badge-danger">下线</span>', 1:'<span class="migu-badge migu-badge-success">上线</span>'};
+    Migu.table('#account-table', {
+        url: '{:url("yunos/account/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'mid', title:'账号编码'},
+            {field:'access', title:'所属渠道', formatter: function(v) { return v ? (v.name || v.code || '-') : '-'; }},
+            {field:'remarks', title:'备注'},
+            {field:'in_fee', title:'累计入账'},
+            {field:'switch', title:'状态', formatter: function(v) { return switchMap[v] || v; }},
+            {field:'match_number', title:'匹配次数'},
+            {field:'createtime', title:'创建时间', formatter: Migu.formatTime}
+        ]
+    });
+});
+</script>

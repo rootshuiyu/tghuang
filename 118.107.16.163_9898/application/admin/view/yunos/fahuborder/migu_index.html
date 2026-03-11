@@ -1,0 +1,27 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-search"></i> 订单数据查询</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="fahuborder-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    Migu.table('#fahuborder-table', {
+        url: '{:url("yunos/fahuborder/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'orderid', title:'订单号'},
+            {field:'fee', title:'金额', formatter: function(v) { return '¥' + (parseFloat(v)||0).toFixed(2); }},
+            {field:'status', title:'状态', formatter: function(v) {
+                var m = {0:'<span class="migu-badge migu-badge-default">待处理</span>',1:'<span class="migu-badge migu-badge-success">已完成</span>',2:'<span class="migu-badge migu-badge-warning">处理中</span>'};
+                return m[v] || v;
+            }},
+            {field:'createtime', title:'创建时间', formatter: Migu.formatTime}
+        ]
+    });
+});
+</script>

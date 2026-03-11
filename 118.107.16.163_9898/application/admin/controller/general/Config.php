@@ -23,6 +23,7 @@ class Config extends Backend
      * @var \app\common\model\Config
      */
     protected $model = null;
+    protected $layout = '';
     protected $noNeedRight = ['check', 'rulelist', 'selectpage', 'get_fields_list'];
 
     public function _initialize()
@@ -84,7 +85,7 @@ class Config extends Backend
         $this->view->assign('typeList', ConfigModel::getTypeList());
         $this->view->assign('ruleList', ConfigModel::getRegexList());
         $this->view->assign('groupList', ConfigModel::getGroupList());
-        return $this->view->fetch();
+        return $this->view->fetch('general/config/migu_index');
     }
 
     /**

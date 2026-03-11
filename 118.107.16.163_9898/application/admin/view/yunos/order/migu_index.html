@@ -1,0 +1,39 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-shopping-cart"></i> 支付订单数据</h4>
+    <div><span class="text-muted">成功金额合计：</span><strong class="text-success" id="total-fee">-</strong></div>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="order-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    var statusMap = {
+        0:'<span class="migu-badge migu-badge-default">正在下单</span>',
+        1:'<span class="migu-badge migu-badge-danger">下单失败</span>',
+        2:'<span class="migu-badge migu-badge-warning">等待支付</span>',
+        3:'<span class="migu-badge migu-badge-default">订单超时</span>',
+        10:'<span class="migu-badge migu-badge-success">支付成功</span>'
+    };
+    Migu.table('#order-table', {
+        url: '{:url("yunos/order/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'orderid', title:'订单号'},
+            {field:'fee', title:'金额', formatter: function(v) { return '¥' + (parseFloat(v)||0).toFixed(2); }},
+            {field:'status', title:'状态', formatter: function(v) { return statusMap[v] || v; }},
+            {field:'suporder', title:'上游单号', formatter: function(v) { return v || '-'; }},
+            {field:'paytime', title:'支付时间', formatter: function(v) { return v ? Migu.formatTime(v) : '-'; }},
+            {field:'createtime', title:'创建时间', formatter: Migu.formatTime}
+        ],
+        onLoad: function(res) {
+            if (res.success_fee !== undefined) {
+                $('#total-fee').text('¥' + parseFloat(res.success_fee || 0).toFixed(2));
+            }
+        }
+    });
+});
+</script>

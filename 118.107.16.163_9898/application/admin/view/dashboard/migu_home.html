@@ -1,0 +1,80 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-dashboard"></i> 仪表盘</h4>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="row" id="stat-cards">
+    <div class="col-sm-6 col-md-3">
+      <div class="migu-card"><div class="migu-stat primary">
+        <div class="value" id="s-day-in">-</div>
+        <div class="label">今日收入</div>
+      </div></div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="migu-card"><div class="migu-stat success">
+        <div class="value" id="s-yesterday">-</div>
+        <div class="label">昨日收入</div>
+      </div></div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="migu-card"><div class="migu-stat warning">
+        <div class="value" id="s-day-rate">-</div>
+        <div class="label">今日成功率</div>
+      </div></div>
+    </div>
+    <div class="col-sm-6 col-md-3">
+      <div class="migu-card"><div class="migu-stat danger">
+        <div class="value" id="s-hour-rate">-</div>
+        <div class="label">近1小时成功率</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="migu-card">
+        <div class="migu-card-header">总体概况</div>
+        <div class="migu-card-body">
+          <table class="table table-sm mb-0">
+            <tr><td>总成功率</td><td class="text-right font-weight-bold" id="s-total-rate">-</td></tr>
+            <tr><td>今日收入</td><td class="text-right font-weight-bold" id="s-day-in2">-</td></tr>
+            <tr><td>昨日收入</td><td class="text-right font-weight-bold" id="s-yesterday2">-</td></tr>
+            <tr><td>近1小时收入</td><td class="text-right font-weight-bold" id="s-hour-in">-</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="migu-card">
+        <div class="migu-card-header">快捷操作</div>
+        <div class="migu-card-body">
+          <a href="javascript:;" class="btn btn-migu btn-sm mr-2 mb-2" onclick="parent.$('#migu-nav a[data-url*=access]').trigger('click')"><i class="fa fa-gamepad"></i> 渠道管理</a>
+          <a href="javascript:;" class="btn btn-migu btn-sm mr-2 mb-2" onclick="parent.$('#migu-nav a[data-url*=account]').trigger('click')"><i class="fa fa-user-plus"></i> 账号管理</a>
+          <a href="javascript:;" class="btn btn-migu btn-sm mr-2 mb-2" onclick="parent.$('#migu-nav a[data-url*=order]').eq(0).trigger('click')"><i class="fa fa-shopping-cart"></i> 订单管理</a>
+          <a href="javascript:;" class="btn btn-migu-outline btn-sm mr-2 mb-2" onclick="parent.$('#migu-nav a[data-url*=cashier]').trigger('click')"><i class="fa fa-link"></i> 收银台</a>
+          <a href="javascript:;" class="btn btn-migu-outline btn-sm mr-2 mb-2" onclick="parent.$('#migu-nav a[data-url*=commission]').trigger('click')"><i class="fa fa-percent"></i> 抽佣记录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    $.ajax({
+        url: '{:url("yunos/order/custom")}',
+        dataType: 'json',
+        headers: {'X-Requested-With': 'XMLHttpRequest'},
+        success: function(res) {
+            $('#s-day-in, #s-day-in2').text(res.day_in || '0元');
+            $('#s-yesterday, #s-yesterday2').text(res.yesterday_in || '0元');
+            $('#s-day-rate').text(res.day_success || '0%');
+            $('#s-hour-rate').text(res.hour_success || '0%');
+            $('#s-total-rate').text(res.success || '0%');
+            $('#s-hour-in').text(res.hour_in || '0元');
+        }
+    });
+});
+</script>

@@ -1,0 +1,30 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-sitemap"></i> 分后台管理</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-header">API 接入信息</div>
+    <div class="migu-card-body">
+      <table class="table table-bordered mb-0">
+        <tr>
+          <td class="font-weight-bold" style="width:140px;">APPID</td>
+          <td>{$row.appid} <a href="javascript:;" class="btn-copy" onclick="Migu.copy('{$row.appid}')"><i class="fa fa-copy"></i></a></td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">APPKEY</td>
+          <td>{$row.appkey} <a href="javascript:;" class="btn-copy" onclick="Migu.copy('{$row.appkey}')"><i class="fa fa-copy"></i></a></td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">费率</td>
+          <td>{$row.fee}%</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">API 地址</td>
+          <td>{$row.api_url} <a href="javascript:;" class="btn-copy" onclick="Migu.copy('{$row.api_url}')"><i class="fa fa-copy"></i></a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{include file="common/migu_foot" /}

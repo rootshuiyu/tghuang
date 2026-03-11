@@ -1,0 +1,24 @@
+{include file="common/migu_head" /}
+<div class="migu-page">
+  <div class="migu-page-header">
+    <h4><i class="fa fa-percent"></i> 抽佣点位记录</h4>
+  </div>
+  <div class="migu-card">
+    <div class="migu-card-body" id="commission-table"></div>
+  </div>
+</div>
+{include file="common/migu_foot" /}
+<script>
+$(function() {
+    Migu.table('#commission-table', {
+        url: '{:url("yunos/commission/index")}',
+        columns: [
+            {field:'id', title:'ID', width:'60px'},
+            {field:'user', title:'用户', formatter: function(v) { return v ? (v.nickname || v.username || '-') : '-'; }},
+            {field:'value', title:'金额', formatter: function(v) { return '¥' + (parseFloat(v)||0).toFixed(2); }},
+            {field:'content', title:'说明'},
+            {field:'createtime', title:'时间', formatter: Migu.formatTime}
+        ]
+    });
+});
+</script>

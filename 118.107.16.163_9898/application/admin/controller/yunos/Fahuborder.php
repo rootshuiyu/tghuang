@@ -17,6 +17,7 @@ class Fahuborder extends Backend
      * @var \app\admin\model\yunos\Fahuborder
      */
     protected $model = null;
+    protected $layout = '';
     protected $searchFields   = ''; //快速搜索
     protected $relationSearch = false;  //关联查询
 
@@ -38,7 +39,7 @@ class Fahuborder extends Backend
         //设置过滤方法
         $this->request->filter(['strip_tags', 'trim']);
         if (false === $this->request->isAjax()) {
-            return $this->view->fetch();
+            return $this->view->fetch('yunos/fahuborder/migu_index');
         }
         //如果发送的来源是 Selectpage，则转发到 Selectpage
         if ($this->request->request('keyField')) {
