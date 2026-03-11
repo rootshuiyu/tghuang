@@ -169,6 +169,20 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
   // 默认显示仪表盘，高亮侧栏第一项（仪表盘）
   $('.migu-menu a.migu-menu-item').eq(0).addClass('active');
+
+  // 初始 dashboard iframe 已在 HTML 中，监听其加载完成后隐藏 loading
+  var $dashIframe = $('#work-dashboard');
+  if ($dashIframe.length) {
+    $dashIframe.on('load', function() { $('#migu-loading').hide(); });
+    // iframe 可能已经加载完成
+    try {
+      if ($dashIframe[0].contentDocument && $dashIframe[0].contentDocument.readyState === 'complete') {
+        $('#migu-loading').hide();
+      }
+    } catch(e) { $('#migu-loading').hide(); }
+  }
+  // 兜底：5 秒后强制隐藏
+  setTimeout(function() { $('#migu-loading').hide(); }, 5000);
 });
 </script>
 </body>
