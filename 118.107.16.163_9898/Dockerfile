@@ -20,13 +20,10 @@ RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
 COPY docker/nginx-admin.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisord-admin.conf /etc/supervisor.d/admin.ini
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www/html
 COPY . /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
-    && mkdir -p runtime/cache runtime/temp runtime/log runtime/yunos_logs public/uploads \
+RUN mkdir -p runtime/cache runtime/temp runtime/log runtime/yunos_logs public/uploads \
     && chown -R www-data:www-data runtime public/uploads \
     && chmod -R 775 runtime
 
