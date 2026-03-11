@@ -1,0 +1,265 @@
+<style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin-bottom: 0px;
+        }
+        .section h2 {
+            font-size: 17px;
+        }
+        .section p {
+            line-height: 1.6;
+        }
+        .parameters, .response {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .parameters th, .parameters td, .response th, .response td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .parameters th, .response th {
+            background-color: #f2f2f2;
+            text-align: left;
+        }
+        .code-block {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 0px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+        }
+        pre {
+    color: rgb(255 255 255);
+    background-color: #333;
+}
+
+.sdk-container {
+            margin: 0 auto;
+            background-color: #fff;
+            padding-top: 10px;
+        }
+        .sdk-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sdk-header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+        .sdk-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sdk-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .sdk-list-item:last-child {
+            border-bottom: none;
+        }
+        .sdk-list-item h2 {
+            font-size: 18px;
+            margin: 0;
+        }
+        .sdk-list-item p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+        .sdk-download-btn {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .sdk-download-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+<div class="">
+	<div class="row">
+		<div class="col-lg-6 col-xs-6">
+			<div class="yui-card-body">
+				<div class="_3AhWb52sRqsJBB7-4HPME0" id="guide">
+					<div class="yui-card-title">
+						对接信息
+					</div>
+					<div class="form-group">
+                            <label for="username" class="control-label">商户余额:</label>
+                            <input type="text" class="form-control" id="username" name="row[username]" value="{$row.fee}" disabled="">
+                        </div>
+					<div class="form-group">
+                            <label for="username" class="control-label">商户appid:</label>
+                            <input type="text" class="form-control" id="username" name="row[username]" value="{$row.appid}" disabled="">
+                        </div>
+                    <div class="form-group">
+                            <label for="username" class="control-label">商户appkey:</label>
+                            <input type="text" class="form-control" id="username" name="row[username]" value="{$row.appkey}" disabled="">
+                    </div>
+                    <div class="form-group">
+                            <label for="username" class="control-label">API地址:</label>
+                            <input type="text" class="form-control" id="username" name="row[username]" value="{$row.api_url}" disabled="">
+                    </div>
+                    <div class="form-group">
+                            <label for="username" class="control-label"><a href="{$row.api_url}/api-docs.html" target="_blank">点击查看</a>  对接文档:</label>
+                            <input type="text" class="form-control" id="username" name="row[username]" value="{$row.api_url}/api-docs.html" disabled="">
+                    </div>
+				</div>
+			</div>
+		
+		</div>
+		<!-- ./col -->
+		<div class="col-lg-6 col-xs-6">
+			<div class="yui-card-body">
+				<div class="sdk-container">
+        <div class="sdk-header">
+            <h1>工具 下载</h1>
+        </div>
+        <ul class="sdk-list">
+            <li class="sdk-list-item">
+                <div>
+                    <h2>QQ-CK获取工具</h2>
+                    <p>ck获取工具</p>
+                </div>
+                <a target="_blank" href="/uploads/20241231/5f955c44222f0f216b9f6ad95565cc77.zip" class="yui-btn">下载</a>
+            </li>
+            <li class="sdk-list-item">
+                <div>
+                    <h2>PHP-SDK</h2>
+                    <p>php-demo，包含下单，查单，回调样例</p>
+                </div>
+                <a target="_blank" href="/demo/dowload/php-demo.zip" class="yui-btn">下载</a>
+            </li>
+            
+        </ul>
+    </div>
+			</div>
+		</div>
+		<!-- ./col -->
+		<div class="col-lg-6 col-xs-6">
+			<div class="yui-card-body">
+				<div class="sdk-header">
+                    <h1 style="margin-bottom:20px">接口测试</h1>
+                    <form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="GET" autocomplete="off" action="/demo/build.php" target="_blank">
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">商户appid:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('appid', $row.appid , ['data-rule'=>'required'])}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">商户appkey:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('appkey', $row.appkey, ['data-rule'=>'required'])}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">商户订单号:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            orderid : 自动生成
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">金额:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('fee', '10', ['data-rule'=>'required'])}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">支付方式:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('pay_type', 'alipay', ['data-rule'=>''])}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">通道代码:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('code', '', ['data-rule'=>''])}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">账号MID:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            {:Form::text('mid', '', ['data-rule'=>''])}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">同步跳转地址:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            return_url:自行集成
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">异步通知地址:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            notify_url:自行集成
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">时间戳:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            timestamp ：自动生成
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-2">签名:</label>
+                        <div class="col-xs-12 col-sm-8">
+                            sign ：自动生成
+                        </div>
+                    </div>
+                    <button type="submit" class="yui-btn ">{:__('Submit')}</button>
+                    </form>
+                </div>
+			</div>
+		</div>
+		<!-- ./col -->
+		<div class="col-lg-3 col-xs-6">
+		</div>
+		<!-- ./col -->
+	</div>
+</div>
+
+<script>
+
+const $PageApp = () => {
+    define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+        
+    });
+		
+};
+
+</script>

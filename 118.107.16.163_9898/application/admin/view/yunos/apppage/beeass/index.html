@@ -1,0 +1,123 @@
+
+
+<div class="form-group" style="margin-bottom: 20px;">
+     <style>
+                    /* 透明遮罩层：仅覆盖下半部分 100px */
+                    .bottom-mask {
+                      background: #f8fafc; /* 透明背景 */
+                      pointer-events: all; /* 关键：捕获点击事件，阻止穿透到 iframe */
+                      z-index: 1; /* 确保遮罩在 iframe 上方（iframe 默认 z-index 为 0） */
+                      padding-top: 10px;
+                      color: #f44336;
+                      padding: 1.5rem 1.75rem;
+                      background: #ffffff;
+                      border-radius: 3px;
+                    }
+                </style>
+               
+                <div class="bottom-mask">
+                      
+                  <p>1.打开网页端</p>
+                  <p>2.手机获取验证码<font style="font-weight: 600;">【不要登录!!!】</font></p>
+                  <p>3.在下方登录自动自动保存ck信息</p>
+                  
+                </div>
+</div>
+
+<div class="form-group">
+<style>
+.info-container {
+  margin-top:20px; /* 水平居中 */
+  padding: 1.5rem 1.75rem; /* 内边距：上下1.5rem 左右1.75rem */
+  background: #ffffff; /* 纯白背景更干净 */
+  border-radius: 3px; /* 圆角更柔和 */
+
+}
+
+.info-title {
+  margin: 0 0 0.75rem 0; /* 标题与内容间距 */
+  font-size: 15px; /* 标题稍大 */
+  color: #1a1a1a; /* 深灰标题更醒目 */
+  line-height: 1.3; /* 行高更紧凑 */
+}
+
+.info-text {
+  margin: 0;
+  font-size: 14px; /* 正文稍小 */
+  color: #f44336; /* 中灰正文更易读 */
+  line-height: 1.6; /* 行高更宽松 */
+}
+</style>
+<div class="info-container">
+  <h3 class="info-title">操作信息</h3>
+  <p class="info-text">无</p>
+</div>
+</div>
+
+<div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('登录账号')}:</label>
+        <div class="col-xs-12 col-sm-12">
+            {:Form::text('account', $row.name, ['data-rule'=>''])}
+        </div>
+</div>
+
+
+
+<div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('验证码')}:</label>
+        <div class="col-xs-12 col-sm-12">
+            {:Form::text('code', '', ['data-rule'=>''])}
+        </div>
+</div>
+
+
+
+<div class="form-group">
+    <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-12">
+            <button type="button" class="yui-btn btn-send">点击登录</button>
+        </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        $(document).on("click", ".btn-send", function () {
+           
+           login_send()
+            
+        });
+        
+        function login_send(){
+
+            account = $('input[name="account"]').val();
+            code    = $('input[name="code"]').val();
+            if(!account || !code){
+                return Toastr.error('手机号与验证码不可为空');
+            }
+            
+            Fast.api.ajax({
+               url:'/sup.php/yunos/account/app_load?ids={$row.id}&page=h5_login',
+               data:{ids:'{$row.id}',name:"名称",account:account,code:code}
+            }, function(data, ret){
+                $('.info-text').text(ret.msg);
+                return layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+            }, function(data, ret){
+                return layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+            });
+            
+        }
+        
+        $(document).on("click", ".btn-h5_login", function () {
+            $(this).hide();
+            $('#login_app').attr('src','https://promotion.phone580.com/activity/fzsapp-xch5/#/');
+            $('.iframe-wrapper').show();
+            
+        });
+     
+        
+        
+});
+}
+</script>

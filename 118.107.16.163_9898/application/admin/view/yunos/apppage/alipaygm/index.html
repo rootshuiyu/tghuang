@@ -1,0 +1,30 @@
+ 
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('监控地址')}:</label>
+        <div class="col-xs-12 col-sm-12">
+            {:Form::text('url', $url, ['data-rule'=>''])}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('使用说明')}:</label>
+        <div class="col-xs-12 col-sm-12">
+            <p>1.下载监控工具，打开监控链接访问，登录支付宝</p>
+        </div>
+    </div>
+
+    
+<div class="model-form" style="display:none"></div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        $(document).on("click", ".btn-send", function () {
+           
+            
+        });
+        
+});
+}
+</script>

@@ -1,0 +1,465 @@
+<style>
+        .order-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 2px;
+            color: #fff;
+            margin: 0px;
+            font-size:11px;
+            line-height: 16px;
+            cursor: pointer;
+        }
+        .prefix-matching {
+            background-color: #444444;
+        }
+        .prefix-match-failed {
+            background-color: #dc3545;
+        }
+        .prefix-waiting-payment {
+            
+            background-color: #007bff;
+        }
+        .prefix-order-timeout {
+            
+            background-color: #ff9c00;
+        }
+        .prefix-payment-success {
+            background-color: #28a745;
+        }
+    </style>
+
+<html>
+<head>
+    <title>数据统计</title>
+    <style>
+        
+        .custom-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            max-width: 100%;
+            margin-bottom: 10px;
+        }
+        .custom-stat-box {
+            background-color: #fff;
+            border-radius: 1px;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
+            padding: 15px;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+        .custom-stat-icon {
+            font-size: 2em;
+            color: #006eff;
+            margin-right: 20px;
+        }
+        .custom-stat-number {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        .custom-stat-label {
+            font-size: 1em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-container">
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-line-chart"></i></div>
+            <div>
+                <div class="custom-stat-number view-day_in">--</div>
+                <div class="custom-stat-label">今日收入</div>
+            </div>
+        </div>
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-bar-chart-o"></i></div>
+            <div>
+                <div class="custom-stat-number view-yesterday_in">--</div>
+                <div class="custom-stat-label">昨日收入</div>
+            </div>
+        </div>
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-desktop"></i></div>
+            <div>
+                <div class="custom-stat-number view-day_success">--</div>
+                <div class="custom-stat-label">今日成功率</div>
+            </div>
+        </div>
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-dashboard"></i></div>
+            <div>
+                <div class="custom-stat-number view-success">--</div>
+                <div class="custom-stat-label">总成功率</div>
+            </div>
+        </div>
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-gg-circle"></i></div>
+            <div>
+                <div class="custom-stat-number view-hour_success">--</div>
+                <div class="custom-stat-label">一小时成功率</div>
+            </div>
+        </div>
+        <div class="custom-stat-box">
+            <div class="custom-stat-icon"><i class="fa fa-paypal"></i></div>
+            <div>
+                <div class="custom-stat-number view-hour_in">--</div>
+                <div class="custom-stat-label">一小时总金额</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<div class="panel panel-default panel-intro">
+    
+    <div class="panel-heading">
+        {:build_heading(null,FALSE)}
+        <ul class="nav nav-tabs" data-field="status">
+            <li class="{:$Think.get.status === null ? 'active' : ''}"><a href="#t-all" data-value="" data-toggle="tab">{:__('All')}</a></li>
+            {foreach name="seachlist.status" item="vo"}
+            <li class="{:$Think.get.status === (string)$key ? 'active' : ''}"><a href="#t-{$key}" data-value="{$key}" data-toggle="tab">{$vo}</a></li>
+            {/foreach}
+        </ul>
+    </div>
+
+    <div class="panel-body">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        {:build_toolbar('refresh,delete')}
+                        
+                       
+                        <a href="#" class="money-tag" style="display:inline-block; padding:0px 20px; border:2px solid #006eff; border-radius:0px;  color:#006eff; font-weight:bold; text-decoration:none; font-family:Arial, sans-serif; box-shadow:0 2px 5px rgba(0,0,0,0.1); transition:all 0.3s ease;height: 30px;line-height: 26px;">
+                          进账金额：¥<span style="color:#FF5722;padding-left:5px" class="success_fee">12,800.00</span>
+                        </a>
+
+                        <!--<div class="dropdown btn-group {:$auth->check('yunos/order/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> {:__('More')}</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="statusList" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="status={$key}">{:__('Set status to ' . $key)}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>-->
+
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('yunos/order/edit')}"
+                           data-operate-del="{:$auth->check('yunos/order/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/order/index' + location.search,
+                    add_url: 'yunos/order/add',
+                    edit_url: 'yunos/order/edit',
+                    del_url: 'yunos/order/del',
+                    multi_url: 'yunos/order/multi',
+                    table: 'order',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'createtime',
+                showExport: false,
+                searchFormVisible:true,
+                pageList: [10, 15, 20, 25, 50,100],
+                fixedColumns:true,
+                fixedRightNumber:1,
+                cardView:false,
+                columns: [
+                    [
+                        {checkbox: true},
+                        //{field: 'id', title: __('Id'), searchable :false},
+                        
+                        {eq name="is_boss" value="true"}
+                            {field: 'sup_user_id', title: __('所属商户'),
+                                addClass: "selectpicker",
+                                extend : 'data-live-search="true"',
+                                searchList: seachlist.user,
+                                align:'left',
+                                formatter: function(value, row){
+                                    if(row.is_my){
+                                        return '<a class="account-be">所属自己</a>';
+                                    }
+                                    return '<label style="display:inline-block; padding:3px 8px; font-size:12px; color:#fff; background:#ff6d00; sans-serif; letter-spacing:0.5px;">'+ seachlist.user[value]  +'</label>';
+                                }
+                            },
+                        {/eq}
+                        
+                        {field: 'user_id', title: __('订单归属'),
+                            addClass: "selectpicker",
+                            extend : 'data-live-search="true"',
+                            searchList: seachlist.user,
+                            formatter: function(value, row){
+                                if(row.is_my){
+                                    return '<a class="account-be">所属自己</a>';
+                                }
+                                return seachlist.user[value];
+                            }
+                        },
+                        
+                        {field: 'orderid', title: __('Orderid'), operate: 'LIKE', searchable :true,
+                            formatter: function(value, row){
+                                
+                                str =  '平台订单号' + value + '<br/>';
+                                str += '上游订单号' + row.syorder + '<br/>';
+                                str += '商户订单号' + row.suporder + '<br/>';
+                                return value;
+                            }
+                        },
+                        
+                        {field: 'syorder', title: __('Syorder'), operate: 'LIKE'  , visible : false},
+                        
+                        {field: 'suporder', title: __('Suporder'), operate: 'LIKE', searchable :true , visible : false},
+                        
+                        
+                        
+                        {field: 'mid', title: __('Mid'), operate: 'LIKE'},
+                        
+                        {field: 'access_id', title: __('所属通道'),
+                            addClass: "selectpicker",
+                            searchList: seachlist.access,
+                            formatter: function(value, row){
+                                return seachlist.access[value];
+                            }
+                        },
+                        
+                        {field: 'pay_type', title: __('支付方式'),
+                            addClass: "selectpicker",
+                            searchList: seachlist.pay_type,
+                            formatter: function(value, row){
+                                color = 'primary';
+                                if(value == 'alipay'){
+                                    src = '/uploads/20260111/5cdc926dd559eb52a531197b9e7fc22f.png';
+                                }
+                                if(value == 'wxpay'){
+                                    src = '/uploads/20260111/d95189d9d043e719e7093ca338c1fcec.png';
+                                }
+                                //seachlist.pay_type[value]
+                                return '<img style="width:25px" src="'+ src +'">';
+                            }
+                        },
+                        
+                        
+                        
+                        {field: 'status', title: __('订单状态'),
+                            addClass: "selectpicker",
+                            searchList: seachlist.status,
+                            formatter: function(value, row){
+                                
+                                icon = {
+                                    0 : 'matching',
+                                    1 : 'match-failed',
+                                    2 : 'waiting-payment',
+                                    3 : 'order-timeout',
+                                    10 : 'payment-success',
+                                };
+                                
+                                str = '<div class="order-status btn-http-query prefix-'+icon[value]+'" data-orderid="'+ row.orderid +'">'+ seachlist.status[value] +'</div>'
+                                
+                                return str;
+                            }
+                        },
+                        
+                        {field: 'fee', title: __('Fee'), operate:'BETWEEN'},
+                        
+                        {field: 'check', title: __('订单核对'), operate: 'LIKE', searchable :false,
+                            formatter: function(value, row){
+                                if(row.status != 10){
+                                    return '';
+                                }
+                                if(value == 0){
+                                   return '<a style="height: 25px;line-height: 25px;padding: 0px 15px;" class="yui-btn y-blue btn-check" data-id="'+ row.id +'"><i style="font-size: 14px;color:red" class="fa fa-close" id="icon-style"></i>核对</a>'; 
+                                }
+                                return '<i style="font-size: 15px;color:#05a105" class="fa fa-check" id="icon-style"></i>';
+                            }
+                        },
+                        
+                        {field: 'ua', title: __('Ua'), operate: 'LIKE', searchable :false,
+                            formatter: function(value, row){
+                                
+                                str = value + '<br/>';
+                                str += row.ip + '<br/>';
+                                str += row.city + '<br/>';
+                                return str;
+                            }
+                        },
+                        
+                        {field: 'run_info', title: __('运行信息'), searchable:false,visible : false},
+                        
+                        {field: 'notify_result', title: __('Notify_result'), operate: 'LIKE', searchable :false,visible : false},
+                        
+                        {field: 'notify_number', title: __('Notify_number'), operate: 'LIKE', searchable :false,visible : false},
+                        
+                       
+                        
+                        {field: 'stay_time', title: __('客户停留'), searchable :false,
+                            formatter: function(value, row){
+                                
+                                ms =  row.stay_time - row.open_time;
+                                if(ms < 0){
+                                   ms = 0; 
+                                }
+                                return ms + '秒';
+                            },visible : false
+                        },
+                        
+                        /*{field: 'click_time', title: __('是否点击支付'), searchable :false,
+                            formatter: function(value, row){
+                                if(value){
+                                    return '<font color="green">点击</font>';
+                                }
+                                return '-';
+                            }
+                        },
+                        
+                        {field: 'ping_time', title: __('网络实时延迟'), searchable :false,
+                            
+                            formatter: function(value, row){
+                                
+                                //if(!row.open_time) return '<font color="red">网络错误</font>';
+                                return value + 'ms';
+                            }
+                        },*/
+                        
+                        
+                        
+                        {field: 'ip', title: __('Ip'), operate: 'LIKE' , visible : false},
+                        
+                        {field: 'city', title: __('City'), operate: 'LIKE', searchable :false, visible : false},
+                        
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        
+                        {field: 'paytime', title: __('支付时间'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        
+                        {field: 'exptime', title: __('Exptime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime, searchable :false,visible : false},
+                        
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate,
+                                buttons: [
+                                        {
+                                            text: '手动回调',
+                                            name: 'click',
+                                            classname: 'yui-link btn-click',
+                                            icon: 'fa fa-rocket',
+                                            confirm: '确认回调订单？',
+                                            click: function (data,row) {
+                                                
+                                                Fast.api.ajax({
+                                                    url:'yunos/order/callback',
+                                                    data:{orderid:row.orderid}
+                                                }, function(data, ret){
+                                                    layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+                                                    table.bootstrapTable('refresh');
+                                                    
+                                                    return false;
+                                                }, function(data, ret){
+                                                    //失败的回调
+                                                    layer.alert(ret.msg);
+                                                    return false;
+                                                });
+                                                
+                                            }
+                                        },
+                                        /*{
+                                            text: '充值记录',
+                                            name: 'click',
+                                            classname: 'yui-link btn-click',
+                                            icon: 'fa fa-list',
+                                            click: function (data,row) {
+                                                
+                                                //Fast.api.open('');
+                                                layer.open({
+                                                  title: '充值记录',
+                                                  type : 2,
+                                                  shadeClose:true,
+                                                  area: ['500px', '100%'],
+                                                  content: 'account/trade?ids=' + row.account_id,
+                                                  
+                                                });
+                                                
+                                            }
+                                        },*/
+                                    ],
+                                    
+                                    formatter: Table.api.formatter.operate,
+                                   
+                                },
+                        
+                        
+                    ]
+                ]
+            });
+            
+            table.on('load-success.bs.table', function (e, data) {
+                $('.success_fee').text(data.success_fee);
+                $http.res('yunos/order/custom',custom);
+            });
+            
+            function custom(data){
+                $tpl.value(data);
+            }
+            
+            $(document).on("click", ".btn-http-query", function () {
+                
+               orderid = $(this).attr('data-orderid');
+               
+               Fast.api.ajax({
+                    url:'yunos/order/http_query',
+                    data:{orderid:orderid}
+                }, function(data, ret){
+                    layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+                    return false;
+                }, function(data, ret){
+                    //失败的回调
+                    layer.alert(ret.msg);
+                    return false;
+                });
+               
+            });
+            
+            $(document).on("click", ".btn-check", function () {
+                
+               ids = $(this).attr('data-id');
+
+               Fast.api.ajax({
+                    url:'yunos/order/multi',
+                    data:{action : '',ids:ids , params : 'check=1'}
+                }, function(data, ret){
+                    //layer.alert('操作成功');
+                    table.bootstrapTable('refresh');
+                    return false;
+                }, function(data, ret){
+                    //失败的回调
+                    layer.alert(ret.msg);
+                    return false;
+                });
+               
+            });
+            
+            // 为表格绑定事件
+           Table.api.bindevent(table);
+    
+});
+}
+</script>

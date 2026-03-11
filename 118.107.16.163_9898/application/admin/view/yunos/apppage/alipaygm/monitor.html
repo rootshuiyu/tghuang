@@ -1,0 +1,543 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>支付宝收款监控</title>
+</head>
+<body>
+<h1 class="text-center top_title">支付宝监控中心</h1>
+<div class="contentpanel">
+ 
+      <div class="col-md-25">
+        <div class="panel panel-success panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-4 pt20"> <i class="iconfont icon-shiyirenqun"></i> </div>
+                <div class="col-xs-8"> <small class="stat-label">收入</small>
+                  <h1>90k+</h1>
+                </div>
+              </div>
+              <!-- row -->
+              <!-- row --> 
+               <div class="clearfix"></div>
+            </div>
+            <!-- stat --> 
+            <div class="clearfix"></div>
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+
+      </div>
+      <!-- col-sm-6 -->
+      
+      <div class="col-md-25">
+        <div class="panel panel-danger panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-4 pt20"> <i class="iconfont icon-chuanbo"></i></div>
+                <div class="col-xs-8"> <small class="stat-label">支出</small>
+                  <h1>54.40%</h1>
+                </div>
+              </div>
+              <!-- row -->
+          
+              <!-- row --> 
+               <div class="clearfix"></div>
+            </div>
+            <!-- stat --> 
+            
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+      </div>
+      <!-- col-sm-6 -->
+      
+      <div class="col-md-25">
+        <div class="panel panel-primary panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-4 pt20"><i class="iconfont icon-chuanbozhuangtaiguowai"></i></div>
+                <div class="col-xs-8"> <small class="stat-label">订单同步倒计时</small>
+                  <h1>10秒</h1>
+                </div>
+              </div>
+              <!-- row -->
+             
+              <!-- row --> 
+               <div class="clearfix"></div>
+            </div>
+            <!-- stat --> 
+            
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+      </div>
+      <!-- col-sm-6 -->
+      
+      <div class="col-md-25">
+        <div class="panel panel-dark panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-4 pt20"><i class="iconfont icon-churujing1"></i></div>
+                <div class="col-xs-8"> <small class="stat-label">支付宝监控【正常】</small>
+                  <h1>10秒</h1>
+                </div>
+              </div>
+              <!-- row -->
+              <!-- row --> 
+               <div class="clearfix"></div>
+            </div>
+            <!-- stat --> 
+            
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+      </div>
+      <!-- col-sm-6 --> 
+
+
+   <div class="row">
+     <div class="col-xs-4">
+        <div class="panel part2 panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-8"> 
+                  <h1>运行状态</h1>
+                </div>
+				<div class="clearfix"></div>
+                <div class="panel-default panel-alt widget-messaging">
+         
+          <div class="panel-body">
+            <ul>
+                
+            <li> 
+                <h4 class="sender">监控服务</h4>
+                <small class="run-state">未连接</small> </li>
+            <li>
+			
+			<li>
+                <h4 class="sender">登录状态</h4>
+                <small class="">未登录</small> </li>
+              <li>
+                <h4 class="sender">支付宝账号</h4>
+                <small>pay@svip88.cn</small> </li>
+				
+				<li>
+                <h4 class="sender">商户号</h4>
+                <small>2088122267848691</small> </li>
+          
+            </ul>
+          </div>
+		  <a class="btn-test">测试</a>
+		  
+		  
+          <!-- panel-body --> 
+        </div>
+              </div>
+              
+            </div>
+            <!-- stat --> 
+            
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+      </div>
+    
+      <div class="col-xs-8">
+        <div class="panel part2 panel-stat">
+          <div class="">
+            <div class="stat">
+              <div class="row">
+                <div class="col-xs-8"> 
+                  <h1>收单记录</h1>
+                </div>
+				<div class="clearfix"></div>
+                <div class="panel-default panel-alt widget-messaging">
+        
+          <div class="panel-body">
+            <ul>
+              <li> <small class="pull-right">Dec 10</small>
+                <h4 class="sender">Jennier Lawrence</h4>
+                <small>Lorem ipsum dolor sit amet...</small> </li>
+             
+            </ul>
+          </div>
+          <!-- panel-body --> 
+        </div>
+              </div>
+              
+            </div>
+            <!-- stat --> 
+            
+          </div>
+          <!--  --> 
+        </div>
+        <!-- panel --> 
+      </div>
+      <!-- col-sm-25 --> 
+   </div>
+ </div>
+ 
+<script src="jquery.min.js"></script>
+ 
+<div id="task-app">
+ 
+</div>
+
+<script>
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        
+//同步消息
+// ---------- 接收方（a.com） ----------
+window.addEventListener('message', (event) => {
+  // 必须验证消息来源，防止恶意网站发送数据
+  if (event.origin !== 'https://b.com') return;
+
+  console.log('收到来自 b.com 的消息:', event.data);
+});
+
+
+$(document).on("click", ".btn-test", function () {
+alert(123)
+window.open('https://b.alipay.com/page/store-management/infomanage');
+    
+            
+});
+function test(){
+
+return;
+
+http_post('https://mbillexprod.alipay.com/enterprise/fundAccountDetail.json?ctoken=MeUWxLux1x4sQTbB&_output_charset=utf-8',{
+      billUserId: "2088532097308845",
+      pageNum: 1,
+      pageSize: "50",
+      startDateInput: "2025-03-04 00:00:00",
+      endDateInput: "2025-04-03 00:00:00",
+      showType: 0,
+      accountType: "",
+      settleBillRadio: 1,
+      queryEntrance: 1,
+      querySettleAccount: false,
+      switchToFrontEnd: true,
+      _input_charset: "gbk",
+      },'task9999999999');
+
+}
+
+function http_post(url, postData,target="_blank",method="post") {
+                var tempform = document.createElement("form");      
+                tempform.action = url;      
+                tempform.target = target;
+                tempform.method = method;      
+                tempform.style.display = "none"; 
+            	for (var x in postData) { 
+            		var opt = document.createElement("textarea");      
+            		opt.name = x;      
+                    opt.value = postData[x];      
+                    tempform.appendChild(opt);      
+                }      
+                document.body.appendChild(tempform);
+                tempform.submit(); 
+            }
+
+    
+});
+}
+
+</script>
+<style>
+    @charset "utf-8";
+/* CSS Document */
+
+/*================== 公共 ===================== */
+html { }
+/*html { background: url(../images/bg.jpg); }*/
+body { margin-left: 0px; margin-top: 0px; margin-right: 0px; margin-bottom: 0px; background: url(../images/top.jpg) top center no-repeat;font-size: 14px; color: #333;     font-family: 'LatoRegular', 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, sans-serif !important;line-height: 26px;text-decoration: none;}
+#flashContent { width: 100%; height: 100%; }
+.main { width: 1000px; float: right; }
+a { font-size: 14px; color: #333; font-family: "宋体"; text-decoration: none; cursor: pointer; }
+a:link, a:visited, a:active { color: #333; font-size: 14px; }
+a:hover { color: #d35f03; }
+a.a-f12:link, a.a-f12:visited, a.a-f12:active { color: #333; font-size: 12px; }
+a.a-f12:hover { color: #d35f03; }
+img { border: 0; margin: 0; padding: 0; line-height: 0; }
+ul, li, p, h1, h2, h3, h4, h5, span, dl, dd, dt { margin: 0; padding: 0; }
+ul, li { list-style: none }
+.clearfix { clear: both; font-size: 0; line-height: 0; height: 0; }
+.clear { clear: both; }
+.border { border: 1px solid #ddd; }
+.border-blue { border: 1px solid #c4cef6; }
+.border-lrb { border-bottom: 1px solid #ddd; border-left: 1px solid #ddd; border-right: 1px solid #ddd; }
+.border-lr { border-left: 1px solid #ccc; border-right: 1px solid #ccc; }
+.border-b { border-bottom: 1px solid #ddd; }
+.border-t { border-top: 1px solid #ddd; }
+.border-r { border-right: 1px solid #ddd; }
+.border-l { border-left: 1px solid #ddd; }
+.border-no { border: none }
+/*圆角*/
+.radius-6 { -moz-border-radius: 6px; -khtml-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px; }
+.radius-3 { -moz-border-radius: 3px; -khtml-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; }
+.radius-2 { -moz-border-radius: 2px; -khtml-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px; }
+/*渐变*/
+.color-change { background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #eeeeee)); /* Firefox */ }
+/*浮动*/
+.left { float: left }
+.right { float: right }
+.center { text-align: center }
+/*间距*/
+.ml5 { margin-left: 5px }
+.mr5 { margin-right: 5px }
+.mt5 { margin-top: 5px }
+.mb5 { margin-bottom: 5px }
+.ml10 { margin-left: 10px }
+.mr10 { margin-right: 10px }
+.mt10 { margin-top: 10px }
+.mb10 { margin-bottom: 10px }
+.ml15 { margin-left: 15px }
+.mr15 { margin-right: 15px }
+.mt15 { margin-top: 15px; }
+.mb15 { margin-bottom: 15px }
+.mb20 { margin-bottom: 20px; }
+.mt20 { margin-top: 20px; }
+.ml20 { margin-left: 20px; }
+.mr20 { margin-right: 20px; }
+.m20 { margin: 20px; }
+.m10 { margin: 10px; }
+.m15 { margin: 15px; }
+.m5 { margin: 5px; }
+.pl5 { padding-left: 5px; }
+.pr5 { padding-right: 5px; }
+.pt5 { padding-top: 5px }
+.pl10 { padding-left: 10px }
+.pr10 { padding-right: 10px }
+.pt10 { padding-top: 10px }
+.pb10 { padding-bottom: 10px }
+.pl15 { padding-left: 15px }
+.pr15 { padding-right: 15px }
+.pt15 { padding-top: 15px }
+.pb15 { padding-bottom: 15px }
+.pb20 { padding-bottom: 20px; }
+.pt20 { padding-top: 20px; }
+.pl20 { padding-left: 20px; }
+.pr20 { padding-right: 20px; }
+.p20 { padding: 20px; }
+.p10 { padding: 10px; }
+.p15 { padding: 15px; }
+.p5 { padding: 5px; }
+.p3 { padding: 3px; }
+.mlr20 { margin-left: 20px; margin-right: 20px; }
+/*背景色*/
+.no-bg { background: none; }
+.bg-white { background: #fff; }
+/*字体 排版*/
+
+.f12 { font-size: 12px }
+.f14 { font-size: 14px }
+.f16 { font-size: 16px }
+.f18 { font-size: 18px }
+.f20 { font-size: 20px }
+.f22 { font-size: 22px }
+.f24 { font-size: 24px }
+.f36 { font-size: 36px }
+.cGray, .aGray, .bGray, .aWhite { font-family: Arial, Gadget, sans-serif; }
+.aGray { color: #999; }
+.cGray { color: #666; }
+.bGray { color: #333; }
+.fWhite { color: #fff; }
+.fRed { color: #900; }
+.fBlue { color: #025d94; }
+.lh28 { line-height: 28px; }
+.lh26 { line-height: 26px; }
+.lh24 { line-height: 24px; }
+.lh20 { line-height: 20px; }
+.lh18 { line-height: 18px; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: center; }
+/*more*/
+.more { float: right; color: #c22e21; font-size: 12px; line-height: 40px; padding-right: 10px; }
+/*分栏*/
+.mainbox { width: 100%; padding: 0 10px; }
+.box-center { margin: 0 auto; }
+
+.contentpanel {
+    padding: 10px;
+    position: relative;
+    background: #e4e7ea;
+    min-height: 1000px;
+	padding-top: 70px;
+}
+.col-md-25 {
+    width: 25%;
+    min-height: 1px;
+    float: left;
+    background: none;
+    border:0;
+}
+
+.col-xs-6{width: 50%; float: left;}
+.col-xs-4{width: 33.33333%; float: left;in-height: 1px;}
+.col-xs-8{width: 66.666666%; float: left;in-height: 1px;}
+.panel .stat .iconfont{font-size: 52px; margin-top:}
+.panel {
+	margin: 10px;
+	padding: 10px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    color: #fff;
+}
+.panel-stat{ color: #fff;}
+.panel-stat h1 {
+    margin: 0;
+    line-height: 36px;
+    font-size: 20px;
+}
+.panel-stat .stat-label {
+    text-transform: uppercase;
+    font-size: 13px;
+    opacity: 0.9;
+    display: block;
+    line-height: normal;
+    margin-bottom: 2px;
+}
+.panel-success{
+    background-color: #1CAF9A;
+}
+.panel-danger{
+    background-color: #D9534F;
+}
+.panel-primary {
+    background-color: #428bca;
+}
+.panel-dark{
+    background-color: #1d2939;
+}
+
+.col-xs-4 .panel{color: #333}
+.col-xs-8 .panel{color: #333}
+.part2 h1{font-size: 20px;}
+.part2 .ehcarts{width: 100%; min-height: 40px;padding-bottom: 30%;
+  height: 0;
+ }
+.col-md-25 .part3 h1{color: #333;font-size: 24px;}
+.part3 .ehcarts{width: 100%; min-height: 60px;padding-bottom: 30%;
+  height: 0;
+}
+
+.top_title{
+	background: #1677ff;
+    color: #fff;
+    line-height: 60px;
+    height: 60px;
+    margin-bottom: 0px;
+    position: fixed;
+    width: 100%;
+    text-align: center;
+	z-index:999;
+	top: 0;
+}
+
+/* 进度条 */
+.progress-bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: #428bca;
+    -webkit-box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.15);
+    -webkit-transition: width .6s ease;
+    -o-transition: width .6s ease;
+    transition: width .6s ease;}
+    .progress-sm {
+    height: 10px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+.progress {
+    height: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+}
+.progress {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    height: 15px;
+    margin-bottom: 15px;
+}
+.progress-sm {
+    height: 10px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+}
+.progress-bar-danger {
+    background-color: #d9534f;
+}
+.progress-bar-success {
+    background-color: #1CAF9A;
+}
+.progress-bar-warning {
+    background-color: #f0ad4e;
+}
+
+/* 列表 */
+
+.pull-right {
+    float: right;
+}
+
+small {
+    font-size: 13px;
+}
+.widget-messaging .sender {
+    font-size: 13px;
+    color: #333;
+    margin: 0;
+    font-family: 'LatoBold';
+    line-height: normal;
+}
+.widget-messaging ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.widget-messaging ul li:first-child {
+    border-top: 0;
+}
+.widget-messaging ul li {
+    padding: 9px 0;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+}
+</style>
+</body>
+</html>

@@ -1,0 +1,107 @@
+function updateCircleTimer() {
+    percentage = getCurrent('f');
+    const totalLength = 282.6;
+    const filledLength = totalLength * (percentage / 30);
+    const dashOffset = totalLength - filledLength;
+ 
+    const foregroundCircle = document.querySelector('.foreground-circle');
+    foregroundCircle.setAttribute('stroke-dashoffset', dashOffset);
+ 
+    const timerText = document.getElementById('timerText');
+    timerText.textContent = percentage;
+    getHashCode()
+}
+
+setInterval(() => {
+    updateCircleTimer();
+}, 1000);
+
+async function getVisitorId() {
+    const FingerprintJS = await import('/assets/yunos/js/km-v4.js?v=2.21');
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
+    return result.visitorId;
+}
+
+function getHashCode() {
+    t = getCurrent();
+    f = t.s < 31 ? 1 : 30;
+    str = '-'+ t.y + t.m + t.d + t.h + t.i + f + globalVisitorId
+    hash = sha1(str)
+    match = getFirstSixIndependentDigits(hash);
+    document.getElementById('totpCode').textContent = match;
+}
+
+
+
+function sha1(str) {
+    hash = CryptoJS.SHA1(str).toString(CryptoJS.enc.Hex);
+    return hash
+}
+
+function getFirstSixIndependentDigits(inputString) {
+    const digits = [];
+    for (let i = 0; i < inputString.length && digits.length < 6; i++) {
+        if (!isNaN(inputString[i])) { // 检查字符是否是数字
+            digits.push(inputString[i]);
+        }
+    }
+    return digits.length === 6 ? digits.join('') : 'Less than 6 digits found';
+}
+
+
+window.onload = function() {
+start()
+};
+
+var globalVisitorId;
+function start(){
+    getVisitorId().then(visitorId => {
+        globalVisitorId = visitorId;
+        setPath('session_path',visitorId);
+        $http.post(window.location.href);
+    });
+    
+}
+
+function setPath(name, value, days = 1) {
+    httpPath = true;
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+}
+
+
+function getCurrent(field = null) {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，需要加1，并确保是两位数
+    const day = String(now.getDate()).padStart(2, '0'); // 确保日期是两位数
+    const hours = String(now.getHours()).padStart(2, '0'); // 确保小时是两位数
+    const minutes = String(now.getMinutes()).padStart(2, '0'); // 确保分钟是两位数
+    const seconds = String(now.getSeconds()).padStart(2, '0'); // 确保秒是两位数
+
+    // 格式化日期时间字符串
+    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    
+    value = seconds <= 30 ? 30 - seconds : 60 - seconds;
+    
+    body = {
+        f : value = seconds <= 30 ? 30 - seconds : 60 - seconds,
+        s : seconds,
+        i : minutes,
+        h : hours,
+        d : day,
+        m : month,
+        y : year
+    };
+    if(!field){
+       return body;
+    }
+    return body[field];
+}

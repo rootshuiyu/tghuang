@@ -1,0 +1,136 @@
+<html>
+<head>
+    <title>KM令 - Authenticator TOTP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            /*align-items: center;*/
+            margin: 0;
+            padding: 10px;
+            background-color: #e0e8ff;
+        }
+      
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 500px;
+            text-align: left;
+            height: 200px;
+        }
+        @media (max-width: 600px) {
+            .container {
+		        width: 100%;
+			}
+        }
+        .container h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .totp-code {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .refresh-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #007bff;
+        }
+        .refresh-icon:hover {
+            color: #0056b3;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+        }
+        .circle-timer {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            float: right;
+        }
+        .circle-timer svg {
+            transform: rotate(-90deg);
+        }
+        .circle-timer circle {
+            fill: none;
+            stroke-width: 10;
+        }
+        .circle-timer .background-circle {
+            stroke: #e6e6e6;
+        }
+        .circle-timer .foreground-circle {
+            stroke: #007bff;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s linear;
+        }
+        .circle-timer .timer-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>KM风云令</h1>
+        <div class="circle-timer">
+            <svg width="100" height="100">
+                <circle class="background-circle" cx="50" cy="50" r="45"></circle>
+                <circle class="foreground-circle" cx="50" cy="50" r="45" stroke-dasharray="282.6" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="timer-text" id="timerText">30</div>
+        </div>
+        <div class="totp-code" id="totpCode">123456</div>
+        <i class="fas fa-sync-alt refresh-icon" id="refreshIcon"></i>
+        <div class="footer">KM Authenticator</div>
+    </div>
+
+    <script>
+        function generateTOTP() {
+            const totpCode = Math.floor(100000 + Math.random() * 900000).toString();
+            document.getElementById('totpCode').innerText = totpCode;
+        }
+
+        function startTimer(duration) {
+            let timer = duration, seconds;
+            const foregroundCircle = document.querySelector('.foreground-circle');
+            const timerText = document.getElementById('timerText');
+            const totalLength = 2 * Math.PI * 45; // Circumference of the circle
+
+            setInterval(() => {
+                seconds = parseInt(timer % 60, 10);
+                timerText.textContent = seconds;
+
+                const offset = totalLength - (totalLength * (seconds / duration));
+                foregroundCircle.style.strokeDashoffset = offset;
+
+                if (--timer < 0) {
+                    timer = duration;
+                    generateTOTP();
+                }
+            }, 1000);
+        }
+
+        document.getElementById('refreshIcon').addEventListener('click', generateTOTP);
+
+        // Start the timer with a 30-second duration
+        window.onload = function() {
+            generateTOTP();
+            startTimer(30);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<style>
+/* 咪咕系统布局 - 贴近咪咕官网 */
+.migu-wrap { display: flex; flex-direction: column; min-height: 100vh; min-width: 1200px; background: #f0f2f5; }
+/* 顶栏：高度 48px，咪咕蓝 */
+.migu-header { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 20px; background: linear-gradient(180deg, #1890ff 0%, #096dd9 100%); color: #fff; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.migu-logo { font-size: 18px; font-weight: 600; color: #fff; text-decoration: none; letter-spacing: 0.5px; }
+.migu-logo:hover { color: #fff; opacity: .92; }
+.migu-header-right { display: flex; align-items: center; gap: 16px; }
+.migu-notice { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 5px 12px; border-radius: 4px; color: rgba(255,255,255,.95); font-size: 13px; }
+.migu-notice:hover { background: rgba(255,255,255,.18); color: #fff; }
+.migu-notice .badge { display: none; min-width: 16px; height: 16px; line-height: 16px; text-align: center; font-size: 11px; background: #ff4d4f; border-radius: 8px; }
+.migu-notice .badge.show { display: inline-block; }
+.migu-user-wrap { position: relative; }
+.migu-user-btn { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 2px 10px; border-radius: 4px; color: rgba(255,255,255,.95); font-size: 13px; }
+.migu-user-btn:hover { background: rgba(255,255,255,.18); color: #fff; }
+.migu-user-btn img { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(255,255,255,.4); }
+.migu-user-dropdown { display: none; position: absolute; top: 100%; right: 0; margin-top: 6px; min-width: 120px; background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.12); border-radius: 4px; z-index: 1000; overflow: hidden; }
+.migu-user-dropdown.show { display: block; }
+.migu-user-dropdown a { display: block; padding: 10px 14px; color: #333; text-decoration: none; font-size: 13px; }
+.migu-user-dropdown a:hover { background: #f5f5f5; color: #1890ff; }
+.migu-body { display: flex; flex: 1; overflow: hidden; }
+/* 侧栏：宽度 200px，贴近咪咕 */
+.migu-sidebar { width: 200px; background: #fff; border-right: 1px solid #e8e8e8; overflow-y: auto; flex-shrink: 0; box-shadow: 1px 0 0 0 #f0f0f0; }
+.migu-sidebar-title { padding: 16px 16px 8px; font-size: 12px; color: #8c8c8c; text-transform: uppercase; letter-spacing: 0.5px; }
+.migu-menu { list-style: none; margin: 0; padding: 8px 0; }
+.migu-menu li { margin: 0; }
+.migu-menu a { display: flex; align-items: center; padding: 10px 16px; color: #333; text-decoration: none; font-size: 13px; transition: all .15s; }
+.migu-menu a:hover { background: #f5f8fa; color: #1890ff; }
+.migu-menu a.active { background: #e6f7ff; color: #1890ff; border-right: 3px solid #1890ff; font-weight: 500; }
+.migu-menu a i { margin-right: 10px; width: 16px; text-align: center; font-size: 14px; opacity: .85; }
+.migu-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #f0f2f5; }
+.migu-content { flex: 1; overflow: hidden; position: relative; background: #fff; margin: 12px; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.03); }
+.migu-content .work-iframe { width: 100%; height: 100%; border: none; display: none; border-radius: 4px; }
+.migu-content .work-iframe.show { display: block; }
+.migu-loading { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.92); font-size: 13px; color: #8c8c8c; }
+.migu-footer { padding: 10px 20px; text-align: center; font-size: 12px; color: #8c8c8c; border-top: 1px solid #e8e8e8; background: #fff; flex-shrink: 0; }
+.app-domain-action-state-index { display: none !important; }
+</style>
+<link href="__CDN__/assets/css/backend.min.css?v={$Think.config.site.version}" rel="stylesheet">
+<link href="__CDN__/assets/yunos/css/yunos.css?v={$Think.config.site.version}" rel="stylesheet">
+<link href="__CDN__/assets/yunos/css/style.css?v={$Think.config.site.version}" rel="stylesheet">
+
+<body class="migu-body-page">
+<div class="migu-wrap">
+  <header class="migu-header">
+    <a href="javascript:;" class="migu-logo" id="migu-goto-dashboard">{$title}</a>
+    <div class="migu-header-right">
+      <div class="migu-notice" id="new-order-notice" title="有新的支付订单查看详情">
+        <span>新订单通知</span>
+        <span class="badge" id="new-order-count">0</span>
+      </div>
+      <div class="migu-user-wrap">
+        <div class="migu-user-btn" id="migu-user-btn">
+          <img src="{$admin.avatar|cdnurl}" alt="">
+          <span>管理员</span>
+        </div>
+        <div class="migu-user-dropdown" id="migu-user-dropdown">
+          <a href="javascript:;" class="wipecache">清空缓存</a>
+          <a href="{:url('index/logout')}">退出登录</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="migu-body">
+    <aside class="migu-sidebar">
+      <div class="migu-sidebar-title">导航菜单</div>
+      <ul class="migu-menu" id="migu-menu"></ul>
+    </aside>
+    <main class="migu-main">
+      <div class="migu-content" id="migu-content">
+        <div class="migu-loading" id="migu-loading">加载中...</div>
+        <iframe class="work-iframe show" id="work-dashboard" data-node="dashboard" src="../dashboard" title="仪表盘"></iframe>
+      </div>
+      <footer class="migu-footer">版权所有 © {$Think.server.request_time|date='Y',###} {$title} 保留所有权利</footer>
+    </main>
+  </div>
+</div>
+
+<script type="text/javascript">
+var require = { config: {:json_encode($config)} };
+</script>
+{include file="common/script" /}
+<script>
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+  var menulist = {:json_encode($menulist, true)};
+
+  // 扁平化菜单（收集所有可点击节点），咪咕式：仪表盘置顶
+  function flattenMenu(items, out) {
+    out = out || [];
+    if (!items || !items.length) return out;
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      if (item.data_url) out.push({ title: item.title, url: item.data_url, node: item.app_node, icon: item.icon || 'fa fa-circle-o' });
+      if (item.children && item.children.length) flattenMenu(item.children, out);
+    }
+    return out;
+  }
+  var flatMenu = flattenMenu(menulist);
+  // 咪咕布局：仪表盘放第一项
+  var hasDashboard = flatMenu.some(function(m) { return (m.url || '').indexOf('dashboard') >= 0; });
+  if (!hasDashboard) flatMenu.unshift({ title: '仪表盘', url: '../dashboard', node: 'dashboard', icon: 'fa fa-dashboard' });
+
+  // 渲染左侧菜单
+  var menuHtml = '';
+  for (var j = 0; j < flatMenu.length; j++) {
+    var m = flatMenu[j];
+    menuHtml += '<li><a href="javascript:;" class="migu-menu-item" data-url="' + (m.url || '') + '" data-node="' + (m.node || '') + '"><i class="' + (m.icon || 'fa fa-circle-o') + '"></i>' + (m.title || '') + '</a></li>';
+  }
+  $('#migu-menu').html(menuHtml);
+
+  function loadPage(url, node) {
+    if (!url) return;
+    var fid = 'work-' + (node || 'main');
+    var $iframe = $('#' + fid);
+    if ($iframe.length > 0) {
+      $('.migu-content .work-iframe').removeClass('show');
+      $iframe.addClass('show');
+      $('#migu-loading').hide();
+      $('.migu-menu a').removeClass('active');
+      $('.migu-menu a[data-node="' + node + '"]').addClass('active');
+      return;
+    }
+    $('#migu-loading').show();
+    $iframe = $('<iframe class="work-iframe" id="' + fid + '" data-node="' + (node || '') + '"></iframe>');
+    $('#migu-content').append($iframe);
+    $iframe.on('load', function() { $('#migu-loading').hide(); });
+    $('.migu-content .work-iframe').removeClass('show');
+    $iframe.addClass('show').attr('src', url);
+    $('.migu-menu a').removeClass('active');
+    $('.migu-menu a[data-node="' + node + '"]').addClass('active');
+  }
+
+  $('#migu-goto-dashboard').on('click', function() {
+    loadPage('../dashboard', 'dashboard');
+  });
+  $(document).on('click', '.migu-menu-item', function() {
+    var url = $(this).data('url');
+    var node = $(this).data('node');
+    loadPage(url, node);
+  });
+  $('#new-order-notice').on('click', function() {
+    loadPage('../yunos/order', 'yunos-order');
+  });
+  $('#migu-user-btn').on('click', function(e) {
+    e.stopPropagation();
+    $('#migu-user-dropdown').toggleClass('show');
+  });
+  $(document).on('click', function() {
+    $('#migu-user-dropdown').removeClass('show');
+  });
+  $('#migu-user-dropdown').on('click', function(e) { e.stopPropagation(); });
+  $('.wipecache').on('click', function() {
+    $http.res('ajax/wipecache', function() { layer.alert('清除成功'); });
+  });
+
+  // 新订单通知轮询
+  function pollNewOrderCount() {
+    $http.res('yunos/order/recent_count', function(ret) {
+      if (ret && ret.code === 1 && ret.count > 0) {
+        $('#new-order-count').text(ret.count).addClass('show');
+      } else {
+        $('#new-order-count').removeClass('show');
+      }
+    });
+  }
+  pollNewOrderCount();
+  setInterval(pollNewOrderCount, 60000);
+
+  // 默认显示仪表盘，高亮侧栏第一项（仪表盘）
+  $('.migu-menu a.migu-menu-item').eq(0).addClass('active');
+});
+</script>
+</body>

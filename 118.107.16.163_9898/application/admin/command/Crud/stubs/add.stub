@@ -1,0 +1,18 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+{%addList%}
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+});
+}
+</script>

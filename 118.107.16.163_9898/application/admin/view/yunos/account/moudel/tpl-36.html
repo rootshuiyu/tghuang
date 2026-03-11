@@ -1,0 +1,146 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="" autocomplete="off">
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('Access_id')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::selectpicker('row[access_id]', $seachlist.access, $row.access_id, ['data-rule'=>'required'])}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号备注')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea id="c-remarks" class="form-control " rows="5" name="row[remarks]" cols="50">{$row.remarks}</textarea>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('充值账号')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input id="c-syorder" class="form-control" name="row[config][username]" type="text" value="{$row.config.username}">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('游戏')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select name="row[config][gametype]" class="form-control selectpicker" id="gametype" value="{$row.config.gametype}">
+                    <option value="1">完美世界（经典版）</option>
+                    <option value="3">完美世界（国际版）</option>
+                    <option value="16">笑傲江湖</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('充值区服')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select name="row[config][zone]" class="form-control selectpicker" id="zone">
+                    
+                </select>
+            </div>
+        </div>
+        
+    </div>
+    
+    {include file="yunos/account/moudel/comm" /}
+</div>
+    
+    
+    
+   
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form','bootstrap-select','bootstrap-select-lang'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+        
+        $(document).on("change", "#gametype", function(e){
+            //变更后的回调事件
+            var value = $('#gametype').val();
+            redenr(value);
+        });
+        redenr('{$row.config.gametype}');
+        function redenr(key = ''){
+            
+            if(!key){
+                key = 1;
+            }
+            $('#gametype').val(key);
+            
+            optionsData = {
+                1 : [
+                    {value: '29', text: '经典区 - 白鸟'},
+                    {value: '1', text: '校园区 - 天戎'}, 
+                    {value: '97', text: '校园区 - 御龙'},
+                    {value: '175', text: '经典区 - 仙境奇缘'},
+                    {value: '16', text: '经典区 - 圣音'},
+                    {value: '9', text: '经典区 - 天上人间'},
+                    {value: '81', text: '经典区 - 故乡'},
+                    {value: '20', text: '经典区 - 秋水'},
+                    {value: '86', text: '经典区 - 逆鳞'},
+                    {value: '150', text: '经典区 - 飞花'},
+                ],
+                3 : [
+                    {value: '101', text: '至尊双线 - 圣河'}, 
+                    {value: '154', text: '至尊双线 - 圣龙'},
+                    {value: '136', text: '至尊双线 - 天光'},
+                    {value: '174', text: '至尊双线 - 天威'},
+                    {value: '161', text: '至尊双线 - 天海'},
+                    {value: '149', text: '至尊双线 - 天禹'},
+                    {value: '122', text: '至尊双线 - 山宇'},
+                    {value: '98', text: '至尊双线 - 灵犀'},
+                    {value: '60', text: '至尊双线 - 破晓'},
+                    {value: '158', text: '至尊双线 - 神永'},
+                    {value: '95', text: '至尊双线 - 靖玄'},
+                    {value: '163', text: '超凡双线 - 万华'},
+                    {value: '117', text: '超凡双线 - 凌云'},
+                    {value: '28', text: '超凡双线 - 霄宇'},
+                    {value: '99', text: '超凡双线 - 龙腾'},
+                ],
+                16 : [
+                    {value: '20708', text: '侠影战歌/聚义狂歌'},
+                ],
+            };
+            
+            optionHtml = '';
+            $.each(optionsData[key], function(i, item) {
+              select = '';
+              if(item.value == '{$row.config.zone}'){
+                  select = 'selected';
+              }
+              optionHtml += '<option value="'+ item.value +'" '+ select +'>'+ item.text +'</option>';
+            });
+            
+            $('#zone').html(optionHtml);
+            var form = $(".form-horizontal");
+                $('.selectpicker', form).selectpicker();
+                $('.selectpicker', form).selectpicker('refresh');
+
+                console.log(optionsData[key])
+            /*require(['bootstrap-select', 'bootstrap-select-lang'], function () {
+                
+            });*/
+            console.log('重新渲染')
+            
+        }
+        
+        /*require(['bootstrap-select', 'bootstrap-select-lang'], function () {
+            var form = $("下拉列表所在的父元素选择器");
+            $('.selectpicker', form).selectpicker();
+        });*/
+        
+});
+}
+</script>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>多维度设备指纹采集</title>
+  <meta charset="UTF-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+</head>
+<body>
+  <button onclick="collectFingerprints()">生成设备指纹</button>
+  <pre id="result"></pre>
+
+  <script>
+    async function collectFingerprints() {
+      const resultEl = document.getElementById('result');
+      resultEl.textContent = "生成中...";
+      
+      try {
+        // 1. Canvas指纹
+        const canvasHash = await generateCanvasHash();
+        
+        // 2. WebGL指纹
+        const webglHash = await getWebGLHash();
+        
+        // 3. 设备特征组合
+        const deviceHash = sha256(
+          canvasHash + 
+          navigator.userAgent + 
+          screen.width + 'x' + screen.height + 
+          new Date().getTimezoneOffset()
+        );
+        
+        resultEl.textContent = `
+          复合设备指纹: ${deviceHash}
+        `;
+      } catch (e) {
+        resultEl.textContent = "错误: " + e.message;
+      }
+    }
+
+    async function generateCanvasHash() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      // 动态调整（基于设备像素比）
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = 200 * dpr;
+      canvas.height = 100 * dpr;
+      ctx.scale(dpr, dpr);
+      
+      // 复杂绘图
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = `${14 * dpr}px Arial`;
+      ctx.fillText('Device Fingerprint', 2, 15);
+      
+      // 添加设备相关图形
+      if (window.orientation !== undefined) {
+        ctx.fillStyle = 'red';
+        ctx.fillRect(0, 0, 20, 20); // 移动端添加标记
+      }
+      
+      return sha256(ctx.getImageData(0, 0, canvas.width/dpr, canvas.height/dpr).data);
+    }
+
+    // WebGL指纹函数（同上）
+    async function getWebGLHash() { /* ... */ }
+  </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="" autocomplete="off">
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('Access_id')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::selectpicker('row[access_id]', $seachlist.access, $row.access_id, ['data-rule'=>'required'])}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号备注')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea id="c-remarks" class="form-control " rows="5" name="row[remarks]" cols="50"></textarea>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('游戏区')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <select name="row[value1]" class="form-control selectpicker zone_id">
+                    <option value="1673">开年争霸</option>
+                    <option value="916">手机测试区</option>
+                    <option value="2">封测区</option>
+                    <option value="1006">傲啸王者</option>
+                    <option value="1317">人气无双</option>
+                    <option value="692">江湖英雄</option>
+                    <option value="1570">爱满西岭</option>
+                    <option value="964">豪侠龙战</option>
+                    <option value="1492">盖世英雄</option>
+                    <option value="1520">烈火狂欢</option>
+                    <option value="1647">至尊盛世</option>
+                    <option value="1472">龙腾漫步</option>
+                    <option value="1490">风雨决战</option>
+                    <option value="1491">大战乾坤</option>
+                    <option value="1659">烽火九州</option>
+                    <option value="1626">酷夏激战</option>
+                    <option value="1633">万人分红激战区</option>
+                    <option value="1607">五岳盛世</option>
+                    <option value="1597">创世当歌</option>
+                    <option value="1567">龙腾江山</option>
+                    <option value="1516">庆典双雄</option>
+                    <option value="1593">万人返利专区</option>
+                    <option value="1623">嘉年华福利二区</option>
+                    <option value="1627">铁血雄心</option>
+                    <option value="1628">吉星高升</option>
+                    <option value="1631">月圆丰年</option>
+                    <option value="1638">天作之合</option>
+                    <option value="1643">金风玉露</option>
+                    <option value="1644">金桂飘香</option>
+                    <option value="1646">二十周年狂欢大区</option>
+                    <option value="1665">旭日东升</option>
+                    <option value="1666">年终激战大区</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('CK')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea id="c-remarks" class="form-control " rows="5" name="row[ck]" cols="50">{$row.ck}</textarea>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+    
+   {include file="yunos/account/moudel/comm" /}
+</div>
+    
+    
+    
+   
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+        
+        redenr('{$row.value1}');
+        function redenr(key = ''){
+            if(!key){
+                return ;
+            }
+            
+            $('.zone_id').val(key);
+        }
+        
+        
+});
+}
+</script>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单结算 - 易生聚合支付</title>
+  <meta name="referrer" content="no-referrer">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/assets/pay/css/font-awesome.min.css" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#4080FF',
+            success: '#00C48C',
+            warning: '#FFAB00',
+            danger: '#FF5252',
+            neutral: {
+              100: '#FFFFFF',
+              200: '#F5F7FA',
+              300: '#E5E6EB',
+              400: '#C9CDD4',
+              500: '#86909C',
+              600: '#4E5969',
+              700: '#272E3B',
+              800: '#1D2129',
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .glass-high {
+        backdrop-filter: blur(15px) saturate(110%);
+        -webkit-backdrop-filter: blur(15px) saturate(110%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%);
+        box-shadow: 0 4px 20px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .bg-grid {
+        background-image:
+          linear-gradient(rgba(0, 82, 217, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 82, 217, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      @keyframes pulse-soft {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+      }
+      .status-pulse {
+        animation: pulse-soft 2s ease-in-out infinite;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .spinner {
+        animation: spin 1s linear infinite;
+      }
+    }
+  </style>
+  <style>
+    /* 电脑端适配 - 保持手机端宽度 */
+    @media (min-width: 640px) {
+      body > .container,
+      .container {
+        max-width: 480px !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-blue-50 to-indigo-50 min-h-screen flex flex-col overflow-x-hidden">
+  <div class="fixed inset-0 bg-grid opacity-10 pointer-events-none"></div>
+  <div class="fixed top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+  <div class="fixed bottom-0 left-0 w-72 h-72 bg-secondary/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+
+  <!-- 顶部导航 -->
+  <header class="glass-high shadow-lg sticky top-0 z-50">
+    <div class="container mx-auto px-3 py-2 flex flex-col sm:flex-row justify-center items-center gap-1 sm:gap-0">
+      <div class="flex items-center text-success text-xs sm:text-sm">
+        <i class="fa fa-shield mr-1.5"></i>
+        <span>支付环境安全 · 可放心交易</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="flex-grow container mx-auto px-3 py-4 sm:py-6 flex flex-col items-center" id="app" data-repeat="false">
+    <!-- 加载中模块 -->
+    <div class="glass-high rounded-xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-5 w-full" style="display:{{status0}}">
+      <div class="flex flex-col items-center justify-center py-6 sm:py-8">
+        <!-- 加载动画 -->
+        <div class="relative mb-3 sm:mb-4">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 relative">
+            <!-- 外圈 -->
+            <div class="absolute inset-0 rounded-full border-4 border-primary/10"></div>
+            <!-- 旋转圈 -->
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-primary spinner"></div>
+            <!-- 内圈 -->
+            <div class="absolute inset-2 rounded-full bg-primary/5 flex items-center justify-center">
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- 加载文字 -->
+        <h2 class="text-lg sm:text-xl font-bold text-neutral-800 mb-1 sm:mb-2">交易正在处理中</h2>
+        <p class="text-neutral-500 text-xs sm:text-sm">请稍候,{{times}}秒</p>
+      </div>
+    </div>
+
+    <!-- 订单状态卡片 -->
+    <div class="glass-high rounded-xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-5 w-full" style="display:{{status2}}">
+      <div class="flex flex-col items-center justify-center py-4 sm:py-6">
+        <!-- 状态图标 -->
+        <div class="relative mb-3 sm:mb-4">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-warning/10 flex items-center justify-center">
+            <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-warning/20 flex items-center justify-center">
+              <i class="fa fa-clock-o text-warning text-2xl sm:text-3xl status-pulse"></i>
+            </div>
+          </div>
+          <div class="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-warning rounded-full border-2 border-white flex items-center justify-center">
+            <div class="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white rounded-full"></div>
+          </div>
+        </div>
+
+        <!-- 状态文字 -->
+        <h2 class="text-lg sm:text-2xl font-bold text-warning mb-1 sm:mb-2">等待支付</h2>
+        <p class="text-neutral-500 text-xs sm:text-sm"></p>
+        <!-- 支付倒计时 -->
+        <div class="flex items-center justify-center text-warning text-xs sm:text-sm">
+          <i class="fa fa-clock-o mr-1.5 sm:mr-2"></i>
+          <span>支付剩余时间：</span>
+          <span class="font-bold ml-1 sm:ml-1.5">{{times}}秒</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 超时模块 -->
+    <div class="glass-high rounded-xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-5 w-full" style="display:{{status3}}">
+      <div class="flex flex-col items-center justify-center py-6 sm:py-8">
+        <!-- 超时图标 -->
+        <div class="relative mb-3 sm:mb-4">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-danger/10 flex items-center justify-center">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-danger/20 flex items-center justify-center">
+              <i class="fa fa-times-circle text-danger text-4xl sm:text-5xl"></i>
+            </div>
+          </div>
+          <!-- 装饰感叹号 -->
+          <div class="absolute -top-1 -right-1 w-7 h-7 sm:w-8 sm:h-8 bg-danger rounded-full border-2 border-white flex items-center justify-center">
+            <i class="fa fa-exclamation text-white text-xs sm:text-sm font-bold"></i>
+          </div>
+        </div>
+
+        <!-- 超时文字 -->
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-danger mb-2 sm:mb-3">{{error_title}}</h2>
+        <p class="text-neutral-500 text-sm sm:text-base text-center">{{error_info}}</p>
+
+        <!-- 超时装饰线 -->
+        <div class="flex items-center gap-2 mt-4 sm:mt-5">
+          <div class="w-12 sm:w-16 h-0.5 bg-gradient-to-r from-transparent to-danger/50"></div>
+          <i class="fa fa-clock-o text-danger text-xs sm:text-sm"></i>
+          <div class="w-12 sm:w-16 h-0.5 bg-gradient-to-l from-transparent to-danger/50"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 支付成功模块 -->
+    <div class="glass-high rounded-xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-5 w-full" style="display:{{status10}}">
+      <div class="flex flex-col items-center justify-center py-6 sm:py-8">
+        <!-- 成功图标 -->
+        <div class="relative mb-3 sm:mb-4">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-success/10 flex items-center justify-center">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-success/20 flex items-center justify-center">
+              <i class="fa fa-check-circle text-success text-4xl sm:text-5xl"></i>
+            </div>
+          </div>
+          <!-- 装饰圆点 -->
+          <div class="absolute -top-1 -right-1 w-6 h-6 sm:w-7 sm:h-7 bg-success rounded-full border-2 border-white flex items-center justify-center">
+            <div class="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
+          </div>
+          <div class="absolute -bottom-1 -left-1 w-4 h-4 sm:w-5 sm:h-5 bg-success/60 rounded-full"></div>
+        </div>
+
+        <!-- 成功文字 -->
+        <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-success mb-2 sm:mb-3">支付成功</h2>
+        <p class="text-neutral-500 text-sm sm:text-base text-center">感谢您的支付，订单已完成</p>
+
+        <!-- 成功装饰线 -->
+        <div class="flex items-center gap-2 mt-4 sm:mt-5">
+          <div class="w-12 sm:w-16 h-0.5 bg-gradient-to-r from-transparent to-success/50"></div>
+          <i class="fa fa-star text-warning text-xs sm:text-sm"></i>
+          <div class="w-12 sm:w-16 h-0.5 bg-gradient-to-l from-transparent to-success/50"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 订单信息卡片 -->
+    <div class="glass-high rounded-xl shadow-lg p-4 sm:p-5 mb-4 sm:mb-5 w-full" style="display:{{status2}}">
+      <h3 class="text-sm sm:text-base font-semibold text-neutral-800 mb-3 sm:mb-4 flex items-center">
+        <i class="fa fa-file-text-o text-primary mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+        订单信息
+      </h3>
+
+      <div class="space-y-3 sm:space-y-4">
+        <!-- 订单金额 -->
+        <div class="flex justify-between items-center py-2 sm:py-3 border-b border-neutral-200">
+          <span class="text-neutral-500 text-xs sm:text-sm">订单金额</span>
+          <span class="text-2xl sm:text-3xl font-bold text-primary">¥{{fee}}</span>
+        </div>
+      </div>
+
+      <!-- 支付按钮 -->
+      <div class="mt-4 sm:mt-5 pt-4 sm:pt-5" style="display:{{payModel}}">
+        <button class="w-full py-3 sm:py-3.5 bg-primary hover:bg-secondary text-white rounded-lg font-medium text-sm sm:text-base transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 shadow-lg shadow-primary/30" onclick="payPull()">
+          <i class="fa fa-credit-card mr-2 text-xs sm:text-sm"></i>
+          <span>立即支付</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 二维码支付模块 -->
+    <div class="glass-high rounded-xl shadow-lg p-4 sm:p-5 mb-4 sm:mb-5 w-full" style="display:{{qrModel}}">
+      <h3 class="text-sm sm:text-base font-semibold text-neutral-800 mb-3 sm:mb-4 flex items-center">
+        <i class="fa fa-qrcode text-primary mr-1 sm:mr-2 text-xs sm:text-sm"></i>
+        扫码支付
+      </h3>
+
+      <div class="flex flex-col items-center">
+        <!-- 二维码显示区域 -->
+        <div class="relative mb-3 sm:mb-4">
+          <div class="w-48 h-48 sm:w-56 sm:h-56 bg-white rounded-xl border-2 border-neutral-200 flex items-center justify-center p-4">
+            <!-- 二维码占位 -->
+            <div class="w-full h-full bg-neutral-100 rounded-lg flex items-center justify-center">
+              {{qrData}}
+            </div>
+          </div>
+          <!-- 支付图标标识 -->
+          <div class="absolute -top-2 -left-2 w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-lg shadow-md flex items-center justify-center border border-neutral-200">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1677FF" class="w-5 h-5 sm:w-6 sm:h-6">
+              <path d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-1.5 15v-2h3v-8h-3v-2h7v2h-3v8h3v2h-7z"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- 提示文字 -->
+        <p class="text-neutral-500 text-xs sm:text-sm text-center mb-3 sm:mb-4">
+          请使用APP扫描上方二维码完成支付
+        </p>
+
+        
+      </div>
+    </div>
+
+    
+
+  </main>
+
+  <!-- 底部信息 -->
+  <footer class="glass-high py-3 sm:py-4 mt-auto">
+    <div class="container mx-auto px-3 text-center">
+      <p class="text-neutral-400 text-xs">
+        <i class="fa fa-shield mr-1"></i>
+        安全支付 · 官方保障 · 24小时客服
+      </p>
+    </div>
+  </footer>
+</body>
+</html>
+<script src="/assets/qrcode.min.js"></script>
+
+<script>
+
+var $_GET = (function(){
+    var url = window.document.location.href.toString();
+    var u = url.split("?");
+    if(typeof(u[1]) == "string"){
+        u = u[1].split("&");
+        var get = {};
+        for(var i in u){
+            var j = u[i].split("=");
+            get[j[0]] = j[1];
+        }
+        return get;
+    } else {
+        return {};
+    }
+})();
+
+/*模板引擎*/
+(function(exports) {
+
+	exports.SimBind = function(options) {
+		var self = this;
+
+		this.render = function() {
+			var el = document.querySelector(this.el);
+			var children = el.childNodes;
+			var secondChild = children && children[1];
+
+			if (secondChild && secondChild.attributes && secondChild.attributes['data-repeat']) {
+				var html = '';
+				for (var j in this.data) {
+					html += this.attachData(this.template, this.data[j]);
+				}
+				el.innerHTML = html;
+			} else {
+				el.innerHTML = this.attachData(this.template, this.data);
+			}
+		};
+
+		this.attachData = function(el, data) {
+			var fragment = '';
+			for (var key in data) {
+				var reg = new RegExp('{{' + key + '}}', 'g');
+				fragment = (fragment || el).replace(reg, data[key]);
+			}
+			return fragment;
+		};
+
+		Object.defineProperty(this, 'data', {
+			get: function() {
+				return self._dataProxy || self._data;
+			},
+			set: function(val) {
+				if (!self._dataProxy || self._dataProxy !== val) {
+					self._data = val;
+					self._dataProxy = self.createProxy(val, self.render.bind(self));
+					self.render();
+				}
+			}
+		});
+
+		this.createProxy = function(obj, renderCallback) {
+			if (typeof obj !== 'object' || obj === null) {
+				return obj;
+			}
+
+			return new Proxy(obj, {
+				set: function(target, property, value) {
+					target[property] = value;
+					renderCallback();
+					return true;
+				}
+			});
+		};
+
+		if (options && options.el) {
+			this.el = options.el;
+			this.template = document.querySelector(this.el).innerHTML;
+			this.data = options.data;
+		}
+	}
+})(window);
+/*模板引擎END*/
+
+vm = new SimBind({
+		el:'#app',
+		data:{
+		    'error_title' : '订单已超时',
+		    'error_info' : '支付时间已过期，请重新下单',
+		    'status0'  : '',
+		    'status1' : 'none',
+		    'status2' : 'none',
+		    'status3' : 'none',
+		    'status10' : 'none',
+		    'times' : 60,
+		    'payModel' : 'none',
+		    'qrModel' : 'none',
+		    'payData' : null,
+		    'qrData'  : '<i class="fa fa-qrcode text-neutral-300 text-6xl sm:text-7xl"></i>',
+		    'fee'     : null
+		}
+	});
+
+start();
+function start() {
+    
+  queryOrder()
+    
+}
+	
+async function queryOrder() {
+        $orderid = $_GET['orderid'];
+        var response = await fetch('/api/pay/query_ev_order?orderid=' + $orderid);
+        
+        if(!response.ok) {
+            setTimeout(() => {
+                queryOrder($orderid)
+            }, 1000);
+            return;
+        }
+
+        const result = await response.json();
+        if(result.code != 1){
+            render();
+            vm.data.payModel = 'none';
+            vm.data.qrModel = 'none';
+            vm.data.error_title = result.msg;
+            vm.data.error_info = '';
+            vm.data.status3 = '';
+            
+            return vm.data.status1 = '';
+        }
+        
+        order = result.data;
+        
+        if(order.status == 0 || order.status == 1 || order.status == 2){
+           vm.data.times = order.timeout; 
+        }
+        
+        if(order.status == 2){
+            
+            if(vm.data.fee == null){
+                render();
+            }
+            
+            vm.data.status2 = '';
+
+            vm.data.fee = order.fee;
+            
+            if(order.payinfo.url){
+                if(!vm.data.payData){
+                    vm.data.payModel = '';
+                    vm.data.payData = order.payinfo.url;
+                }
+                window.location.href = order.payinfo.url;
+                return;
+            }
+            
+            if(order.payinfo.qrcode){
+                if(vm.data.qrModel == 'none'){
+                    vm.data.qrModel = '';
+                    qrBase64 = await generateQRCode(order.payinfo.qrcode);
+                    //console.log('数据'+ qrBase64)
+                    vm.data.qrData = '<img src="'+ qrBase64 +'">';
+                }
+                
+            }
+            
+        }
+        
+        if(order.status == 3){
+            render();
+            vm.data.payModel = 'none';
+            vm.data.qrModel = 'none';
+            vm.data.status3 = '';
+        }
+        
+        if(order.status == 10){
+            render();
+            vm.data.payModel = 'none';
+            vm.data.qrModel = 'none';
+            vm.data.status10 = '';
+        }
+        setTimeout(() => {
+                queryOrder($orderid)
+            }, 1000);
+        
+          
+      }
+      
+function render(){
+   
+   if(vm.data.status0 != 'none'){
+       vm.data.status0 =  'none';
+   }
+   if(vm.data.status1 != 'none'){
+       vm.data.status1 =  'none';
+   }
+   if(vm.data.status2 != 'none'){
+       vm.data.status2 =  'none';
+   }
+   if(vm.data.status3 != 'none'){
+       vm.data.status3 =  'none';
+   }
+   if(vm.data.status10 != 'none'){
+       vm.data.status10 =  'none';
+   }
+
+}
+
+function payPull(){
+    
+    window.location.href = vm.data.payData;
+    
+}
+
+// 生成二维码函数，返回 base64 格式
+function generateQRCode(text) {
+  console.log('=== 开始生成二维码 ===');
+  console.log('输入文本:', text);
+
+  // 检查输入文本是否有效
+  if (!text || text === '' || text === null || text === undefined) {
+    console.error('二维码内容为空:', text);
+    return Promise.resolve(null);
+  }
+
+  // 使用 QRCode 库生成二维码
+  try {
+    // 创建临时离屏容器
+    const tempContainer = document.createElement('div');
+    tempContainer.style.position = 'absolute';
+    tempContainer.style.top = '-9999px';
+    tempContainer.style.left = '-9999px';
+    tempContainer.style.width = '160px';
+    tempContainer.style.height = '160px';
+    tempContainer.style.backgroundColor = '#ffffff';
+    document.body.appendChild(tempContainer);
+
+    const qr = new QRCode(tempContainer, {
+      text: String(text),
+      width: 160,
+      height: 160,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.L
+    });
+
+
+    // 延迟处理生成的元素，确保 QRCode 完成渲染
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const img = tempContainer.querySelector('img');
+        const canvas = tempContainer.querySelector('canvas');
+
+        console.log('img:', img);
+        console.log('canvas:', canvas);
+
+        let base64Result = null;
+
+        if (img) {
+          base64Result = img.src;
+          
+        } else if (canvas) {
+          base64Result = canvas.toDataURL('image/png');
+          
+        }
+
+        // 移除临时容器
+        tempContainer.remove();
+
+        console.log('=== 二维码生成完成 ===');
+
+        if (base64Result) {
+          resolve(base64Result);
+        } else {
+          reject(new Error('无法获取二维码 base64 数据'));
+        }
+      }, 100);
+    });
+
+  } catch (error) {
+    console.error('生成二维码失败:', error);
+    return Promise.resolve(null);
+  }
+}
+
+
+
+
+
+
+
+
+
+</script>

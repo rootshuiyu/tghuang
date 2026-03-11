@@ -1,0 +1,17 @@
+<style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* 防止滚动条出现 */
+        }
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none; /* 移除边框 */
+            overflow: hidden;
+        }
+    </style>
+    账号备注:{$row.remarks}
+    <iframe src="https://pay.qq.com/h5/trade-record/trade-record.php?appid=1450000186&_wv=1024&pf=2199&sessionid=openid&sessiontype=kp_accesstoken&openid={$row.ck.openid}&openkey={$row.ck.openkey}#/" allowfullscreen></iframe>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decode Data</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 700px;
+            transition: transform 0.3s ease;
+        }
+
+    
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+            font-size: 2rem;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            padding: 15px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+            border: 1px solid #ccc;
+        }
+
+        textarea:focus {
+            outline: none;
+            background-color: #fff;
+            border-color: #999;
+        }
+
+        textarea::placeholder {
+            color: #aaa;
+        }
+
+        .btn-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 14px 32px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: 1px solid #555;
+        }
+
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* 添加：去除按钮焦点时的默认边框 */
+        button:focus {
+            outline: none;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            min-height: 100px;
+            max-height: 400px;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        #result.loading {
+            background: #e9ecef;
+            border-left-color: #adb5bd;
+        }
+
+        #result.error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        #result.success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+
+        pre {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #333;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 0;
+        }
+
+        .status-message {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 30px;
+            }
+            
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            textarea {
+                min-height: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* 滚动条样式 */
+        #result::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #result::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #result::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        #result::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>数据解码工具</h1>
+        
+        <div class="input-group">
+            <textarea id="inputData" placeholder="请输入需要解码的数据..."></textarea>
+        </div>
+        
+        <div class="btn-container">
+            <button onclick="sendRequest()" id="decodeBtn">解码数据</button>
+        </div>
+        Token:
+        <textarea id="resultToken" placeholder="token" style="    min-height: 80px;"></textarea>
+        <div id="result">
+            <div class="status-message">请输入数据并点击"解码数据"按钮</div>
+        </div>
+    </div>
+
+    <script>
+        function sendRequest() {
+            const inputData = document.getElementById('inputData').value;
+            const resultDiv = document.getElementById('result');
+            const resultToken = document.getElementById('resultToken');
+            const decodeBtn = document.getElementById('decodeBtn');
+            
+            if (!inputData.trim()) {
+                resultDiv.innerHTML = '<div class="status-message">请输入需要解码的数据</div>';
+                resultDiv.className = 'error';
+                return;
+            }
+            
+            resultToken.innerHTML = '';
+            
+            // 设置加载状态
+            resultDiv.innerHTML = '<div class="status-message">处理中...</div>';
+            resultDiv.className = 'loading';
+            decodeBtn.disabled = true;
+            decodeBtn.textContent = '处理中...';
+            
+            // 发送 AJAX 请求到 PHP 文件
+            fetch('api_de.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'data=' + encodeURIComponent(inputData)
+            })
+            .then(response => response.text())
+            .then(data => {
+                try {
+                    // 尝试将响应解析为 JSON 并格式化
+                    const jsonData = JSON.parse(data);
+                    resultDiv.innerHTML = '<pre>' + JSON.stringify(jsonData, null, 2) + '</pre>';
+                    resultDiv.className = 'success';
+                    resultToken.innerHTML = jsonData.d.access_token;
+                } catch (e) {
+                    // 如果不是有效的 JSON，直接显示原始响应
+                    resultDiv.innerHTML = '<pre>' + data + '</pre>';
+                    resultDiv.className = 'success';
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = '<div class="status-message">请求出错: ' + error.message + '</div>';
+                resultDiv.className = 'error';
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                decodeBtn.disabled = false;
+                decodeBtn.textContent = '解码数据';
+            });
+        }
+    </script>
+</body>
+</html>

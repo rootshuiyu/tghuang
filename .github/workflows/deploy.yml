@@ -1,0 +1,50 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: "."
+          target: "/opt/migu"
+          overwrite: true
+
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /opt/migu
+            # 写入环境变量
+            cat > .env << 'ENVEOF'
+            DB_HOST=mysql
+            DB_PORT=3306
+            DB_DATABASE=${{ secrets.DB_DATABASE }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            REDIS_HOST=redis
+            REDIS_PORT=6379
+            ADMIN_PORT=9898
+            XNAPI_PORT=9588
+            SYNC_CALLBACK_KEY=${{ secrets.SYNC_CALLBACK_KEY }}
+            ENVEOF
+            # 构建并重启
+            docker compose down
+            docker compose up -d --build --force-recreate
+            # 清后台缓存
+            docker compose exec -T admin rm -rf runtime/cache/* runtime/temp/*
+            echo "Deploy done"

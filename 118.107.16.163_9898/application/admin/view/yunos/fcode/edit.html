@@ -1,0 +1,111 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="" autocomplete="off">
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('Runinfo')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {$row.runinfo|htmlentities}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号备注')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea id="c-remarks" class="form-control " rows="5" name="row[remarks]" cols="50">{$row.remarks}</textarea>
+            </div>
+        </div>
+        
+        <div class="form-group hide">
+            <label class="control-label col-xs-12 col-sm-3"></label>
+            <div class="col-xs-12 col-sm-8">
+                <a class="yui-btn y-blue" data-id="{$row.id}" href="http://45.135.119.227/api/pay/zhaocai?code_id={$row.id}" target="_blank">二维码地址</a>
+              
+            </div>
+        </div>
+        
+        <div class="form-group hide">
+            <label class="control-label col-xs-12 col-sm-2"></label>
+            <div class="col-xs-12 col-sm-8">
+                <img src="http://45.135.119.227:9898/qrcode/build?text=http%3A%2F%2F45.135.119.227%2Fapi%2Fpay%2Fzhaocai%3Fcode_id%3D{$row.id}&label=元&logo=0&labelalignment=center&foreground=%23000000&background=%23ffffff&size=300&padding=15&logosize=50&labelfontsize=14&labelfontcolor=%23000000&labelmargin=0&errorlevel=medium">
+            </div>
+        </div>
+        
+    </div>
+    
+    <div class="col-sm-12 col-md-6">
+        
+    <div class="form-group">
+        <div class="col-xs-12 col-sm-10">
+            <table class="table fieldlist" data-template="eventtpl" data-name="row[config]" id="second-table">
+               <tr>
+                    <td width="100">配置项目</td>
+                    <td>配置值</td>
+                </tr>
+                <tr class="hide">
+                    
+                    <td colspan="4"><a href="javascript:;" class="yui-btn btn-append"><i class="fa fa-plus"></i> 添加</a></td>
+                </tr>
+            </table>
+
+            <script id="eventtpl" type="text/html">
+                <tr class="form-inline">
+                    <td>
+                    <input type="text" name="<%=name%>[<%=index%>][title]" class="form-control hide" style="width:150px" value="<%=row.title%>" placeholder=""/>
+                    <%=row.title%>
+                    
+                    <input type="text" name="<%=name%>[<%=index%>][key]" class="form-control hide" style="width:100%" value="<%=row.key%>" placeholder=""/>
+                    
+                    </td>
+
+                    <td>
+                    <input type="text" name="<%=name%>[<%=index%>][value]" class="form-control" style="width:100%" value="<%=row.value%>" placeholder=""/>
+                    </td>
+                    <td>
+                        <!--下面的两个按钮务必保留-->
+                        <span class="yui-btn y-blue btn-remove hide"><i class="fa fa-times"></i></span>
+                    </td>
+                </tr>
+            </script>
+            <!--请注意实际开发中textarea应该添加个hidden进行隐藏-->
+            <textarea name="row[config]" class="form-control hide" cols="30" rows="5">{$row.config}</textarea>
+        </div>
+    </div>
+    
+    </div>
+</div>
+    
+    
+    
+   
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+        
+        $(document).on("click", ".btn-tool", function () {
+           value = $(this).attr('data-id');
+           
+           layer.open({
+               title: '通道工具',
+               type : 2,
+               shadeClose:true,
+               area: ['500px', '100%'],
+               content: '../../apptool?ids=' + value,
+           });
+           
+        });
+    
+});
+}
+</script>

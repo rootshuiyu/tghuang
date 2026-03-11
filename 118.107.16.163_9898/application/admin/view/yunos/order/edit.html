@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* 容器样式 */
+        .container {
+            margin: 0 auto;
+            background-color: white;
+            overflow: hidden;
+        }
+        /* 标题栏样式 */
+        .header .title{
+            background-color: #2563eb;
+            color: white;
+            padding: 16px;
+        }
+        .header .title {
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        /* 日志容器样式 */
+        .log-container {
+            padding-top: 15px;
+            font-size: 13px;
+        }
+        /* 日志项样式 */
+        .log-item {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+        
+        /* 响应式布局 - 桌面端 */
+        @media (min-width: 640px) {
+            .log-item {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+        /* 日志时间样式 */
+        .log-time {
+            color: #6b7280;
+            margin-bottom: 4px;
+        }
+        @media (min-width: 640px) {
+            .log-time {
+                margin-bottom: 0;
+                margin-right: 16px;
+                width: 130px;
+            }
+        }
+        /* 日志内容样式 */
+        .log-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+        .log-content span {
+            margin-left: 8px;
+        }
+     
+        @media (min-width: 640px) {
+            .log-status {
+                margin-top: 0;
+                margin-left: 16px;
+            }
+        }
+        /* 状态颜色样式 */
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-left-color: #f59e0b;
+        }
+        .status-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            border-left-color: #0ea5e9;
+        }
+        .status-success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left-color: #10b981;
+        }
+        .status-error {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border-left-color: #ef4444;
+        }
+        .status-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border-left-color: #f59e0b;
+        }
+        
+        /* 图标样式 */
+        .icon-title {
+            width: 25px;
+            font-size: 15px;
+            display: inline-block;
+        }
+        .icon-style {
+            width: 15px;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .error-details {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #333;
+            word-break: break-word;
+            white-space: normal;
+            box-sizing: border-box;
+            line-height: 14px;
+        }
+        .error-details span{
+            padding-left: 10px;
+        }
+
+        @media (min-width: 640px) {
+            .log-item {
+                flex-wrap: wrap;
+            }
+            .error-details {
+                margin-left: 146px; /* 与.log-time宽度一致 */
+                margin-right: 0;
+            }
+            .log-status {
+                width: 100%;
+                margin-top: 8px;
+                margin-left: 146px;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">
+                <i class="fa fa-tasks icon-title"></i>
+                订单流程</div>
+        </div>
+        <div class="log-container">
+            <div class="space-y-4">
+                <!-- 日志记录项 -->
+                
+                <div class="log-item status-success">
+                    <span class="log-time">{$row.createtime|datetime}</span>
+                    <div class="log-content">
+                        <i class="fa fa-check-circle icon-style"></i>
+                        <span>订单创建成功，订单号：{$row.orderid}</span>
+                    </div>
+                </div>
+                
+                {volist name="log" id="data"}
+                <div class="log-item status-{$data.type}">
+                    <span class="log-time">{$data.createtime}</span>
+                    <div class="log-content">
+                        <i class="{$seachlist.icon_type[$data.type]} icon-style"></i>
+                        <span>{$data.title}</span>
+                    </div>
+                    
+                    {if condition="$data.content"}
+                    <div class="error-details">
+                        <i class="fa fa-info-circle icon-style"></i>
+                        <span>信息：{$data.content}</span>
+                    </div>
+                    {/if}
+                    
+                </div>
+                {/volist}
+                
+                {if condition="$row.status == 1"}
+                <div class="log-item status-error">
+                    <span class="log-time">{$row.exptime|datetime}</span>
+                    <div class="log-content">
+                        <i class="fa fa-exclamation-circle icon-style"></i>
+                        <span>匹配失败</span>
+                    </div>
+                </div>
+                {/if}
+                
+                {if condition="$row.status == 3"}
+                <div class="log-item status-pending">
+                    <span class="log-time">{$row.exptime|datetime}</span>
+                    <div class="log-content">
+                        <i class="fa fa-history icon-style"></i>
+                        <span>订单超时</span>
+                    </div>
+                </div>
+                {/if}
+                
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的交互功能：滚动到最新日志
+        document.addEventListener('DOMContentLoaded', function() {
+            const logContainer = document.querySelector('.log-container');
+            logContainer.scrollTop = logContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+    
+});
+}
+</script>

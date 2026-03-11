@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <title>webman</title>
+
+</head>
+<body onload="connect();">
+    <script src="/asset/jquery.min.js"> </script>
+    <script src="/asset/web_socket.js"> </script>
+
+<script>
+
+// 连接服务端
+function connect() {
+    //http://175.178.223.217:8787/
+   // 创建websocket
+   ws = new WebSocket("wss://admin.dev.xbb.show/app-socket?token=4939c744-16e5-46b0-9663-bf12b9ec70c4");
+   // 当socket连接打开时，输入用户名
+   ws.onopen = onopen;
+   // 当有消息时根据消息类型显示不同信息
+   ws.onmessage = onmessage;
+   ws.onclose = function() {
+	  console.log("连接关闭，定时重连");
+      connect();
+   };
+   ws.onerror = function() {
+ 	  console.log("出现错误");
+   };
+}
+
+// 连接建立时发送登录信息
+function onopen()
+{
+    login_data = '{"event" : "login"}';
+    console.log("websocket握手成功，发送登录数据:"+login_data);
+    ws.send(login_data);
+    
+    
+    
+}
+
+intervalId = setInterval(tioatiao, 5000);
+
+function tioatiao(){
+    console.log("心跳检测");
+    ws.send('{"event":"ping","data":"757777"}');
+}
+
+// 服务端发来消息时
+    function onmessage(e)
+    {
+        //console.log(e.data);
+        var data = JSON.parse(e.data);
+        
+        switch(data['event']){
+            case 'login':
+                console.log('登录成功')
+                break;
+            // 服务端ping客户端
+            case 'ping':
+                //console.log("心跳检测");
+                //ws.send('{"event":"ping"}');
+                break;;
+            // 发言
+            case 'say':
+                break;
+            // 用户退出 更新用户列表
+            case 'logout':
+        }
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('文本框')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::text('row[text]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('多行文本框')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::textarea('row[textarea]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('富文本编辑器')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::editor('row[editor]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('单选')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::radios('row[radio]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('复选')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::checkboxs('row[checkbox]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('下拉列表')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::select('row[select]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('下拉列表(多选)')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selects('row[select]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('下拉列表(友好)')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selectpicker('row[selectpicker]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('下拉列表(友好)(多选)')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selectpickers('row[selectpickers]', ['aa'=>'AA', 'bb'=>'BB'], 'aa', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('动态下拉列表')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selectpage('row[select]', 2, 'category/selectpage', null, null, ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('动态下拉列表(多选)')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selectpages('row[select]', 2, 'category/selectpage', null, null, ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('城市选择框')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::citypicker('row[citypicker]', 2, ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('日期')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::datepicker('row[datepicker]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('时间')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::timepicker('row[timepicker]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('日期时间')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::datetimepicker('row[timepicker]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('日期区间')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::daterange('row[daterange]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('时间区间')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::timerange('row[timerange]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('日期时间区间')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::datetimerange('row[datetimerange]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('动态字段列表')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::fieldlist('row[fieldlist]', ['aa'=>'AA', 'bb'=>'BB'], null, '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('单图')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::image('row[image]', '/uploads/2018/20180629/b83227ea668e7b2d61def9812bbce3da.png', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('多图')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::images('row[images]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('单文件')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::upload('row[upload]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('多文件')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::uploads('row[uploads]', '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('开关')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::switcher('row[switcher1]', '0', ['color'=>'success'])}
+            {:Form::switcher('row[switcher2]', '1', ['color'=>'yellow', 'disabled'=>true])}
+            {:Form::switcher('row[switcher3]', 'Y', ['color'=>'navy', 'yes'=>'Y', 'no'=>'N'])}
+            {:Form::switcher('row[switcher4]', '1', ['color'=>'info'])}
+            {:Form::switcher('row[switcher4]', '1', ['color'=>'danger', 'disabled'])}
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('联动选择')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::cxselect('ajax/area', ['province','city'], ['province'=>37, 'city'=>38])}
+        </div>
+    </div>
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('Submit')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

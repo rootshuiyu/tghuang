@@ -1,0 +1,141 @@
+<style>
+      .panel-intro{
+        margin-left: 135px;
+      }
+        .custom-menu {
+            width: 140px;
+            background-color: #fff;
+            color: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
+        }
+        .custom-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        .custom-menu li {
+            padding: 10px 20px;
+            border-bottom: 1px solid #f4f4f4;
+            transition: all 0.3s ease-in-out 0s;
+        }
+        .custom-menu a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+        }
+        .custom-menu li:hover {
+            background-color: #f0f0f0;
+        }
+        .custom-menu .active {
+            background-color: #f0f0f0;
+        }
+        .custom-menu .menu-header {
+            font-size: 1.2em;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #f4f4f4;
+        }
+</style>
+<div class="custom-menu">
+        <div class="menu-header">常用通道</div>
+        <ul>
+            <a href="javascript:void(0);" class="btn-access active" data-id=""><li>全部通道</li></a>
+            {foreach name="seachlist.access" item="vo" }
+                <a href="javascript:void(0);" class="btn-access" data-id="{$key}"><li>{$vo}</li></a>
+            {/foreach}
+            
+        </ul>
+</div>
+<div class="panel panel-default panel-intro">
+    {:build_heading()}
+
+    <div class="panel-body">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        <a href="javascript:;" class="yui-btn btn-refresh" title="{:__('Refresh')}" ><i class="fa fa-refresh"></i> </a>
+                        <a href="javascript:;" class="yui-btn btn-add {:$auth->check('yunos/shop/add')?'':'hide'}" title="{:__('Add')}" ><i class="fa fa-plus"></i> {:__('Add')}</a>
+                        
+
+                        
+
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('yunos/shop/edit')}"
+                           data-operate-del="{:$auth->check('yunos/shop/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/shop/index' + location.search,
+                    add_url: 'yunos/shop/add',
+                    edit_url: 'yunos/shop/edit',
+                    del_url: 'yunos/shop/del',
+                    multi_url: 'yunos/shop/multi',
+                    table: 'shop',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                showExport: false,
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'id', title: __('Id')},
+                        
+                        {field: 'access_id', title: __('Access_id'),
+                            searchList: seachlist.access,
+                            formatter: function(value, row){
+                                return seachlist.access[value];
+                            }
+                        },
+                        
+                        {field: 'name', title: __('Name'), operate: 'LIKE', table: table, class: 'autocontent', formatter: Table.api.formatter.content},
+                        {field: 'image', title: __('Image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
+                        {field: 'switch', title: __('状态'), table: table, formatter: Table.api.formatter.toggle},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                    ]
+                ]
+            });
+            
+            // 为表格绑定事件
+           Table.api.bindevent(table);
+           
+           $(document).on("click", ".btn-access", function () {
+           value = $(this).attr('data-id');
+           $('select[name="access_id"]').val(value);
+           $('.btn-access').removeClass('active');
+           $(this).addClass('active');
+           table.bootstrapTable('refresh');
+           
+        });
+    
+});
+}
+</script>

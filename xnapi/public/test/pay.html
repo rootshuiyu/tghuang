@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>测试页面</title>
+    
+</head>
+<body>
+    <h1>测试支付</h1>
+    <button onclick="pay1()">按钮 1</button>
+    <button onclick="pay2()">按钮 2</button>
+    <button onclick="pay3()">支付宝直拉</button>
+    <button onclick="pay4()">苹果点击</button>
+    <button onclick="pay5()">安卓点击</button>
+    <button onclick="pay6()">h5跳转</button>
+    <button onclick="pay7()">微信跳转</button>
+    <script>
+    function pay1(){
+        alipayScheme = 'app_id=2021001192606381&biz_content=%7B%22out_biz_no%22%3A%2213170600725090367841950195125%22%2C%22trans_amount%22%3A%2210.00%22%2C%22order_id%22%3A%2220250903020070011560690099340098%22%2C%22product_code%22%3A%22TRUSTEESHIP_WALLET%22%2C%22biz_scene%22%3A%22DEPOSIT%22%7D&charset=utf-8&method=alipay.fund.trans.app.pay&notify_url=https%3A%2F%2Ffinnet-alsc.ele.me%2Fcallback%2Fv1%2Fpp3-PG.MID.storecard.wallet-alipay.openapi.fund.wallet-pay%2FPROD-0%2F2206002195125&sign_type=RSA2&timestamp=2025-09-03+17%3A09%3A04&version=1.0&sign=DBy52iQQCahU96XSJC1VqS%2FTX5zh8ReBiRlt%2F9d7HTBMsFlRp3LIm8wVmrwlt63mlL0JdVnaMb2Y54wj0HjtT%2BAhoxkCiD1odkrtDk1i%2BoBOtzKZ%2BZO2%2FuhjzNPN%2BGwT2p6J%2Fbeaa4eEDmM1d7W56FQrdpT%2BSWsxD7H6Yepy2t0KcmhwrrIy2tDGPVpR5Wfj%2BRfWBUxlxc%2Bsl48bQwEEIk6WDpIAkNqppR%2B2qMyWTGyie1Yx0IDQnu5wgk1lZ4AZR4g4X8OLyu5MRepJwTH12i4lJ27vBjx7AOkNvkTSQ8H0xt5q6T1ip89Re7mSwKpeNmsc6SsA9hm%2FPYp7MKKYVQ%3D%3D'
+        window.location.href = 'alipays://platformApi/startApp?appId=60000157&orderStr=' + encodeURIComponent(alipayScheme);
+    }
+    function pay2(){
+      
+        alipayScheme = 'alipays://platformapi/startapp?appId=20000989';
+        window.location.href = alipayScheme;
+    }
+    function pay3(){
+      
+        alipayScheme = 'alipays://platformapi/startApp?appId=20000125&orderSuffix=h5_route_token%3D%22RZ42adeeEpPwr7HYUX1O2qXXcqZHmPmobilecashierRZ42%22%26is_h5_route%3D%22true%22%26h5_route_date%3D%221758013812417%22%26h5_route_sign%3D%22cJxfsv0LqPamwsGrhcBEbJafhhmFVesq9vAooTD%2B88283P27e04Zs1ULyNSy3A%2Boxea6lwP44CI68Zhjpaw9t5cSkDTE3YEJV7gJuFIWLFWv1FtKob%2FlUt5H8Kqwph%2FX0i%2BsbM%2FfZLd%2Ftpk8vRRm8UGVsbhFejNb%2B7BCD%2FVV1CtiJRudyJjAxbK2%2FeQ2QgIRx5RrQkX8kCb5GdOq4a1D4PaN0wtb6LGHUbrUzog5K4dwdR1gpAI%2FeFdgac%2FZ5OJZxGN2ry2M97vljqrvzbFYfEozcoggh%2B7ZWKLn69ytTrcIzRnmawBQRUxAV%2BX0YJE2gH5rVoUe4Zcntl830D5l7FeuUBaK7Xx1Mk%2FRipF7cf0kCy2h2jxvZ1wUcAMEqec7jtGgRAwyJHCsQNoD8rO21WmwAAI83zO%2Fj7LNRf2kfVhf2XPcciJS41CEdcCuILpAWobCfy0lNEMSaW23jNBHpiinp343S7jTIGeBlwGMwB%2FIUMvxfNkCNAyqaE18om07EInc6iNsp7VMQB9kUmlLmL6yONJwFllqIDm4r8bUDrT9WNYNewKsMTZEeCoKzA%2Fri8R5D1t08VsPz%2FCF%2BpAFMY4cpOAIy9GDduVe%2BIBAx04b7Idp2Kl%2FmdmcW7HZCsEcxeZngtm%2Fme0U7CawZtJaNFWtlaSSRDa5SIVy7VIg7qo%3D%22';
+       //alipayScheme = 'intent://platformapi/startApp?appId=20000125&orderSuffix=h5_route_token%3D%22RZ42tKWU1nTjqwJ9CL5hPxWZ5JC7jemobilecashierRZ42%22%26is_h5_route%3D%22true%22%26h5_route_senior%3D%22true%22%26h5_route_date%3D%221758013940612%22%26h5_route_sign%3D%22G5UYypShdIMrPU0ztw7eyeeBa4Ag31sNp6UooAaJuvu3%2FK2ongnMbB9MfxGW8thNWG9zNUDyyehjVs0c5M4JtGtKwBSvjK9wNp%2F3XgKu80Q%2BySoFEc%2Fy5gQhyZlwEGE3EKMXRbgL%2Bwg7mdPzACoyfFIr9Cr8aJwAE%2FOkD6Oqk8mK%2FJz0s1z1sW5kvba22Krt%2BCXJg%2BylYYmRrgkytgH4sW2r%2FTkSK1%2BCsiFWlU8jhaF1PgdGBpVJG3rS8WEPE70pJnYXRS0AbL5z8XXxsi4892PM3otyX8x9f%2Fw9iXUOpxw2%2FUVAl6ia08loxmL1cdMATZK00whc5CF2%2BNPzLCMk%2F7O7irNlqnUQKGNli7F7rpaun%2Btm98DipxKMjyp8n8ccDUeYXNr5afDW7UxXiEcOZOXR7JLQgQ1O6Y0y1PzIk6oaF82WuuLNEPOtFeg6d6hklaBkOWh0mdPkaX292I15cdwGxZuYF6aDthzqpC4AKPUboiK8gfbgJkUqRJPRTSgVkWRcWojEoInZSmKdzPfzPKNhQqCsocmgFLbve4drJYM2GxUdvsfmk4GoGyeqf9v5syJGcK4kApUhdSksKsf3f6tm9BGXdlGBG6NPXKp51bTB5Rg2oV7lrdClyejaPj51UoKL46Pt21Oqpqt89UTkb6Vs9o5cIt78F6wZgqIxbqc%3D%22';
+        window.location.href = alipayScheme;
+    }
+    function pay4(){
+        alipayScheme = 'alipays://platformapi/startapp?appId=20000989';
+        window.location.href = alipayScheme;
+    }
+    function pay5(){
+        alipayScheme = 'intent://platformapi/startapp?appId=20000989';
+        window.location.href = alipayScheme;
+    }
+    function pay6(){
+        
+        
+       console.log(getCanvasFingerprint())
+    }
+    function pay7(){
+      
+      url = "weixin://app/wx8db2245ceaa9da1d/pay/?prepayId=wx022031528451392c4961bde52f8b0a0001&nonceStr=5638361565&timeStamp=1762086712&sign=21394F9F360555B599B1C13C16747618&package=Sign=WXPay";
+      window.location.href = url;
+      
+    }
+    
+    function getCanvasFingerprint() {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = '14px Arial';
+      ctx.fillText('Hello, world!', 2, 15);
+      return canvas.toDataURL(); // 转换为Base64发送到PHP
+    }
+    </script>
+</body>
+</html>

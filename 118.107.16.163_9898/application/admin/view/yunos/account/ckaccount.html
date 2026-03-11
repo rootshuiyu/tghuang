@@ -1,0 +1,231 @@
+<style>
+/* CSS样式 */
+.status-tag {
+  /* 基础排版 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 13px; /* 固定13px字体 */
+  font-weight: 600; /* 中等字重更清晰 */
+  line-height: 1.2; /* 行高优化垂直间距 */
+  
+  /* 尺寸控制 */
+  padding: 2px 8px; /* 上下2px 左右8px 紧凑但不拥挤 */
+  min-width: 40px; /* 最小宽度保证文字不重叠 */
+  
+  /* 视觉样式 */
+  border-radius: 3px; /* 柔和圆角 */
+  transition: all 0.2s ease; /* 平滑过渡效果 */
+  cursor: default; /* 明确交互类型 */
+  
+  /* 防止文字选中 */
+  user-select: none;
+}
+
+/* 在线状态 */
+.status-tag.online {
+  background-color: #ECFDF5; /* 浅绿背景 */
+  color: #047857; /* 深绿文字 */
+  border: 1px solid #A7F3D0; /* 浅绿边框增强层次 */
+}
+
+/* 离线状态 */
+.status-tag.offline {
+  background-color: #F8FAFC; /* 浅灰背景 */
+  color: #475569; /* 深灰文字 */
+  border: 1px solid #E2E8F0; /* 浅灰边框 */
+}
+
+
+</style>
+    
+<div class="panel panel-default panel-intro">
+    {:build_heading()}
+  
+    <div class="panel-body">
+        
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        
+                        {:build_toolbar('refresh')}
+                        
+                        <a class="yui-btn btn-adds"><i class="fa fa-plus"></i> 添加数据账号</a>
+                        
+                        <a class="yui-btn btn-inport"><i class="fa fa-flash"></i> 批量导入</a>
+                        
+                        {:build_toolbar('delete')}
+                        
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> 批量操作</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="seachlist.switch" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="switch={$key}">批量{$vo}</a></li>
+                                {/foreach}
+                                
+                            </ul>
+                        </div>
+                       
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/bbb')?'':'hide'} ">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-coffee"></i> 批量转移数据账号</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="seachlist.user" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="user_id={$key}">转移到-{$vo}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('yunos/account/edit')}"
+                           data-operate-del="{:$auth->check('yunos/account/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/account/index' + location.search,
+                    add_url: 'yunos/account/add',
+                    edit_url: 'yunos/account/edit',
+                    del_url: 'yunos/account/del',
+                    multi_url: 'yunos/account/multi',
+                    table: 'account',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'createtime',
+                showExport: false,
+                fixedColumns :true,
+                fixedRightNumber:1,
+                pageList: [20, 50,100,300,500,1000,2000],
+                columns: [
+                    [
+                        {checkbox: true},
+                        
+                        {field: 'user_id', title: __('归属账号'),
+                            addClass: "selectpicker",
+                            extend : 'data-live-search="true"',
+                            searchList: seachlist.user,
+                            formatter: function(value, row){
+                                if(row.is_my){
+                                    return '<a class="account-be">所属自己</a>';
+                                }
+                                return seachlist.user[value];
+                            }
+                        },
+                        {field: 'access_id', title: __('Access_id'),
+                            //addClass: "selectpicker",
+                            searchList: seachlist.access,
+                            formatter: function(value, row){
+                                return row.access.code +'-'+ seachlist.access[value];
+                            }
+                        },
+                        
+                        {field: 'remarks', title: __('账号备注'), operate: 'LIKE'},
+                        
+                        {foreach name="pool.list" item="vo" }
+                        
+                        {field: '{$vo.name}', title: __('{$vo.title}'), operate: 'LIKE'},
+                        
+                        {/foreach}
+                        
+                        {field: 'counts', title: __('进账统计'), operate:'BETWEEN', searchable :false,
+                            formatter: function(value, row){
+                            
+                                str = '今' + value.day_fee + '/';
+                                str += '昨' + value.terday_fee  + '/';
+                                str += '本月' + value.month_fee;
+                                
+                                return str;
+                            }
+                        },
+                        
+                      
+                        {field: 'switch', title: __('Switch'), table: table, formatter: Table.api.formatter.toggle,
+                            addClass: "selectpicker",
+                            searchList: seachlist.switch,
+                        },
+                       
+                        {field: 'runinfo', title: __('Runinfo') ,operate: 'LIKE'},
+                        
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime, searchable :false},
+                        
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate,
+                                    
+                                    formatter: Table.api.formatter.operate,
+                                   
+                                },
+                    ]
+                ]
+            });
+            
+        // 为表格绑定事件
+        Table.api.bindevent(table);
+           
+        $(document).on("click", ".btn-access", function () {
+           value = $(this).attr('data-id');
+           $('select[name="access_id"]').val(value);
+           $('.btn-access').removeClass('active');
+           $(this).addClass('active');
+           table.bootstrapTable('refresh');
+           
+        });
+        
+        $(document).on("click", ".btn-adds", function () {
+           
+           Fast.api.open('yunos/account/add?access_id={$data.access_id}&type=1' , '{$data.title}' );
+           
+        });
+        
+        $(document).on("click", ".btn-inport", function () {
+                
+                html = '<textarea id="elements" class="form-control " rows="5" name="row[items]" cols="50" style="height:160px">备注	账号	通用值1	通用值2	通用值3	通用值4	通用值5	ck/内容</textarea>';
+                
+                    layer.open({
+                    title:'批量导入账号池',
+                    content: html,
+                    area: ['500px', '300px'],
+                    yes: function(index, layero){
+                        
+                        Fast.api.ajax({
+                           url:'yunos/account/ckaccount_inport',
+                          data:{ access_id : {$data.access_id} ,excel:$('#elements').val()}
+                        }, function(data, ret){
+                            table.bootstrapTable('refresh');
+                            layer.alert(ret.msg);
+                           
+                           return false;
+                        }, function(data, ret){
+                           //失败的回调
+                           layer.alert(ret.msg);
+                           return false;
+                        });
+                        
+                    }
+                });
+                        
+                
+            });
+    
+});
+}
+</script>

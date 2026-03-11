@@ -1,0 +1,93 @@
+version: "3.8"
+
+services:
+  # ============ MySQL ============
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============ Redis ============
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ============ 咪咕后台 (9898) ============
+  admin:
+    build:
+      context: ./118.107.16.163_9898
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${ADMIN_PORT:-9898}:9898"
+    environment:
+      - DATABASE_TYPE=mysql
+      - DATABASE_HOSTNAME=${DB_HOST:-mysql}
+      - DATABASE_DATABASE=${DB_DATABASE:-xndata}
+      - DATABASE_USERNAME=${DB_USERNAME:-xndata}
+      - DATABASE_PASSWORD=${DB_PASSWORD}
+      - DATABASE_HOSTPORT=${DB_PORT:-3306}
+      - DATABASE_PREFIX=hub_
+      - DATABASE_CHARSET=utf8mb4
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - admin_runtime:/var/www/html/runtime
+      - admin_uploads:/var/www/html/public/uploads
+
+  # ============ xnapi (支付/下单 API) ============
+  xnapi:
+    build:
+      context: ./xnapi
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "${XNAPI_PORT:-9588}:9588"
+    environment:
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_DATABASE=${DB_DATABASE:-xndata}
+      - DB_USERNAME=${DB_USERNAME:-xndata}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - xnapi_runtime:/var/www/xnapi/runtime
+
+volumes:
+  mysql_data:
+  redis_data:
+  admin_runtime:
+  admin_uploads:
+  xnapi_runtime:

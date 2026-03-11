@@ -1,0 +1,204 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="" autocomplete="off">
+
+<div class="row">
+    <div class="col-sm-12 col-md-6">
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号状态')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <div style="padding-top: 7px;">{$row.sup_info|htmlentities}</div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('Access_id')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::selectpicker('row[access_id]', $seachlist.access, $row.access_id, ['data-rule'=>'required'])}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号备注')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <textarea id="c-remarks" class="form-control " rows="5" name="row[remarks]" cols="50">{$row.remarks}</textarea>
+            </div>
+        </div>
+        
+        {if condition="$row.access.account_name"}
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{$row.access.account_name[0]}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::build($row.access.account_name[1],'row[name]', $row.name )}
+            </div>
+        </div>
+        
+        {/if}
+        
+        {if condition="$row.access.account_value1"}
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{$row.access.account_value1[0]}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::build($row.access.account_value1[1],'row[value1]', $row.value1 )}
+                {if condition="qrcodeValue($row.value1)"}<code>二维码已识别</code>{/if}
+            </div>
+            
+        </div>
+        
+        
+        
+        {/if}
+        
+        {if condition="$row.access.account_value2"}
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{$row.access.account_value2[0]}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::build($row.access.account_value2[1],'row[value2]', $row.value2)}
+            </div>
+        </div>
+        
+        {/if}
+        
+        
+        
+        
+        {if condition="$row.access.account_ck"}
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{$row.access.account_ck[0]}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::build($row.access.account_ck[1],'row[ck]', $row.ck )}
+            </div>
+        </div>
+        
+        {/if}
+        
+        {volist name="$apppage" id="vo"}
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2"></label>
+            <div class="col-xs-12 col-sm-8">
+                <a class="yui-btn y-blue btn-tool" data-id="{$row.id}" data-name="{$vo.name}" data-url="{$vo.url}" data-width="{$vo.width}">{$vo.name}</a>
+            </div>
+        </div>
+        {/volist}
+        
+    </div>
+    
+    <div class="col-sm-12 col-md-6">
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('单笔最小')}:</label>
+            <div class="col-xs-3 col-sm-3">
+                <input id="c-limit_min_fee" class="form-control" name="row[limit_min_fee]" type="text" value="{$row.limit_min_fee|htmlentities}" maxlength="10" onkeyup = "value=value.replace(/[^\d]/g,'')">
+            </div>
+            <label class="control-label col-xs-12 col-sm-2">{:__('单笔最大')}:</label>
+            <div class="col-xs-3 col-sm-3">
+                <input id="c-limit_max_fee" class="form-control" name="row[limit_max_fee]" type="text" value="{$row.limit_max_fee|htmlentities}" maxlength="10" onkeyup = "value=value.replace(/[^\d]/g,'')">
+            </div>
+            
+        </div>
+        
+        <div class="form-group">
+            
+            <label class="control-label col-xs-12 col-sm-2">{:__('Limit_fee')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input id="c-limit_fee" class="form-control" name="row[limit_fee]" type="text" value="{$row.limit_fee|htmlentities}" maxlength="10" onkeyup = "value=value.replace(/[^\d]/g,'')">
+            </div>
+            
+        </div>
+        
+        <div class="form-group">
+            
+            
+            
+            <label class="control-label col-xs-12 col-sm-2">{:__('日成功单量限制')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input id="c-limit_day_in_number" class="form-control" name="row[limit_day_in_number]" type="text" value="{$row.limit_day_in_number|htmlentities}" maxlength="10">
+                <code>0不限制</code>
+            </div>
+            
+        </div>
+        
+        
+        <div class="form-group">
+            
+            <label class="control-label col-xs-12 col-sm-2">{:__('日拉单量限制')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <input id="c-limit_day_pull_number" class="form-control" name="row[limit_day_pull_number]" type="text" value="{$row.limit_day_pull_number|htmlentities}" maxlength="10">
+                <code>0不限制</code>
+            </div>
+            
+        </div>
+        
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号活跃时间')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <div style="padding-top: 7px;">{$row.active_time|amitime}</div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('系统运行信息')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <div style="padding-top: 7px;">{$row.runinfo|htmlentities}</div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{:__('账号运行信息')}:</label>
+            <div class="col-xs-12 col-sm-8">
+                <div style="padding-top: 7px;">{$row.sup_info|htmlentities}</div>
+            </div>
+        </div>
+        
+        {volist name="$row.config" id="vo"}
+        <div class="form-group">
+            <label class="control-label col-xs-12 col-sm-2">{$vo.title}:</label>
+            <div class="col-xs-12 col-sm-8">
+                {:Form::build($vo.type,'row[config]['.$vo.key.']', $vo.value )}
+            </div>
+        </div>
+        {/volist}
+    
+    </div>
+</div>
+    
+    
+    
+   
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+        
+        $(document).on("click", ".btn-tool", function () {
+           value = $(this).attr('data-id');
+           name  = $(this).attr('data-name');
+           url   = $(this).attr('data-url');
+           width = $(this).attr('data-width');
+           
+           layer.open({
+               title: name,
+               type : 2,
+               shadeClose:true,
+               area: [width+'px', '100%'],
+               content: '../../../account/app_load?ids=' + value +'&page='+ url,
+               offset:'l',
+           });
+           
+        });
+    
+});
+}
+</script>

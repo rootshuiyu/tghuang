@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+	<title>订单确认</title>
+</head>
+<style>
+	.content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 6.45rem;
+	}
+
+	.itemContent {
+		display: flex;
+		justify-content: center;
+	}
+
+	.actImg {
+		margin-top: .5rem;
+	}
+
+	.address {
+		width: 100%;
+		margin-top: 1rem;
+		text-align: left;
+	}
+
+	.contact {
+		margin-top: .5rem;
+		width: 100%;
+		margin-bottom: .5rem;
+		font-size: 14px;
+		color: #818489;
+	}
+
+	.cashier_priceNumber {
+		font-size: 14px;
+		margin-left: 1rem;
+	}
+
+	.dliver {
+		width: 100%;
+		height: .5rem;
+		background-color: #ecf1f4;
+	}
+
+	.goodsTitle {
+		margin-left: 1rem;
+		text-align: left;
+		font-size: 15px;
+		color: #595a5b;
+	}
+
+	.orderContent {
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		flex-direction: row;
+		margin-top: .75rem;
+	}
+
+	.orderImg {
+		width: 4.25rem;
+		height: 4.25rem;
+		margin-left: 1rem;
+	}
+
+	.orderLeft {
+		margin-left: 1rem;
+		font-size: 13px;
+	}
+
+	.orderRight {
+		margin-right: 1rem;
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.detail {
+		margin-left: 1rem;
+		margin-right: 1rem;
+		margin-top: .75rem;
+		margin-bottom: .75rem;
+		font-size: 13px;
+		display: flex;
+		flex-direction: column;
+		color: #818489;
+	}
+
+	.orderDetail {
+		display: flex;
+		flex-direction: column;
+		height: 4.25rem;
+		margin-left: .75rem;
+		margin-right: .75rem;
+		justify-content: space-between;
+		text-align: left;
+	}
+
+	.pTitle {
+		text-align: left;
+		font-size: 14px;
+		color: #595a5b;
+	}
+
+	.colorType {
+		text-align: left;
+		font-size: 12px;
+		color: #818489;
+	}
+
+	.payView {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+	}
+
+	.payPrice {
+		font-size: 16px;
+		color: red;
+		text-align: left;
+	}
+
+	.stepper {
+		width: 5rem;
+		border-radius: .15rem;
+		background: white;
+		display: flex;
+		flex-direction: row;
+		height: 1rem;
+	}
+
+	/*加号和减号*/
+	.stepper .sign {
+		width: 2rem;
+		line-height: 1rem;
+		text-align: center;
+		float: left;
+	}
+
+	/*数值*/
+	.stepper .number {
+		width: 2.25rem;
+		height: 1rem;
+		float: left;
+		background-color: #ecf1f4;
+		margin: 0 auto;
+		text-align: center;
+		font-size: 15px;
+		color: #000000;
+	}
+
+	/*普通样式*/
+	.sign_normal {
+		color: black;
+		width: 1.5rem;
+		line-height: 1rem;
+		text-align: center;
+		float: left;
+	}
+
+	/*禁用样式*/
+	.sign_disabled {
+		color: #ccc;
+		width: 1.5rem;
+		line-height: 1rem;
+		text-align: center;
+		float: left;
+	}
+
+	.logo {
+		height: 5rem;
+		width: 5rem;
+		margin-top: 5rem;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 1.25rem;
+	}
+
+	.text-area {
+		display: flex;
+		justify-content: center;
+	}
+
+	.title {
+		font-size: 18px;
+		color: #8f8f94;
+	}
+
+	.btnView {
+		width: 80%;
+		margin-top: 1.5rem;
+		height: 1.65rem;
+		display: flex;
+		line-height: 1.65rem;
+		color: #366092;
+		justify-content: center;
+		border: #1296db solid 1px;
+		border-radius: .5rem;
+	}
+
+	.cashier_footer {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		z-index: 10;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-bottom: .25rem;
+		background-color: #FFFFFF;
+	}
+
+	.cashier_payBtn {
+		width: 5.65rem;
+		height: 2.2rem;
+		background: rgb(133, 133, 133);
+		color: rgba(255, 255, 255, 0.85);
+		line-height: 2.2rem;
+		font-size: 16px;
+		cursor: pointer;
+	}
+
+	.footerPay {
+		width: calc(100vw - 2rem);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		height: 2.2rem;
+		margin-bottom: 1rem;
+	}
+
+	.payPrice {
+		font-size: 12px;
+		color: red;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-start;
+	}
+  .actionSheetWrap{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+  }
+  .popup{
+    position: fixed;
+    background-color: #ffffff;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: .4rem .4rem 0 0;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    overflow: hidden;
+    color: #323233;
+    z-index: 1000;
+    animation: up 0.5s ease;
+  }
+  @keyframes up{
+    from{
+      bottom: -10rem;
+    }
+    to{
+      bottom: 0;
+    }
+  }
+  .contentItem{
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 14px;
+    background-color: #fff;
+    text-align: center;
+    color: #666;
+  }
+  .contentItem:nth-of-type(1){
+    border-bottom: 1px solid #f7f8fa;
+  }
+  .popupDivider{
+    height: .4rem;
+    background-color: #f7f8fa;
+  }
+</style>
+<script>
+  (function (WIN) {
+    var setFontSize = (WIN.setFontSize = function (_width) {
+      var docEl = document.documentElement;
+      // 获取当前窗口的宽度
+      var width = _width || docEl.clientWidth || docEl.getBoundingClientRect().width;
+
+      if (width > 420) {
+        width = 420;
+      }
+      // 在375px上，1rem = 20px
+      var rem = width / 18.75;
+
+      docEl.style.fontSize = rem + 'px';
+
+      // // 部分机型上的误差、兼容性处理
+      var actualSize =
+        WIN.getComputedStyle && parseFloat(WIN.getComputedStyle(docEl)['font-size']);
+      if (actualSize !== rem && actualSize > 0 && Math.abs(actualSize - rem) > 1) {
+        var remScaled = (rem * rem) / actualSize;
+        docEl.style.fontSize = rem + 'px';
+      }
+    });
+    var timer;
+    //函数节流
+    function dbcRefresh() {
+      clearTimeout(timer);
+      timer = setTimeout(setFontSize, 100);
+    }
+
+    //窗口更新动态改变 font-size
+    WIN.addEventListener('resize', dbcRefresh, false);
+    //页面显示时计算一次
+    WIN.addEventListener(
+      'pageshow',
+      function (e) {
+        if (e.persisted) {
+          dbcRefresh();
+        }
+      },
+      false
+    );
+    setFontSize();
+  })(window);
+</script>
+<script src="https://cdn.cloudpnr.com/opps/libs/jquery/jquery-2.1.2.min.js"></script>
+<script src="./util.js"></script>
+<body style="width: 100%;margin: 0px;">
+	<div class="content">
+		<div class="address"><span style="margin-left: 1rem;font-size: 16px;">上海市嘉定区红宝石路915弄41号1002</span></div>
+		<div class="contact">
+			<span class="cashier_priceNumber">王*华</span>
+			<span class="cashier_priceNumber">177****8846</span>
+		</div>
+		<div class="dliver"></div>
+
+		<div class="orderContent">
+			<div class="goodsTitle">无线鼠标</div>
+		</div>
+		<div class="orderContent" style="margin-bottom: .75rem;">
+			<img src="./img/mouse.png"
+				class="orderImg"></img>
+			<div class="orderDetail">
+				<div class="pTitle">无线鼠标静音无声笔记本台式电脑游戏</div>
+				<div class="colorType">银色</div>
+				<div class="payView">
+					<div class="payPrice">￥<span class="totalPrice">0.01</span></div>
+					<div class="stepper">
+						<!-- 减号 -->
+						<span class="sign_disabled" style="text-align:left" id="decreaseBtn">-</span>
+						<!-- 数值 -->
+						<span class="number" id="count">1</span>
+						<!-- 加号 -->
+						<span class="sign_normal" style="text-align: right;" id="addBtn">+</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="dliver"></div>
+
+		<div class="orderContent">
+			<div class="orderLeft">商品金额</div>
+			<div class="orderRight">￥<span class="totalPrice">0.01</span></div>
+		</div>
+		<div class="orderContent" style="margin-bottom: .75rem;">
+			<div class="orderLeft">次日达(19:00前下单，预计明日24:00前送达)</div>
+			<div class="orderRight">¥<span  class="totalPrice">0.01</span> </div>
+		</div>
+		<div class="dliver"></div>
+		<div class="detail">
+			<span style="font-size: 13px;margin-bottom: .7rem;color: #000000;">买家须知</span>
+			<span style="margin-bottom: .7rem;">鼠标出厂前会进行相关质量测试，产品底部脚垫的保护膜上会留下细微痕迹，首次拆封后，移除保护膜即可正常使用。</span>
+			<span style="margin-bottom: .7rem;">适用于Windows 7/8/10、Mac OS X 10.8 或更高版本、Chrome OS 多种系统。</span>
+			<span style="margin-bottom: .7rem;">内部实验室测算数据，电池使用寿命依用户及计算条件而异。</span>
+			<span>提交订单即表示同意买家须知。</span>
+
+		</div>
+		<div class="cashier_footer">
+			<div class="dliver"
+				style="text-align: center;height:2.25rem ;font-size: 13px;color: #F5A478;align-items: center;display: flex;justify-content: center;margin-bottom: .75rem;">
+				本页面只用于演示收银台支付，不发货、不退款
+			</div>
+			<div class="footerPay">
+				<div class="payPrice">
+					实付款：￥<div style="font-size: 18px;font-weight: 600;" class="totalPrice">0.01</div>
+				</div>
+				<div id="cashierPayBtn" class="cashier_payBtn" style="background: #FEAD0B">立即购买</div>
+			</div>
+		</div>
+    <div class="actionSheetWrap" id="actionSheetWrap">
+      <div class="popup" id="popup">
+        <div class="contentItem" id="fullScreen">打开全屏收银台</div>
+        <div class="contentItem" id="halfScreen">弹出半屏收银台</div>
+        <div class="popupDivider"></div>
+        <div class="contentItem" id="cancelBtn">取消</div>
+      </div>
+    </div>
+	</div>
+</body>
+</html>
+<script>
+  $(function(){
+    function delCount() {
+			var num = document.getElementById('count').innerText;
+			// 商品总数量-1
+			if (num > 1) {
+				num--;
+				document.getElementById('addBtn').className = 'sign_normal'
+			}
+			// 将数值与状态写回
+			document.getElementById('count').innerText = num;
+			if (num === 1) {
+				document.getElementById('decreaseBtn').className = 'sign_disabled'
+			}
+      setTotalPrice(0.01 * num)
+		}
+
+		function addCount() {
+			console.log('刚刚您点击了加1');
+			var num = document.getElementById('count').innerText;
+			// 总数量-1
+			if (num < 10) {
+				num++;
+				document.getElementById('decreaseBtn').className = 'sign_normal'
+			}
+			document.getElementById('count').innerText = num;
+			if(num === 10) {
+				document.getElementById('addBtn').className = 'sign_disabled'
+			}
+      setTotalPrice(0.01 * num)
+		}
+    function setTotalPrice (totalPrice){
+      $('.totalPrice').each((ele,item)=>{
+        item.textContent = Number(totalPrice)
+        })
+    }
+		function gotoPay() {
+			var price =$('.totalPrice')[0].textContent
+			var origin = location.origin;
+      var pathname = location.pathname;
+      var urlAry = pathname.split('/');
+      urlAry.pop();
+      urlAry.push('cashier.html');
+      let urlStr = urlAry.join('/');
+      location.href = origin +''+ urlStr +'?price='+price;
+		}
+    var totalPrice = GetQueryString('price') || '0.01';
+    setTotalPrice(totalPrice)
+    $('#count').text( Number(totalPrice)*100 )
+    $('#addBtn').click(function(){
+      addCount()
+    })
+    $('#decreaseBtn').click(function(){
+      delCount()
+    })
+    $('#cashierPayBtn').click(function(){
+      gotoPay()
+    })
+  })
+
+</script>

@@ -1,0 +1,121 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+   <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('应用')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-module" class="form-control" name="row[module]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('通道名称')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" class="form-control" name="row[name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('通道别名')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-alias" class="form-control" name="row[alias]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-image" class="form-control" size="50" name="row[image]" type="text">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-image" class="btn btn-danger faupload" data-input-id="c-image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp,image/webp" data-multiple="false" data-preview-id="p-image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-image" class="btn btn-primary fachoose" data-input-id="c-image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-image"></ul>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('订单超时时间(秒)')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-timeout" class="form-control" name="row[timeout]" type="number" value="">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('通道费率%')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-rate" class="form-control" name="row[rate]" type="number" value="">
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('支付模板')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::text('row[pay_tpl]', '', ['data-rule'=>''])}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Config_tpl')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <table class="table fieldlist" data-template="eventtpl" data-name="row[config_tpl]" id="second-table">
+                <tr>
+                    <td width="150">配置名称(中文)</td>
+                    <td>配置标识(英文)</td>
+                    <td width="250"></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><a href="javascript:;" class="yui-btn btn-append"><i class="fa fa-plus"></i> 添加</a></td>
+                </tr>
+            </table>
+
+            <script id="eventtpl" type="text/html">
+                <tr class="form-inline">
+                    <td>
+                    <input type="text" name="<%=name%>[<%=index%>][title]" class="form-control" style="width:150px" value="<%=row.title%>" placeholder=""/>
+                    </td>
+
+                    <td>
+                    <input type="text" name="<%=name%>[<%=index%>][key]" class="form-control" style="width:100%" value="<%=row.key%>" placeholder=""/>
+                    </td>
+                    
+
+                    <td>
+                        <!--下面的两个按钮务必保留-->
+                        <span class="yui-btn y-blue btn-dragsort"><i class="fa fa-arrows"></i></span>
+                        <span class="yui-btn y-blue btn-remove"><i class="fa fa-times"></i></span>
+                    </td>
+                </tr>
+            </script>
+            <!--请注意实际开发中textarea应该添加个hidden进行隐藏-->
+            <textarea name="row[config_tpl]" class="form-control hide" cols="30" rows="5"></textarea>
+        </div>
+    </div>
+   
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Pay_type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::checkboxs('row[pay_type]', $seachlist.pay_type, '', ['data-rule'=>''])}
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Switch')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::radios('row[switch]', $seachlist.switch, '', ['data-rule'=>''])}
+        </div>
+    </div>
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+});
+}
+</script>

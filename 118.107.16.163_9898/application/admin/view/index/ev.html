@@ -1,0 +1,352 @@
+<style>
+.app-domain-action-state-index {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255 255 255 / 98%);
+    display: flex;
+    justify-content: center;
+    padding-top: 250px;
+    z-index: 1000; /* 确保遮罩悬浮在其他元素上方 */
+}
+.app-domain-action-state {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(255 255 255 / 98%);
+    display: flex;
+    justify-content: center;
+    padding-top: 250px;
+    z-index: 1000; /* 确保遮罩悬浮在其他元素上方 */
+}
+.ruyi-icon-loading {
+    animation: spin 0.6s linear infinite;
+    display: inline-block;
+    margin-right: 8px;
+    font-size: 15px;
+}
+</style>
+
+<span class="app-domain-action-state-index app-loding"><svg id="loading" class="ruyi-icon app-domain-mr-2n ruyi-icon-loading" role="img" aria-label="loading" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16"><g fill="none"><g clip-path="url(#clip0_19498_1351)"><path d="M8.00013 4.19995C5.90145 4.19995 4.20013 5.90126 4.20013 7.99995C4.20013 10.0986 5.90145 11.7999 8.00013 11.7999V13.5333C4.94415 13.5333 2.4668 11.0559 2.4668 7.99995C2.4668 4.94397 4.94415 2.46661 8.00013 2.46661C11.0561 2.46661 13.5335 4.94397 13.5335 7.99995H11.8001C11.8001 5.90126 10.0988 4.19995 8.00013 4.19995Z" fill="var(--tea-color-text-brand-default,#0052d9)" fill-rule="evenodd" clip-rule="evenodd" fill-opacity="0.7"></path></g><defs><clipPath id="clip0_19498_1351"><rect width="20" height="20" fill="white" transform="matrix(1.19249e-08 -1 -1 -1.19249e-08 16 16)"></rect></clipPath></defs></g></svg><span class="app-domain-action-state__text" title="加载中...">加载中...</span></span>
+<link href="__CDN__/assets/css/backend.min.css?v={$Think.config.site.version}"
+      rel="stylesheet">
+<link href="__CDN__/assets/yunos/css/yunos.css?v={$Think.config.site.version}" rel="stylesheet">
+<link href="__CDN__/assets/yunos/css/style.css?v={$Think.config.site.version}" rel="stylesheet">
+
+<body style="min-width: 1280px;">
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root" style=" display:">
+	<nav class="tea-nav u-workbench-menu" >
+		<div class="tea-nav__service">
+			<a href="/">
+				盼达语音
+			</a>
+		</div>
+		<div class="split-line">
+		</div>
+		<div class="tea-nav__service">
+			<a class="color-w btn-workbench">
+				工作站
+			</a>
+		</div>
+		
+		<!--<div class="project-menu-item dropdown-item tea-nav__service">
+			<div class="tea-dropdown" tabindex="0">
+				<div class="topNav-wrapper">
+					<img alt="" class="img-icon" src="/public/img/project_head.889e86ac.svg">
+					<div class="topNav">
+						千千柒的团队的项目
+					</div>
+				</div>
+			</div>
+		</div>-->
+		
+		<div class="overv" >
+    		<div id="topmenu" style="display:none">
+    		    
+    			<div class="topmenu-item-content" data-repeat="true"
+    			data-url="{{data_url}}" data-node="{{app_node}}">
+    				{{title}}
+    			</div>
+    			
+    		</div>
+		</div>
+		
+		
+		<!--<div class="a-menu-item-workbench dropdown-item tea-nav__service" style="padding: 10px 8px;">
+			<div class="tea-dropdown" tabindex="0">
+				<div class="topNav-wrapper">
+					<div class="topNav">
+						导航
+					</div>
+				</div>
+			</div>
+		</div>-->
+		
+		<div class="tea-nav__flex-end">
+		</div>
+		<div class="help-doc tea-nav__service">
+			<div>
+				<a class="color-w" href="/" target="_blank">
+					前台
+				</a>
+			</div>
+		</div>
+		<div class="split-line">
+		</div>
+		<div class="personal-message tea-nav__service">
+			<i class="tea-icon tea-icon-email" role="img" aria-label="email">
+			</i>
+			<span>
+			</span>
+		</div>
+		<div class="personal-menu-item tea-nav__service">
+			<div class="tea-dropdown" tabindex="0">
+				<div class="workbench-personal-menu ">
+					<div class="head-content">
+						<img class="head-img" src="{$admin.avatar|cdnurl}"
+						alt="">
+					</div>
+					<span class="nick-name">
+						{$admin.nickname}
+					</span>
+					<i class="tea-icon tea-icon-arrowdown" role="img" aria-label="arrowdown">
+					</i>
+					<div class="tea-overlay workbench-personal-Dropdown tea-transition-scale-736984168-enter-done" data-placement="bottom" style="display:none;position: fixed; top: 50px; left: 572px;"><div class="tea-dropdown-box" style="position: relative;"><div class="personal-info"><div class="name">千千柒</div><div class="group-info">团队： 千千柒的团队</div><div class="group-info">团队ID： ag9rjR2jBo</div></div><hr class="middle-line"><div class="personal-content-wrapper"><a href="/personalAccount/personalSetting"><div class="account-block personal-block"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE1IDE1SDFWMTIuNUMxIDExLjc4MyAxLjQ1NSAxMC43NDUgMy42MjQgOS44NzdDNS4wMjEyIDkuMzM0NiA2LjUwMTY4IDkuMDM3ODkgOCA5QzkuNDk4MzIgOS4wMzc4OSAxMC45Nzg4IDkuMzM0NiAxMi4zNzYgOS44NzdDMTQuNTQ1IDEwLjc0NiAxNSAxMS43ODMgMTUgMTIuNVYxNVpNOCAxMUM1Ljg1OCAxMSAzLjM2OSAxMS45NzcgMyAxMi41NjdWMTNIMTNWMTIuNTY3QzEyLjYzMSAxMS45NzcgMTAuMTQyIDExIDggMTFaTTggOEM3LjIwODg3IDggNi40MzU1MiA3Ljc2NTQxIDUuNzc3NzIgNy4zMjU4OEM1LjExOTkyIDYuODg2MzUgNC42MDcyMyA2LjI2MTY0IDQuMzA0NDggNS41MzA3NEM0LjAwMTczIDQuNzk5ODMgMy45MjI1MiAzLjk5NTU2IDQuMDc2ODYgMy4yMTk2NEM0LjIzMTIgMi40NDM3MiA0LjYxMjE2IDEuNzMwOTggNS4xNzE1NyAxLjE3MTU3QzUuNzMwOTggMC42MTIxNjUgNi40NDM3MSAwLjIzMTIwMiA3LjIxOTY0IDAuMDc2ODYwN0M3Ljk5NTU2IC0wLjA3NzQ4MDIgOC43OTk4MyAwLjAwMTczMzEyIDkuNTMwNzMgMC4zMDQ0ODRDMTAuMjYxNiAwLjYwNzIzNCAxMC44ODY0IDEuMTE5OTIgMTEuMzI1OSAxLjc3NzcyQzExLjc2NTQgMi40MzU1MiAxMiAzLjIwODg4IDEyIDRDMTEuOTk4NyA1LjA2MDQ2IDExLjU3NjggNi4wNzcxMSAxMC44MjcgNi44MjY5N0MxMC4wNzcxIDcuNTc2ODMgOS4wNjA0NiA3Ljk5ODY4IDggOFpNOCAyQzcuNjA0NDQgMiA3LjIxNzc2IDIuMTE3MyA2Ljg4ODg2IDIuMzM3MDZDNi41NTk5NiAyLjU1NjgzIDYuMzAzNjIgMi44NjkxOCA2LjE1MjI0IDMuMjM0NjRDNi4wMDA4NyAzLjYwMDA5IDUuOTYxMjYgNC4wMDIyMiA2LjAzODQzIDQuMzkwMThDNi4xMTU2IDQuNzc4MTQgNi4zMDYwOCA1LjEzNDUxIDYuNTg1NzkgNS40MTQyMkM2Ljg2NTQ5IDUuNjkzOTIgNy4yMjE4NiA1Ljg4NDQgNy42MDk4MiA1Ljk2MTU3QzcuOTk3NzggNi4wMzg3NCA4LjM5OTkxIDUuOTk5MTQgOC43NjUzNyA1Ljg0Nzc2QzkuMTMwODIgNS42OTYzOSA5LjQ0MzE4IDUuNDQwMDQgOS42NjI5NCA1LjExMTE0QzkuODgyNyA0Ljc4MjI0IDEwIDQuMzk1NTYgMTAgNEMxMCAzLjQ2OTU3IDkuNzg5MjkgMi45NjA4NiA5LjQxNDIxIDIuNTg1NzlDOS4wMzkxNCAyLjIxMDcyIDguNTMwNDMgMiA4IDJaIiBmaWxsPSIjN0M4NzhFIi8+Cjwvc3ZnPgo=" alt="personalAccount" class="block-icon"><span>账号信息</span></div></a><a href="/chosegroups"><div class="team-center-block personal-block"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yIDFMMCAzSDJIM0gxNFYxMEgxNlYzVjFIMTRIM1YwTDIgMVpNMiAxM0gxM0gxNEgxNkwxNCAxNUwxMyAxNlYxNUgwVjE0VjEzVjVIMlYxM1pNNiA2LjAwMDAxQzYgNS42MDQ0NSA2LjExNzMgNS4yMTc3NiA2LjMzNzA3IDQuODg4ODdDNi41NTY4MyA0LjU1OTk3IDYuODY5MiA0LjMwMzYxIDcuMjM0NjUgNC4xNTIyM0M3LjYwMDEgNC4wMDA4NiA4LjAwMjI0IDMuOTYxMjYgOC4zOTAyIDQuMDM4NDNDOC43NzgxNiA0LjExNTYgOS4xMzQ1MSA0LjMwNjA5IDkuNDE0MjIgNC41ODU4QzkuNjkzOTIgNC44NjU1IDkuODg0NDEgNS4yMjE4NSA5Ljk2MTU4IDUuNjA5ODFDMTAuMDM4NyA1Ljk5Nzc4IDkuOTk5MTUgNi4zOTk5MSA5Ljg0Nzc4IDYuNzY1MzZDOS42OTY0IDcuMTMwODEgOS40NDAwNCA3LjQ0MzE4IDkuMTExMTUgNy42NjI5NEM4Ljc4MjI1IDcuODgyNzEgOC4zOTU1NiA4LjAwMDAxIDggOC4wMDAwMUM3LjQ2OTU3IDguMDAwMDEgNi45NjA4NiA3Ljc4OTMgNi41ODU3OCA3LjQxNDIzQzYuMjEwNzEgNy4wMzkxNSA2IDYuNTMwNDQgNiA2LjAwMDAxWk0zLjQxNjAyIDEyLjAwMDRDMy44MDQ3OCAxMS4xMDc5IDQuNDQ1NjMgMTAuMzQ4MyA1LjI1OTkyIDkuODE0NzZDNi4wNzQyMSA5LjI4MTI2IDcuMDI2NTIgOC45OTcwNyA4LjAwMDAyIDguOTk3MDdDOC45NzM1MSA4Ljk5NzA3IDkuOTI1ODQgOS4yODEyNiAxMC43NDAxIDkuODE0NzZDMTEuNTU0NCAxMC4zNDgzIDEyLjE5NTMgMTEuMTA3OSAxMi41ODQgMTIuMDAwNEgxMC4yMzZDOS45NTQ2MyAxMS42ODU4IDkuNjEwMDIgMTEuNDM0MSA5LjIyNDcyIDExLjI2MThDOC44Mzk0MSAxMS4wODk1IDguNDIyMDkgMTEuMDAwNCA4LjAwMDAyIDExLjAwMDRDNy41Nzc5NCAxMS4wMDA0IDcuMTYwNjMgMTEuMDg5NSA2Ljc3NTMzIDExLjI2MThDNi4zOTAwMyAxMS40MzQxIDYuMDQ1NDIgMTEuNjg1OCA1Ljc2NDAyIDEyLjAwMDRIMy40MTYwMloiIGZpbGw9IiM3Qzg3OEUiLz4KPC9zdmc+Cg==" alt="pay" class="block-icon"><span>切换团队</span></div></a></div><div class="middle-line"></div><div class="logout-block personal-block"><img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEgMTVWMUgxM0MxMyAxLjUzMDQzIDEyLjc4OTMgMi4wMzkxMSAxMi40MTQyIDIuNDE0MThDMTIuMDM5MSAyLjc4OTI2IDExLjUzMDQgMyAxMSAzSDNWMTNIMTFDMTEuNTMwNCAxMyAxMi4wMzkxIDEzLjIxMDcgMTIuNDE0MiAxMy41ODU4QzEyLjc4OTMgMTMuOTYwOSAxMyAxNC40Njk2IDEzIDE1SDFaTTEyLjQgOC43OTI5N0g3Ljc5M1Y2Ljc5Mjk3SDEyLjQyNUMxMi41NzY3IDYuMzg0NDIgMTIuODE1NiA2LjAxMzg5IDEzLjEyNSA1LjcwNzAzTDE1LjI0NiA3LjgyOEwxMy4xMjUgOS45NDk5NUMxMi43OTcgOS42MjU1OSAxMi41NDg5IDkuMjI5NTUgMTIuNCA4Ljc5Mjk3WiIgZmlsbD0iIzdDODc4RSIvPgo8L3N2Zz4K" alt="dropOut" class="block-icon"><span>退出登录</span></div></div></div>
+				</div>
+			</div>
+		</div>
+		<div id="111">
+		</div>
+	</nav>
+	<div class="sub-container-wrapper workbench-nav">
+		<div class="sub-container" id="sub-container">
+			<div id="__qiankun_microapp_wrapper_for_professional_app__" data-name="professionalApp"
+			data-version="2.10.3" data-sandbox-cfg="{&quot;experimentalStyleIsolation&quot;:true}"
+			data-qiankun="professionalApp">
+
+<qiankun-head>
+  <title>{$title|default=''} - 用户端</title>
+  <meta name="keywords">
+  <meta name="description">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <!--  script https://utest-web-platform-main-1254257443.cos.ap-guangzhou.myqcloud.com/publiccomponent/system.min.js replaced by import-html-entry -->
+<style></style></qiankun-head>
+<script type="text/javascript">
+    var require = {
+        config: {:json_encode($config)}
+    };
+</script>
+<div id="app">
+	<section class="tea-layout professional-layout">
+		<section class="tea-layout__body has-subsidebar">
+			<nav class="tea-layout__sidebar">
+				<div class="tea-menu professional-menu__container">
+					<div class="tea-menu__header">
+						<div class="tea-menu__title">
+							<h2 class="tea-h2">控制台</h2>
+						</div>
+					</div>
+					<div class="tea-menu__body">
+						<ul class="tea-menu__list" id="leftmenu">
+							<li class="{{childrenGroup}}" data-repeat="true">
+								<a class="tea-menu__item {{childrenGroupBtn}} {{childrenClass}} node-{{app_node}}" data-url="{{data_url}}" data-node="{{app_node}}">
+									<div class="tea-menu__text">
+									    <i class="{{icon}} menu-item-icon"></i>
+									    {{title}}</div>
+									<i style="display:{{icondisplsy}}" class="tea-icon tea-icon-arrowdown" role="img" aria-label="arrowdown"></i>
+								</a>
+								<ul class="tea-menu__list childrenlist{{app_node}}"></ul>
+							</li>
+						</ul>
+					</div>
+					<div class="tea-menu__footer">
+						<div class="tea-menu__fold">
+							<div class="tea-menu__fold-icon">
+								<i class="tea-icon tea-icon-fold" role="img" aria-label="fold"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<main class="tea-layout__content" style="height: 100% ;">
+				<div class="tea-layout__content-inner">
+					<main class="tea-layout__content professional-place-order">
+						<div class="tea-layout__content-inner">
+							<div class="tea-layout__content-body">
+							    
+							</div>
+						</div>
+					</main>
+				</div>
+			</main>
+		</section>
+	</section>
+</div>
+<!-- 加载JS脚本 -->
+{include file="common/script" /}
+<script>
+
+const $PageApp = () => {
+    define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+
+      const menulist = {:json_encode($menulist,true)};
+      console.log(menulist)
+      $tpl.view('topmenu',menulist);
+      
+      $(document).on("click", ".menu-group", function () {
+        //$('.tea-menu__list li').removeClass('is-selected');
+        
+        if ($(this).parent().hasClass("is-expanded")) {
+            $(this).parent().removeClass("is-expanded")
+            if($(this).siblings('.tea-menu__list').find('.is-selected').length > 0){
+                $(this).parent().addClass("is-selected");
+            }
+            
+        } else {
+            //$(this).addClass("is-selected");
+            $(this).parent().removeClass("is-selected").addClass("is-expanded");
+        }
+        
+          
+        });
+        
+        //点击顶部
+        $(document).on("click", ".topmenu-item-content", function () {
+            renderLeftMenu($(this).attr('data-node'));
+            $('.tea-menu__title .tea-h2').text($(this).text());
+        });
+        
+        leftvm = $tpl.view('leftmenu',[{'title':'概览'}]);
+        function renderLeftMenu(app_node){
+            for (item of menulist) {
+              if(app_node == item.app_node){
+                topmenu = item;
+                childrenData = item.children;
+              }
+            }
+            //console.log(childrenData)
+            if(!childrenData){
+                
+                setAppUrl(topmenu.name,topmenu.app_node);
+                
+                return;
+            }
+            
+            for (item2 of childrenData) {
+              item2.childrenClass = 'item-btn' //当前层级class
+              item2.childrenGroup = '' //是否有下级
+              item2.childrenGroupBtn = '' // 
+              item2.icondisplsy = 'none' // 
+              
+              if(item2.children){
+                item2.childrenClass = 'item-group-btn';
+                item2.childrenGroup = 'tea-menu__submenu';
+                item2.childrenGroupBtn = 'menu-group' // 
+                item2.icondisplsy = ''
+              }
+            }
+            
+            leftvm.data = childrenData;
+            renderChildrenMenu(childrenData)
+            
+        }
+        
+        function renderChildrenMenu(childrenData){
+            for (item of childrenData) {
+                if(item.children){
+                    renderChildrenHtml(item.children,item.app_node)
+                }
+            }
+            
+        }
+        
+        function renderChildrenHtml(childrenData,app_node){
+            str = ''
+            for (item of childrenData) {
+                str += '<li class="">'
+            	str += '<div class="tea-menu__item item-btn node-'+ item.app_node +'" data-url="'+ item.name +'" data-node="'+ item.app_node +'">';
+            	str += '<div class="tea-menu__text">'+ item.title +'</div>';
+            	str += '</div>';
+            	str += '</li>';
+            }
+            
+            $('.childrenlist' + app_node ).html(str);
+            
+        }
+        
+        $(document).on("click", ".btn-workbench", function () {
+            window.location.hash = '#0';
+            setAppUrl('../dashboard','0');
+        });
+        
+        $(document).on("click", ".item-btn", function () {
+            nodeId = $(this).attr('data-node');
+            window.location.hash = '#' + nodeId;
+            $('.tea-menu__body li').removeClass("is-selected")
+            $(this).parent().addClass("is-selected")
+            setAppUrl($(this).attr('data-url'),$(this).attr('data-node'))
+        });
+        
+        function setAppUrl(data_url,app_node){
+            
+            $('.work-iframe').hide();
+            workid = 'work-id-'+ app_node;
+            
+            if($('.'+ workid).length > 0){
+                $('.' + workid).show();
+                $app.loadingEnd('.tea-layout__content-body');
+                return;
+            }
+            
+            $app.loading('.tea-layout__content-body');
+            
+            iframe = '<iframe class="work-iframe '+ workid +'" src="'+ data_url +'" style="display:none;width:100%;height:100%"></iframe>'
+            
+            $('.tea-layout__content-body').append(iframe);
+            
+            $('.'+ workid).on('load', function() {
+                console.log('iFrame has been loaded!');
+                $app.loadingEnd('.tea-layout__content-body');
+                $('.' + workid).show();
+                // 可以在这里执行一些操作，比如修改 iframe 内容等
+            });
+            
+        }
+        
+        renderRefresh();
+        function renderRefresh(){
+            hash = window.location.hash;
+            hashValue = hash.substring(1);
+            if(!hashValue){
+                setAppUrl('dashboard','0')
+                return;
+            }
+            let arrayFromString = hashValue.split('-');
+            renderLeftMenu(arrayFromString[0]);
+            
+            nodeCount = arrayFromString.length;
+            console.log(nodeCount)
+
+            if(nodeCount == 3){
+                $('.node-' + arrayFromString[0]+'-' + arrayFromString[1]).click();
+            }
+            
+            $('.node-'+ hashValue).click();
+            
+            
+        }
+      
+        
+        
+            
+	});
+		
+};
+
+</script>
+
+</body>

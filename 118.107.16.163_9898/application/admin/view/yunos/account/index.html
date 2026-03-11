@@ -1,0 +1,520 @@
+<style>
+      .panel-intro{
+        margin-left: 200px;
+      }
+      /* 侧边栏样式优化 */
+      .custom-menu {
+          width: 200px;
+          background-color: #fff;
+          color: #000;
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100%;
+          overflow-y: auto;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+          border-right: 1px solid #f0f0f0;
+          z-index: 1000;
+      }
+      .custom-menu .menu-header {
+          font-size: 1.2em;
+          padding: 20px 15px;
+          text-align: center;
+          border-bottom: 1px solid #f4f4f4;
+          font-weight: 600;
+          color: #333;
+          background: linear-gradient(135deg, #f6f8fa 0%, #e9ecef 100%);
+      }
+      .custom-menu ul {
+          list-style-type: none;
+          padding: 10px;
+          margin: 0;
+      }
+      /* 矩形列表项样式 */
+      .custom-menu .menu-item {
+          margin-bottom: 10px;
+          border-radius: 5px;
+          overflow: hidden;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+          transition: all 0.3s ease;
+          background: #fff;
+          border: 1px solid #e0e0e0;
+      }
+      .custom-menu .menu-item:hover {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .custom-menu .menu-item.active {
+          border-color: #409eff;
+          background: #f0f7ff;
+      }
+      .custom-menu .menu-item a {
+          color: #333;
+          text-decoration: none;
+          display: block;
+          padding: 12px 10px;
+          position: relative;
+          min-height: 60px;
+      }
+      /* 内容容器 - 用于图标和文字的左右布局 */
+      .menu-item-content {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+      /* 图标样式 - 修改为左右布局 */
+      .menu-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 6px;
+          object-fit: contain;
+          background: #f8f9fa;
+          padding: 5px;
+          border: 1px solid #e9ecef;
+          flex-shrink: 0;
+      }
+      /* 文字内容样式 - 修改为左右布局 */
+      .menu-content {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 1.4;
+          color: #333;
+          margin: 0;
+          word-break: break-word;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          flex: 1;
+      }
+      /* 底部按钮容器 - 修改为垂直排列并左对齐 */
+      .menu-buttons {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          margin-top: 8px;
+          padding: 0 5px;
+          
+      }
+      /* 配置和账号池按钮样式 */
+      .btn-config,
+      .btn-account-pool {
+          font-size: 11px;
+          padding: 3px 10px;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          border: 1px solid transparent;
+          text-decoration: none;
+          display: inline-block;
+          white-space: nowrap;
+      }
+      .btn-config {
+          background: #f0f9ff;
+          color: #0284c7;
+          border-color: #bae6fd;
+      }
+      .btn-config:hover {
+          background: #e0f2fe;
+      }
+      .btn-account-pool {
+          background: #fdf2f8;
+          color: #db2777;
+          border-color: #fecdd3;
+      }
+      .btn-account-pool:hover {
+          background: #fce7f3;
+      }
+        /* CSS样式 */
+.status-tag {
+  /* 基础排版 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 13px; /* 固定13px字体 */
+  font-weight: 600; /* 中等字重更清晰 */
+  line-height: 1.2; /* 行高优化垂直间距 */
+  
+  /* 尺寸控制 */
+  padding: 2px 8px; /* 上下2px 左右8px 紧凑但不拥挤 */
+  min-width: 40px; /* 最小宽度保证文字不重叠 */
+  
+  /* 视觉样式 */
+  border-radius: 3px; /* 柔和圆角 */
+  transition: all 0.2s ease; /* 平滑过渡效果 */
+  cursor: default; /* 明确交互类型 */
+  
+  /* 防止文字选中 */
+  user-select: none;
+}
+
+/* 在线状态 */
+.status-tag.online {
+  background-color: #ECFDF5; /* 浅绿背景 */
+  color: #047857; /* 深绿文字 */
+  border: 1px solid #A7F3D0; /* 浅绿边框增强层次 */
+}
+
+/* 离线状态 */
+.status-tag.offline {
+  background-color: #F8FAFC; /* 浅灰背景 */
+  color: #475569; /* 深灰文字 */
+  border: 1px solid #E2E8F0; /* 浅灰边框 */
+}
+
+
+</style>
+<div class="custom-menu">
+        <div class="menu-header">常用通道</div>
+        <ul>
+            <div class="menu-item active">
+                <a href="javascript:void(0);" class="btn-access" data-id="">
+                    <div class="menu-item-content">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c757d'%3E%3Cpath d='M3 6l3 1l-3 1V6zM7 6l3 1l-3 1V6zM11 6l3 1l-3 1V6zM15 6l3 1l-3 1V6zM19 6l3 1l-3 1V6zM3 10l3 1l-3 1v-2zM7 10l3 1l-3 1v-2zM11 10l3 1l-3 1v-2zM15 10l3 1l-3 1v-2zM19 10l3 1l-3 1v-2zM3 14l3 1l-3 1v-2zM7 14l3 1l-3 1v-2zM11 14l3 1l-3 1v-2zM15 14l3 1l-3 1v-2zM19 14l3 1l-3 1v-2zM3 18l3 1l-3 1v-2zM7 18l3 1l-3 1v-2zM11 18l3 1l-3 1v-2zM15 18l3 1l-3 1v-2zM19 18l3 1l-3 1v-2z'/%3E%3C/svg%3E" alt="全部通道" class="menu-icon">
+                        <span class="menu-content">全部通道</span>
+                    </div>
+                </a>
+            </div>
+            {foreach name="access" item="vo" }
+                <div class="menu-item">
+                    <a href="javascript:void(0);" class="btn-access" data-id="{$vo.id}">
+                        <div class="menu-item-content">
+                            {if $vo.image}
+                                <img src="{$vo.image}" alt="{$vo.name}" class="menu-icon">
+                            {else}
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c757d'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9h10v2H7z'/%3E%3C/svg%3E" alt="{$vo.name}" class="menu-icon">
+                            {/if}
+                            <span class="menu-content">{$vo.name}</span>
+                        </div>
+                        {if condition="$vo.pool.title"}
+                        <div class="menu-buttons">
+                            <span class="btn-account-pool" data-id="{$vo.id}">{$vo.pool.title}</span>
+                        </div>
+                        {/if}
+                    </a>
+                </div>
+            {/foreach}
+        </ul>
+</div>
+    
+<div class="panel panel-default panel-intro">
+    {:build_heading()}
+  
+    <div class="panel-body">
+        
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        
+                        {:build_toolbar('refresh')}
+                        
+                        <div class="dropdown btn-group">
+                            <a class="yui-btn btn-more dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i> 添加账号</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                              
+                                {foreach name="access" item="vo" }
+                                <li><a class="btn btn-link btn-adds" data-id="{$vo.id}" href="javascript:" >
+                                    <img src="{$vo.image}" alt="{$vo.name}" class="menu-icon" style="margin-right: 10px;">
+                                    {$vo.name}
+                                    </a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        
+                        {:build_toolbar('delete')}
+                        
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-cog"></i> 批量操作</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="seachlist.switch" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="switch={$key}">批量{$vo}</a></li>
+                                {/foreach}
+                                
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="lock_time=0">批量解除-账号限制</a></li>
+                            </ul>
+                        </div>
+                        
+                        
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-coffee"></i> 批量设置日成单量</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="limit_day_in_number=0">批量解除-日成单量</a></li>
+                                
+                                {foreach name="seachlist.number_list" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="limit_day_in_number={$key}">批量{$vo}-{$key}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-coffee"></i> 批量设置日拉单量</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="limit_day_pull_number=0">批量解除-日拉单量</a></li>
+                                
+                                {foreach name="seachlist.number_list" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="limit_day_pull_number={$key}">批量{$vo}-{$key}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                        
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/multi')?'':'hide'}">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-coffee"></i> 批量设置通道</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="seachlist.access" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="access_id={$key}">设置为-{$vo}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+                       
+                       
+                        <div class="dropdown btn-group {:$auth->check('yunos/account/bbb')?'':'hide'} ">
+                            <a class="yui-btn y-blue btn-more dropdown-toggle btn-disabled disabled" data-toggle="dropdown"><i class="fa fa-coffee"></i> 批量账号转移</a>
+                            <ul class="dropdown-menu text-left" role="menu">
+                                {foreach name="seachlist.user" item="vo"}
+                                <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:" data-params="user_id={$key}">转移到-{$vo}</a></li>
+                                {/foreach}
+                            </ul>
+                        </div>
+
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('yunos/account/edit')}"
+                           data-operate-del="{:$auth->check('yunos/account/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/account/index' + location.search,
+                    add_url: 'yunos/account/add',
+                    edit_url: 'yunos/account/edit',
+                    del_url: 'yunos/account/del',
+                    multi_url: 'yunos/account/multi',
+                    table: 'account',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'createtime',
+                showExport: false,
+                fixedColumns :true,
+                fixedRightNumber:1,
+                pageList: [20, 50,100,300,500,1000,2000],
+                cardView:false,
+                columns: [
+                    [
+                        {checkbox: true},
+                        
+                        {field: 'user_id', title: __('归属账号'),
+                            addClass: "selectpicker",
+                            extend : 'data-live-search="true"',
+                            searchList: seachlist.user,
+                            formatter: function(value, row){
+                                if(row.is_my){
+                                    return '<a class="account-be">所属自己</a>';
+                                }
+                                return seachlist.user[value];
+                            }
+                        },
+                        
+                        {field: 'access.image', title: __('Access.image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image, searchable :false},
+                        
+                        {field: 'access_id', title: __('Access_id'),
+                            //addClass: "selectpicker",
+                            searchList: seachlist.access,
+                            formatter: function(value, row){
+                                return row.access.code +'-'+ seachlist.access[value];
+                            }
+                        },
+                        
+                        
+                        {field: 'remarks', title: __('账号备注'), operate: 'LIKE'},
+                        
+                        {field: 'mid', title: __('Mid'), operate: 'LIKE'},
+                        
+                        {field: 'account_state', title: __('账号状态') , searchable :false,
+                            formatter: function(value, row){
+                                if(value == 1){
+                                    return '<span class="status-tag online">在线</span>';
+                                }
+                                
+                                return '<span class="status-tag offline">离线</span>';
+                            }},
+                        
+                        {field: 'active_time', title: __('活跃时间'),  searchable :false,},
+                        
+                        /*{field: 'lock_time', title: __('账号限制') , searchable :false,
+                            formatter: function(value, row){
+                                if(value == 1){
+                                    return '<font color="red">受限</span>';
+                                }
+                                
+                                return '正常';
+                            }},*/
+
+                            {field: 'limit_day_in_number', title: __('日成单限制'), searchable :false,
+                                formatter: function(value, row){
+                                    if(value == 0) {
+                                        str2 = '/不限';
+                                    }else{
+                                        str2 = '/限'+ value;
+                                    }
+                                    str = '成'+row.counts.in_number + '/' + str2;
+                                    if(value != 0 && row.counts.in_number >= value){
+                                        return '<font color="red">'+ str +'</span>';
+                                    }
+                                    
+                                    return '<font color="">'+ str +'</span>';
+                                    
+                                }
+                            },
+                        
+                        {field: 'limit_day_pull_number', title: __('日拉单限制'),  searchable :false,
+                            formatter: function(value, row){
+                                if(value == 0) {
+                                    str2 = '/不限';
+                                }else{
+                                    str2 = '/限'+value;
+                                }
+                                str = '拉'+ row.counts.pull_number + str2;
+                                if(value != 0 && row.counts.pull_number >= value){
+                                    return '<font color="red">'+ str +'</span>';
+                                }
+                                
+                                return '<font color="">'+ str +'</span>';
+                                
+                            }
+                        },
+                        
+                        
+                        
+                        {field: 'limit_fee', title: __('Limit_fee'), searchable :false,
+                            formatter: function(value, row){
+                                if(value == 0){
+                                    return '不限';
+                                }
+                                
+                                return value;
+                            }
+                        },
+                        
+                        {field: 'counts', title: __('进账统计'), operate:'BETWEEN', searchable :false,
+                            formatter: function(value, row){
+                            
+                                str = '今' + value.day_fee + '/';
+                                str += '昨' + value.terday_fee  + '/';
+                                str += '本月' + value.month_fee;
+                                
+                                return str;
+                            }
+                        },
+                        
+                        /*{field: 'access.pay_type', title: __('Access.pay_type'),
+                            addClass: "selectpicker",
+                            searchList: seachlist.pay_type,
+                            formatter: function(value, row){
+                                return seachlist.pay_type[value];
+                            }
+                        },*/
+                        
+                        {field: 'in_number', title: __('成单数量'), operate:'BETWEEN', searchable :false},
+                        {field: 'match_number', title: __('匹配次数'), operate:'BETWEEN', searchable :false},
+                        {field: 'switch', title: __('Switch'), table: table, formatter: Table.api.formatter.toggle,
+                            addClass: "selectpicker",
+                            searchList: seachlist.switch,
+                        },
+                        {field: 'sup_info', title: __('账号信息') ,operate: 'LIKE'},
+                        
+                        {field: 'runinfo', title: __('Runinfo') ,operate: 'LIKE'},
+                        
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime, searchable :false},
+                        
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate,
+                                buttons: [
+                                        {
+                                            text: '充值记录',
+                                            name: 'click',
+                                            classname: 'yui-link btn-click',
+                                            icon: 'fa fa-list',
+                                            click: function (data,row) {
+                                                
+                                                //Fast.api.open('');
+                                                layer.open({
+                                                  title: '充值记录' +  row.remarks,
+                                                  type : 2,
+                                                  shadeClose:true,
+                                                  area: ['500px', '100%'],
+                                                  content: 'https://pay.qq.com/h5/trade-record/trade-record.php?appid=1450000186&_wv=1024&pf=2199&sessionid=openid&sessiontype=kp_accesstoken&openid='+ row.ck.openid +'&openkey='+ row.ck.openkey +'#/',
+                                                  
+                                                });
+                                                
+                                            }
+                                        },
+                                    ],
+                                    
+                                    formatter: Table.api.formatter.operate,
+                                   
+                                },
+                    ]
+                ]
+            });
+            
+        // 为表格绑定事件
+        Table.api.bindevent(table);
+           
+        $(document).on("click", ".btn-access", function () {
+           value = $(this).attr('data-id');
+           $('select[name="access_id"]').val(value);
+           $('.menu-item').removeClass('active');
+           $(this).closest('.menu-item').addClass('active');
+           table.bootstrapTable('refresh');
+        });
+        
+        // 配置按钮点击事件
+        $(document).on("click", ".btn-config", function (e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            var accessId = $(this).attr('data-id');
+            var channelName = $(this).closest('.menu-item').find('.menu-content').text();
+            // 这里可以添加配置功能的逻辑
+            Fast.api.open('yunos/account/config?access_id=' + accessId, '配置 - ' + channelName);
+        });
+        
+        // 账号池按钮点击事件
+        $(document).on("click", ".btn-account-pool", function (e) {
+            e.stopPropagation(); // 阻止事件冒泡
+            var accessId = $(this).attr('data-id');
+            var channelName = $(this).closest('.menu-item').find('.menu-content').text();
+            // 这里可以添加账号池功能的逻辑
+            Fast.api.open('yunos/account?type=1&access_id=' + accessId, '账号池 - ' + channelName);
+        });
+        
+        $(document).on("click", ".btn-adds", function () {
+           value = $(this).attr('data-id');
+           title = $(this).text();
+           
+           Fast.api.open('yunos/account/add?type=0&access_id='+ value , '新增' + title );
+           
+        });
+    
+});
+}
+</script>

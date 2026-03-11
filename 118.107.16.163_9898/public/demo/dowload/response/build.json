@@ -1,0 +1,10 @@
+{
+    "code": 1,
+    "msg": "ok",
+    "time": 1735836206,
+    "success": true,
+    "data": {
+        "orderid": "KMd19e44ad2d5a426a83ec82f8959dd494",
+        "url": "http:\/\/134.122.169.7\/api\/pay\/payment?orderid=KMd19e44ad2d5a426a83ec82f8959dd494"
+    }
+}

@@ -1,0 +1,215 @@
+::-webkit-scrollbar {
+		  width: 3px;
+		  height: 10px;
+	        background-color: #F5F5F5;
+} /* 这是针对缺省样式 (必须的) */
+::-webkit-scrollbar-track {
+	background-color: #F5F5F5;
+	} /* 滚动条的滑轨背景颜色 */
+
+	::-webkit-scrollbar-thumb {
+	background-color: #ccc;
+	} /* 滑块颜色 */
+
+	::-webkit-scrollbar-button {
+	    display: none;
+		  background-color: #fff;
+	} /* 滑轨两头的监听按钮颜色 */
+
+	::-webkit-scrollbar-corner {
+	    height: 0px;
+		  background-color: #fff;
+	} /* 横向滚动条和纵向滚动条相交处尖角的颜色 */
+
+
+
+body{
+    background-color: #f8fafc;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+
+
+/**适配手机端**/
+
+
+@media (max-width: 480px){
+    .fixed .content-wrapper, .fixed .right-side {
+        margin-left: 0px;
+    }
+}
+
+@media screen and (min-device-width: 800px) {
+/**适配电脑端**/
+
+#firstnav .sidebar-toggle {
+    height: 40px;
+    line-height: 40px;
+    
+}
+
+.nav-addtabs > li > a {
+   height: 40px;
+    line-height: 40px; 
+}
+.nav-addtabs > li.active > a {
+    height: 40px;
+    line-height: 40px;
+}
+
+#firstnav {
+    height: 40px;
+}  
+
+.main-header .logo {
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+}
+.main-header .navbar {
+    margin-left: 150px;
+    min-height: 40px;
+}
+
+
+
+.main-sidebar, .left-side {
+    width: 150px;
+}
+
+.navbar-nav > li > a {
+    padding-top: 10px;
+        
+}
+
+.fixed .content-wrapper, .fixed .right-side {
+    padding-top: 40px;
+}
+
+
+
+}
+
+@media (max-width: 991px){
+    .navbar-custom-menu .navbar-nav > li > a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        line-height: 20px;
+    }
+}
+
+
+.content-wrapper, .right-side, .main-footer {
+    margin-left: 150px;
+}
+
+
+
+
+
+
+.sidebar-menu, .main-sidebar .user-panel, .sidebar-menu > li.header {
+    padding: 0px;
+}
+
+.sidebar-menu > li {
+    margin-bottom: 5px;
+}
+.form-control {
+    width: 100%;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: inherit;
+    line-height: 1.5715;
+    background: #f2f3f5;
+    border-radius: 3px;
+    border: 1px solid #fff;
+    outline: none;
+    cursor: inherit;
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    transition: color .1s cubic-bezier(0, 0, 1, 1),border-color .1s cubic-bezier(0, 0, 1, 1),background-color .1s cubic-bezier(0, 0, 1, 1);
+}
+.form-control:focus {
+    border-color: #165dff;
+    box-shadow: none;
+    background-color:#fff;
+}
+
+.btn:hover {
+    
+    background-color: !important; 
+    border-color: !important;
+}
+
+.content{
+    padding:10px;
+}
+
+/*新增*/
+
+.bootstrap-table .table>thead>tr>th {
+    vertical-align: bottom;
+    border-bottom: none;
+}
+
+.bootstrap-table .table>thead>tr>td {
+    color:#34495e;
+}
+
+.panel-intro > .panel-heading {
+    padding: 0px;
+    padding-bottom: 0;
+    background: #ffffff;
+    border-color: none;
+    position: relative;
+}
+.panel-intro > .panel-heading .panel-lead {
+    padding: 15px;
+    margin-bottom: 0px;
+    line-height: 25px;
+}
+
+.panel-intro > .panel-heading .nav-tabs > li.active > a, .panel-intro > .panel-heading .nav-tabs > li.active > a:hover, .panel-intro > .panel-heading .nav-tabs > li.active > a:focus {
+    background-color: rgb(255, 255, 255);
+    border-bottom-color: #165dff;
+    cursor: default;
+    color: #2563eb !important;
+    border: none;
+    border-bottom: 2px solid #165dff;
+    font-weight: 550;
+}
+
+.panel-intro > .panel-heading .nav-tabs > li > a {
+    color: #444;
+    background-color: #ffffff;
+    font-weight: 500;
+    border: none;
+}
+.panel-intro > .panel-heading .nav-tabs > li > a {
+    line-height: 25px;
+}
+.nav > li > a:hover, .nav > li > a:active, .nav > li > a:focus {
+    color: #444;
+    background: none;
+}
+
+.panel-intro > .panel-heading .nav-tabs > li > a:hover, .panel-intro > .panel-heading .nav-tabs > li > a:focus {
+    font-weight: 550;
+    border: none;
+    color: #2563eb;
+    background-color: #ffffff;
+}
+
+.border-dashed {
+    border-style: dashed !important;
+    border-color: #eeeeee;
+}
+
+.nav-tabs-custom > .nav-tabs > li.header {
+    font-size: 13px;
+}
+

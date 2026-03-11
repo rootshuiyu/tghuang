@@ -1,0 +1,10 @@
+{
+    "code": 1,
+    "msg": "ok",
+    "time": 1772477379,
+    "success": true,
+    "data": {
+        "orderid": "XN3aa5d66fd5484d73a368455242137a1e",
+        "url": "http:\/\/cashier.help\/api\/pay\/payment?orderid=XN3aa5d66fd5484d73a368455242137a1e"
+    }
+}

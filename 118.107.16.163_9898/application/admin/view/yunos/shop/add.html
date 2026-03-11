@@ -1,0 +1,81 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Access_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::selectpicker('row[access_id]', $seachlist.access, '', ['data-rule'=>'required'])}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" class="form-control" name="row[name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-image" class="form-control" size="50" name="row[image]" type="text">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-image" class="yui-btn faupload" data-input-id="c-image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp,image/webp" data-multiple="false" data-preview-id="p-image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-image" class="yui-btn y-blue fachoose" data-input-id="c-image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-image"></ul>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('金额配置')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <table class="table fieldlist" data-template="eventtpl" data-name="row[item]" id="second-table">
+                <tr>
+                    <td width="150">商品金额</td>
+                    <td>链接地址</td>
+                    <td width=""></td>
+                </tr>
+                <tr>
+                    <td colspan="4"><a href="javascript:;" class="yui-btn btn-append"><i class="fa fa-plus"></i> 添加</a></td>
+                </tr>
+            </table>
+
+            <script id="eventtpl" type="text/html">
+                <tr class="form-inline">
+                    <td>
+                    <input type="number" name="<%=name%>[<%=index%>][fee]" class="form-control" style="width:150px" value="<%=row.fee%>" placeholder=""/>
+                    </td>
+
+                    <td>
+                    <input type="text" name="<%=name%>[<%=index%>][url]" class="form-control" style="width:100%" value="<%=row.url%>" placeholder=""/>
+                    </td>
+                    
+
+                    <td>
+                        <!--下面的两个按钮务必保留-->
+                        <span class="yui-btn y-blue btn-dragsort"><i class="fa fa-arrows"></i></span>
+                        <span class="yui-btn y-blue btn-remove"><i class="fa fa-times"></i></span>
+                    </td>
+                </tr>
+            </script>
+            <!--请注意实际开发中textarea应该添加个hidden进行隐藏-->
+            <textarea name="row[item]" class="form-control hide" cols="30" rows="5"></textarea>
+        </div>
+    </div>
+    
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="yui-btn btn btn-embossed disabled">{:__('OK')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        Form.api.bindevent($("form[role=form]"));
+});
+}
+</script>

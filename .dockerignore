@@ -1,0 +1,14 @@
+*.tar.gz
+*.log
+runtime/cache/*
+runtime/temp/*
+runtime/log/*
+runtime/yunos_logs/*
+runtime/sessions/*
+runtime/views/*
+.git
+.idea
+.vscode
+.cursor
+*.md
+data/*.md

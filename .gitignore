@@ -1,0 +1,15 @@
+.env
+*.tar.gz
+runtime/cache/*
+runtime/temp/*
+runtime/log/*
+runtime/yunos_logs/*
+runtime/sessions/*
+runtime/views/*
+runtime/logs/*
+!runtime/.gitkeep
+.idea/
+.vscode/
+.cursor/
+*.swp
+*.swo

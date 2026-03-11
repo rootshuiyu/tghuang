@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <title>支付页面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="/assets/pay/css/font-awesome.min.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0052D9',
+            secondary: '#4080FF',
+            success: '#00C48C',
+            warning: '#FFAB00',
+            danger: '#FF5252',
+            neutral: {
+              100: '#FFFFFF',
+              200: '#F5F7FA',
+              300: '#E5E6EB',
+              400: '#C9CDD4',
+              500: '#86909C',
+              600: '#4E5969',
+              700: '#272E3B',
+              800: '#1D2129',
+            }
+          },
+          fontFamily: {
+            inter: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .glass-high {
+        backdrop-filter: blur(15px) saturate(110%);
+        -webkit-backdrop-filter: blur(15px) saturate(110%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.88) 100%);
+        box-shadow: 0 4px 20px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .bg-grid {
+        background-image: 
+          linear-gradient(rgba(0, 82, 217, 0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 82, 217, 0.05) 1px, transparent 1px);
+        background-size: 20px 20px;
+      }
+      .keyboard-key {
+        @apply flex items-center justify-center transition-all duration-150 w-full;
+        backdrop-filter: blur(20px) saturate(110%);
+        -webkit-backdrop-filter: blur(20px) saturate(110%);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+        border: 1px solid #f3f3f3;
+      }
+      .amount-input {
+        @apply text-3xl font-bold text-primary text-center py-6 transition-all duration-300;
+      }
+      .input-progress-bar {
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease-in-out;
+      }
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+      .spinner {
+        animation: spin 1s linear infinite;
+      }
+    }
+
+  </style>
+  <style>
+      /* 微信引导 */
+      .wechart-notify {
+        width: 100%;
+        height: 100dvh;
+        background-color: #000000d7;
+        position: fixed;
+        inset: 0;
+        z-index: 10000;
+        display: block;
+      }
+      .wechart-notify.show {
+        display: block;
+      }
+      .wechart-arrow-icon {
+        width: 100px;
+        position: absolute;
+        right: 0px;
+        top: 0;
+        fill: #fff;
+      }
+      .wechart-content {
+        width: 85%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -70%);
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .wechart-title {
+        font-size: 30px;
+        font-weight: 800;
+      }
+      .wechart-desc {
+        font-size: 14px;
+        color: #666;
+        text-align: center;
+        margin: 16px 0;
+      }
+      .wechart-setp {
+        text-align: left;
+        width: 100%;
+        color: #656464;
+        margin-top: 8px;
+        font-size: 15px;
+        display: flex;
+        gap: 8px;
+      }
+      .wechart-setp span:first-child {
+        width: 20px;
+        text-align: center;
+        font-weight: 800;
+        color: #0099ff;
+      }
+      .wechart-weight-text {
+        color: #0099ff;
+        font-weight: 800;
+        font-size: 16px;
+      }
+      
+    </style>
+</head>
+<body class="font-inter bg-gradient-to-br from-blue-50 to-indigo-50 h-screen flex flex-col">
+  <div class="fixed inset-0 bg-grid opacity-10 pointer-events-none"></div>
+  <div class="fixed top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+  <div class="fixed bottom-0 left-0 w-72 h-72 bg-secondary/10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
+
+  <!-- 顶部导航 -->
+  <header class="glass-high shadow-lg sticky top-0 z-50 flex-shrink-0">
+    <div class="w-full max-w-md mx-auto px-3 py-5 flex justify-center items-center">
+      <div class="flex items-center order-1 mr-auto">
+        <div class="w-7 h-7 rounded-lg bg-primary flex items-center justify-center mr-1">
+          <i class="fa fa-credit-card text-white text-sm"></i>
+        </div>
+      </div>
+      <h1 class="text-xl font-bold text-neutral-800 order-2">收银台中心</h1>
+      <div class="flex items-center space-x-2 order-3 ml-auto">
+        <button class="text-neutral-600">
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 - 可滚动 -->
+  <main class="container mx-auto px-3 py-4 flex flex-col items-center overflow-y-auto flex-1 pb-64 max-w-md">
+    <!-- 金额输入区域 -->
+    <div id="amount-card" class="glass-high rounded-xl shadow-xl p-4 mb-4 w-full transition-all duration-300">
+      <div class="flex items-center justify-between mb-2">
+        <p id="amount-prompt" class="text-neutral-600 text-l">请输入付款金额</p>
+        <div id="amount-limit" class="text-primary text-l flex items-center">
+          <i class="fa fa-info-circle mr-1"></i>
+          <span>限额: ¥10-¥4999</span>
+        </div>
+      </div>
+
+      <div id="amount-display" class="amount-input w-full">
+        ¥0.00
+      </div>
+
+      <div id="input-progress" class="w-full h-1 bg-neutral-200 rounded-full mt-2 mb-3 overflow-hidden">
+        <div id="input-progress-bar" class="h-full bg-primary/50 w-0 transition-all duration-300"></div>
+      </div>
+
+      <!-- 常用金额快捷按钮 -->
+      <div class="flex flex-wrap justify-center gap-2 mt-2 w-full">
+        <button class="quick-amount px-2 py-1.5 bg-primary/10 text-primary rounded-lg transition-all duration-200 w-14 text-center text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 active:translate-y-0" data-amount="100">¥100</button>
+        <button class="quick-amount px-2 py-1.5 bg-primary/10 text-primary rounded-lg transition-all duration-200 w-14 text-center text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 active:translate-y-0" data-amount="200">¥200</button>
+        
+        <button class="quick-amount px-2 py-1.5 bg-primary/10 text-primary rounded-lg transition-all duration-200 w-14 text-center text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 active:translate-y-0" data-amount="300">¥300</button>
+        
+        <button class="quick-amount px-2 py-1.5 bg-primary/10 text-primary rounded-lg transition-all duration-200 w-14 text-center text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 active:translate-y-0" data-amount="500">¥500</button>
+        
+        <button class="quick-amount px-2 py-1.5 bg-primary/10 text-primary rounded-lg transition-all duration-200 w-14 text-center text-xs focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 active:translate-y-0" data-amount="1000">¥1000</button>
+      </div>
+    </div>
+
+    <!-- 支付方式选择 -->
+    <div class="glass-high rounded-xl shadow-lg p-4 mb-4 w-full">
+      <h2 class="text-base font-semibold text-neutral-800 mb-3 flex items-center">
+        <i class="fa fa-credit-card text-primary mr-2 text-sm"></i>
+        选择支付方式
+      </h2>
+
+      <div class="space-y-3">
+        <div class="payment-method glass-high bg-primary/5 border-2 border-primary rounded-lg p-3 flex items-center cursor-pointer transition-all duration-300">
+          <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+              <rect width="24" height="24" rx="4" fill="#1677FF"/>
+              <text x="12" y="17" font-size="14" font-weight="bold" fill="#FFFFFF" text-anchor="middle" font-family="Arial, sans-serif">支</text>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-neutral-800">支付宝支付</h3>
+            <p class="text-xs text-neutral-500">推荐使用，支付更快捷</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+            <div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+          </div>
+        </div>
+
+        <div class="payment-method glass-high bg-white/80 border-2 border-neutral-200 rounded-lg p-3 flex items-center cursor-pointer transition-all duration-300">
+          <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
+            <i class="fa fa-wechat text-success text-xl"></i>
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-neutral-800">微信支付</h3>
+            <p class="text-xs text-neutral-500">支持微信扫码支付</p>
+          </div>
+          <div class="w-5 h-5 rounded-full border-2 border-neutral-300 flex items-center justify-center">
+            <div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 虚拟键盘 - 固定在底部 -->
+  <div class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-lg shadow-2xl z-40 pb-safe">
+    <div class="w-full max-w-md mx-auto">
+      <div class="grid grid-cols-4">
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="1"><span class="text-xl font-medium">1</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="2"><span class="text-xl font-medium">2</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="3"><span class="text-xl font-medium">3</span></div>
+      <div class="keyboard-key min-h-[80px] border-b border-neutral-300 bg-neutral-100/80" id="backspace"><span class="text-xs text-neutral-600 text-center"><i class="fa fa-backspace"></i> 删除</span></div>
+
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="4"><span class="text-xl font-medium">4</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="5"><span class="text-xl font-medium">5</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="6"><span class="text-xl font-medium">6</span></div>
+      <div class="keyboard-key min-h-[220px] row-span-3 text-white flex items-center justify-center" id="confirm-pay" style="background: #0052D9 !important;">
+        <div class="flex flex-col items-center justify-center h-full">
+          <i class="fa fa-check-circle text-2xl mb-1"></i>
+          <span class="text-xs font-medium btn-send">确认支付</span>
+        </div>
+      </div>
+
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="7"><span class="text-xl font-medium">7</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="8"><span class="text-xl font-medium">8</span></div>
+      <div class="keyboard-key min-h-[80px] border-r border-b border-neutral-300" data-key="9"><span class="text-xl font-medium">9</span></div>
+
+      <div class="keyboard-key min-h-[80px] border-r border-neutral-300 col-span-2" data-key="0"><span class="text-xl font-medium">0</span></div>
+      <div class="keyboard-key min-h-[80px] bg-neutral-100/80" id="clear-all"><span class="text-xs text-neutral-600 text-center">清空</span></div>
+    </div>
+    </div>
+  </div>
+
+  <style>
+    @supports (padding-bottom: env(safe-area-inset-bottom)) {
+      .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+    }
+  </style>
+
+  <!-- 加载中模态框 -->
+  <div id="loading-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%); backdrop-filter: blur(20px) saturate(110%); -webkit-backdrop-filter: blur(20px) saturate(110%); border-radius: 24px; padding: 48px 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.5); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 260px; max-width: 90vw;">
+      <div style="position: relative; width: 80px; height: 80px; margin-bottom: 32px;">
+        <div style="position: absolute; top: 0; left: 0; width: 80px; height: 80px; border: 6px solid transparent; border-top-color: #0052D9; border-radius: 50%; animation: spin 1.2s linear infinite;"></div>
+        <div style="position: absolute; top: 4px; left: 4px; width: 72px; height: 72px; border: 6px solid transparent; border-top-color: #4080FF; border-radius: 50%; animation: spin 1.5s linear infinite reverse;"></div>
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; border: 5px solid rgba(0, 82, 217, 0.15); border-radius: 50%;"></div>
+      </div>
+      <p style="color: #1D2129; font-weight: 600; font-size: 18px; margin: 0 0 8px 0; text-align: center;">交易处理中...</p>
+      <p style="color: #86909C; font-weight: 500; font-size: 14px; margin: 0; text-align: center;" class="loading-text">请勿关闭页面</p>
+    </div>
+  </div>
+
+  <!-- 消息提示弹窗 -->
+  <div id="message-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 10000;">
+    <div id="message-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%); backdrop-filter: blur(20px) saturate(110%); -webkit-backdrop-filter: blur(20px) saturate(110%); border-radius: 24px; padding: 40px 32px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.5); min-width: 300px; max-width: 85vw; animation: modal-in 0.3s ease-out;">
+      <div id="message-icon-container" style="display: flex; justify-content: center; margin-bottom: 24px;">
+        <i class="fa fa-info-circle" id="message-icon" style="font-size: 56px; color: #0052D9;"></i>
+      </div>
+      <p id="message-text" style="margin: 0 0 28px 0; text-align: center; font-size: 16px; font-weight: 500; color: #1D2129; line-height: 1.8; word-wrap: break-word; overflow-wrap: break-word;"></p>
+      <button id="message-ok" style="width: 100%; padding: 14px 28px; background: #0052D9; color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+        确定
+      </button>
+    </div>
+  </div>
+
+  <!-- 二维码弹窗 -->
+  <div id="qrcode-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px); z-index: 10001;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.95) 100%); backdrop-filter: blur(20px) saturate(110%); -webkit-backdrop-filter: blur(20px) saturate(110%); border-radius: 20px; padding: 32px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.5); min-width: 280px; max-width: 400px; animation: modal-in 0.3s ease-out; display: flex; flex-direction: column; align-items: center;">
+      <p style="margin: 0 0 20px 0; text-align: center; font-size: 18px; font-weight: 600; color: #1D2129;">请扫描二维码</p>
+      <div id="qrcode-image-container" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+        <img id="qrcode-image" style="width: 250px; height: 250px; border: 2px solid #E5E6EB; border-radius: 8px; padding: 10px; background: white;" />
+      </div>
+    </div>
+  </div>
+
+  <!-- 引导使用默认浏览器弹窗 -->
+  <div id="browser-guide-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(8px); z-index: 10002;">
+   <div class="wechart-notify" id="wechatNotify">
+      <svg t="1765967849398" class="wechart-arrow-icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+        <path d="M159.334 1024l-45.137-56.776S374.09 767.331 451.113 665.772c12.22-16.12 56.083-77.377 83.826-145.083 25.454-62.08 35.368-130.866 37.206-145.358l13.638-109.876-167.281 43.202a12.896 12.896 0 0 1-12.413-21.488L685.842 3.837a12.896 12.896 0 0 1 20.264 2.514L908.03 349.506a12.896 12.896 0 0 1-17.281 17.813l-151.645-82.794-10.3 81.037s-1.403 7.722-3.676 18.378l-0.597 12.09c-2.144 12.896-47.732 247.206-172.681 371.833C439.442 879.996 159.334 1024 159.334 1024z"></path>
+      </svg>
+      <div class="wechart-content">
+        <div class="wechart-title">请在浏览器中打开</div>
+        <div class="wechart-desc">
+          为了更好的使用体验，请在外部浏览器中打开此页面
+        </div>
+        <div class="wechart-setp">
+          <span>1</span>
+          <span>
+            点击右上角"<span class="wechart-weight-text">· · ·</span>"菜单
+          </span>
+        </div>
+        <div class="wechart-setp">
+          <span>2</span>
+          <span>
+            选择"<span class="wechart-weight-text">在默认浏览器中打开</span>"或"<span class="wechart-weight-text">复制链接</span>"后在浏览器中粘贴打开
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #message-ok:hover {
+      background: #4080FF;
+      transform: translateY(-1px);
+    }
+
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -45%) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes arrow-bounce {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(-8px, 8px);
+      }
+    }
+  </style>
+
+  
+<script src="/assets/jquery.min.js"></script>
+<script src="/assets/qrcode.min.js"></script>
+
+  <script>
+    (function() {
+      const amountDisplay = document.getElementById('amount-display');
+      const amountPrompt = document.getElementById('amount-prompt');
+      const inputProgressBar = document.getElementById('input-progress-bar');
+      const keyboardKeys = document.querySelectorAll('.keyboard-key[data-key]');
+      const backspaceKey = document.getElementById('backspace');
+      const clearAllKey = document.getElementById('clear-all');
+      const confirmPayButton = document.getElementById('confirm-pay');
+      const quickAmounts = document.querySelectorAll('.quick-amount');
+      const paymentMethods = document.querySelectorAll('.payment-method');
+      
+      let amount = '0';
+      let selectedQuickAmount = null;
+      let selectedPaymentMethod = 'alipay';
+
+      function formatAmount(amountStr) {
+        const amountNum = parseFloat(amountStr);
+        if (isNaN(amountNum)) return amountStr;
+        return amountNum.toLocaleString('zh-CN', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function updateDisplay() {
+        const formattedAmount = formatAmount(amount);
+        amountDisplay.textContent = `¥${formattedAmount}`;
+
+        const amountValue = parseFloat(amount);
+
+        // 进度条
+        let progress = 0;
+        if (amountValue >= 4999) {
+          progress = 100;
+        } else if (amountValue >= 10) {
+          progress = (amountValue / 4999) * 100;
+        } else if (amountValue > 0) {
+          progress = (amountValue / 10) * 30;
+        }
+        inputProgressBar.style.width = `${progress}%`;
+
+        // 验证金额
+        const isValid = amountValue >= 10 && amountValue <= 4999;
+
+        if (isValid) {
+          inputProgressBar.classList.add('bg-success');
+          inputProgressBar.classList.remove('bg-primary/50', 'bg-danger');
+          amountPrompt.textContent = '输入正确，请确认支付';
+          amountPrompt.classList.remove('text-neutral-600', 'text-warning');
+          amountPrompt.classList.add('text-success');
+        } else if (amountValue > 0) {
+          inputProgressBar.classList.add('bg-danger');
+          inputProgressBar.classList.remove('bg-primary/50', 'bg-success');
+          if (amountValue < 10) {
+            amountPrompt.textContent = '金额不足10元';
+            amountPrompt.classList.remove('text-neutral-600', 'text-success');
+            amountPrompt.classList.add('text-warning');
+          } else {
+            amountPrompt.textContent = '金额超出限额';
+            amountPrompt.classList.remove('text-neutral-600', 'text-success');
+            amountPrompt.classList.add('text-warning');
+          }
+        } else {
+          inputProgressBar.classList.add('bg-primary/50');
+          inputProgressBar.classList.remove('bg-danger', 'bg-success');
+          amountPrompt.textContent = '请输入付款金额';
+          amountPrompt.classList.remove('text-warning', 'text-success');
+          amountPrompt.classList.add('text-neutral-600');
+        }
+      }
+
+      // 虚拟键盘
+      keyboardKeys.forEach(key => {
+        key.addEventListener('click', () => {
+          const keyValue = key.getAttribute('data-key');
+          if (amount === '0') {
+            amount = keyValue;
+          } else {
+            if (amount.length < 6) {
+              amount += keyValue;
+            }
+          }
+          if (parseInt(amount) > 4999) amount = '4999';
+          updateDisplay();
+        });
+      });
+
+      // 删除一位
+      backspaceKey.addEventListener('click', () => {
+        if (amount === '0') return;
+        amount = amount.slice(0, -1);
+        if (amount === '') amount = '0';
+        updateDisplay();
+      });
+
+      // 清空金额
+      clearAllKey.addEventListener('click', () => {
+        if (amount === '0') return;
+        amount = '0';
+        if (selectedQuickAmount) {
+          selectedQuickAmount.classList.remove('bg-primary', 'text-white', 'ring-2', 'ring-primary/70');
+          selectedQuickAmount.classList.add('bg-primary/10', 'text-primary');
+          selectedQuickAmount = null;
+        }
+        updateDisplay();
+      });
+
+      // 确认支付
+      confirmPayButton.addEventListener('click', () => {
+        checkAndSubmitPayment();
+      });
+
+      // 快捷金额按钮
+      quickAmounts.forEach(button => {
+        button.addEventListener('click', () => {
+          const quickAmount = button.getAttribute('data-amount');
+          amount = quickAmount;
+          
+          if (selectedQuickAmount) {
+            selectedQuickAmount.classList.remove('bg-primary', 'text-white', 'ring-2', 'ring-primary/70');
+            selectedQuickAmount.classList.add('bg-primary/10', 'text-primary');
+          }
+          
+          selectedQuickAmount = button;
+          button.classList.remove('bg-primary/10', 'text-primary');
+          button.classList.add('bg-primary', 'text-white', 'ring-2', 'ring-primary/70');
+          
+          updateDisplay();
+        });
+      });
+
+      // 支付方式选择
+      paymentMethods.forEach(method => {
+        method.addEventListener('click', () => {
+          paymentMethods.forEach(m => {
+            m.classList.remove('border-primary', 'bg-primary/5', 'border-success', 'bg-success/5');
+            m.classList.add('border-neutral-200', 'bg-white/80');
+            const indicator = m.querySelector('.rounded-full.border-2');
+            const innerCircle = m.querySelector('.rounded-full.border-2 div');
+            if (indicator) {
+              indicator.classList.remove('border-primary', 'border-success');
+              indicator.classList.add('border-neutral-300');
+            }
+            if (innerCircle) {
+              innerCircle.classList.remove('bg-primary', 'bg-success');
+              innerCircle.classList.add('bg-transparent');
+            }
+          });
+          
+          if (method.querySelector('svg')) {
+            selectedPaymentMethod = 'alipay';
+            method.classList.add('border-primary', 'bg-primary/5');
+            const indicator = method.querySelector('.rounded-full.border-2');
+            const innerCircle = method.querySelector('.rounded-full.border-2 div');
+            if (indicator) {
+              indicator.classList.add('border-primary');
+              indicator.classList.remove('border-neutral-300');
+            }
+            if (innerCircle) {
+              innerCircle.classList.add('bg-primary');
+              innerCircle.classList.remove('bg-transparent');
+            }
+          } else if (method.querySelector('.fa-wechat')) {
+            selectedPaymentMethod = 'wxpay';
+            method.classList.add('border-success', 'bg-success/5');
+            const indicator = method.querySelector('.rounded-full.border-2');
+            const innerCircle = method.querySelector('.rounded-full.border-2 div');
+            if (indicator) {
+              indicator.classList.add('border-success');
+              indicator.classList.remove('border-neutral-300');
+            }
+            if (innerCircle) {
+              innerCircle.classList.add('bg-success');
+              innerCircle.classList.remove('bg-transparent');
+            }
+          }
+        });
+      });
+
+      // 显示消息提示
+      function showMessage(message) {
+        const modal = document.getElementById('message-modal');
+        const messageText = document.getElementById('message-text');
+        const messageIcon = document.getElementById('message-icon');
+        const okBtn = document.getElementById('message-ok');
+
+        if (modal && messageText && messageIcon) {
+          messageText.textContent = message;
+
+          // 根据消息类型动态调整图标和颜色
+          if (message.includes('失败') || message.includes('超时') || message.includes('错误')) {
+            messageIcon.className = 'fa fa-times-circle';
+            messageIcon.style.color = '#FF5252';
+            okBtn.style.background = '#FF5252';
+          } else if (message.includes('成功')) {
+            messageIcon.className = 'fa fa-check-circle';
+            messageIcon.style.color = '#00C48C';
+            okBtn.style.background = '#00C48C';
+          } else {
+            messageIcon.className = 'fa fa-info-circle';
+            messageIcon.style.color = '#0052D9';
+            okBtn.style.background = '#0052D9';
+          }
+
+          modal.style.display = 'block';
+
+          // 关闭弹窗函数
+          const closeModal = () => {
+            modal.style.display = 'none';
+            okBtn.removeEventListener('click', closeModal);
+          };
+
+          // 确定按钮事件
+          okBtn.addEventListener('click', closeModal);
+        }
+      }
+
+      // 显示/隐藏加载动画
+      function showLoading(show) {
+        const loadingModal = document.getElementById('loading-modal');
+        if (loadingModal) {
+          loadingModal.style.display = show ? 'block' : 'none';
+        }
+      }
+
+      // 当金额有效且选择了支付方式时，在控制台输出支付数据
+      let isSubmitting = false;
+      function checkAndSubmitPayment() {
+        if (isSubmitting) return;
+
+        const amountValue = parseFloat(amount);
+        if (amountValue >= 10 && amountValue <= 4999) {
+          isSubmitting = true;
+          showLoading(true);
+
+          const orderData = {
+            amount: amount,
+            payment_method: selectedPaymentMethod,
+            status: 'paid'
+          };
+          console.log('支付数据:', JSON.stringify(orderData, null, 2));
+          console.log('原始数据:', orderData);
+
+          const formData = new FormData();
+          formData.append('fee', orderData.amount);
+          formData.append('method', orderData.payment_method);
+
+          fetch('', {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+              if(data.code != 1){
+                  showLoading(false);
+                  return showMessage(data.msg);
+              }
+
+              /*setTimeout(() => {
+                window.location.href = data.data.url;
+              }, 500);*/
+              queryOrder(data.data.orderid);
+
+            console.log('提交成功:', data);
+          })
+          .catch(error => {
+            console.error('提交失败:', error);
+            showLoading(false);
+            showMessage('提交失败，请重试');
+
+          })
+          .finally(() => {
+            isSubmitting = false;
+          });
+        }
+      }
+
+      async function queryOrder($orderid) {
+
+        var response = await fetch('/api/pay/query_ev_order?orderid=' + $orderid);
+
+        if(!response.ok) {
+            setTimeout(() => {
+                queryOrder($orderid)
+            }, 1000);
+            return;
+        }
+
+        const result = await response.json();
+
+        if(result.code == 0){
+
+            showLoading(false);
+            
+            return showMessage(result.msg);
+
+        }
+    
+        $('.loading-text').text('等待时间' + result.data.timeout +'秒');
+
+        if(result.data.status == 2){
+            
+            showLoading(false);
+            
+            if(result.data.payinfo.url){
+                window.location.href = result.data.payinfo.url;
+                return;
+            }
+
+            if(result.data.payinfo.qrcode){
+                showQRCode(result.data.payinfo.qrcode);
+                return;
+            }
+
+            return;
+        }
+
+        setTimeout(() => {
+            queryOrder($orderid)
+        }, 1500);
+
+      }
+
+      // 显示二维码弹窗
+      function showQRCode(qrcodeUrl) {
+        const modal = document.getElementById('qrcode-modal');
+        const qrcodeImage = document.getElementById('qrcode-image');
+
+        if (modal && qrcodeImage) {
+          qrcodeImage.src = qrcodeUrl;
+          modal.style.display = 'block';
+        }
+      }
+
+      // 检测客户端类型
+    function detectClient() {
+      const userAgent = navigator.userAgent.toLowerCase();
+
+      // 检测支付宝
+      if (userAgent.indexOf('alipay') !== -1 || userAgent.indexOf('aliapp') !== -1) {
+        return 'alipay';//{ client: 'alipay', userAgent: navigator.userAgent };
+      }
+
+      // 检测微信
+      if (userAgent.indexOf('micromessenger') !== -1) {
+        return 'weixin'; //{ client: 'weixin', userAgent: navigator.userAgent };
+      }
+      // 其他浏览器
+
+      return 'browser'; //{ client: 'browser', userAgent: navigator.userAgent };
+    }
+        showBrowserGuide();
+      // 显示引导使用默认浏览器弹窗
+      function showBrowserGuide() {
+          
+         if(detectClient() != 'weixin'){
+            return;
+         }
+          
+        const modal = document.getElementById('browser-guide-modal');
+        if (modal) {
+          modal.style.display = 'block';
+        }
+      }
+
+      // 关闭浏览器引导弹窗
+      function closeBrowserGuide() {
+        const modal = document.getElementById('browser-guide-modal');
+        if (modal) {
+          modal.style.display = 'none';
+        }
+      }
+
+      // 根据客户端自动选择支付方式
+      function autoSelectPaymentMethod() {
+        const clientType = detectClient();
+        const paymentMethods = document.querySelectorAll('.payment-method');
+
+        // 支付宝客户端:隐藏微信支付,选中支付宝
+        if (clientType === 'alipay') {
+          paymentMethods.forEach(method => {
+            if (method.querySelector('.fa-wechat')) {
+              method.style.display = 'none';
+            } else if (method.querySelector('svg')) {
+              // 选中支付宝
+              selectedPaymentMethod = 'alipay';
+              method.classList.add('border-primary', 'bg-primary/5');
+              method.classList.remove('border-neutral-200', 'bg-white/80');
+              const indicator = method.querySelector('.rounded-full.border-2');
+              const innerCircle = method.querySelector('.rounded-full.border-2 div');
+              if (indicator) {
+                indicator.classList.add('border-primary');
+                indicator.classList.remove('border-neutral-300');
+              }
+              if (innerCircle) {
+                innerCircle.classList.add('bg-primary');
+                innerCircle.classList.remove('bg-transparent');
+              }
+            }
+          });
+        }
+        // 微信客户端:隐藏支付宝,选中微信支付
+        else if (clientType === 'weixin') {
+          paymentMethods.forEach(method => {
+            if (method.querySelector('svg')) {
+              method.style.display = 'none';
+            } else if (method.querySelector('.fa-wechat')) {
+              // 选中微信支付
+              selectedPaymentMethod = 'wxpay';
+              method.classList.add('border-success', 'bg-success/5');
+              method.classList.remove('border-neutral-200', 'bg-white/80');
+              const indicator = method.querySelector('.rounded-full.border-2');
+              const innerCircle = method.querySelector('.rounded-full.border-2 div');
+              if (indicator) {
+                indicator.classList.add('border-success');
+                indicator.classList.remove('border-neutral-300');
+              }
+              if (innerCircle) {
+                innerCircle.classList.add('bg-success');
+                innerCircle.classList.remove('bg-transparent');
+              }
+            }
+          });
+        }
+        // 其他客户端不做改变
+      }
+
+      // 初始化
+      updateDisplay();
+      // 调用自动选择支付方式方法
+      autoSelectPaymentMethod();
+    })();
+  </script>
+</body>
+</html>

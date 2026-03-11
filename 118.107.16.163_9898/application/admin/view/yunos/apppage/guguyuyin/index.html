@@ -1,0 +1,62 @@
+ 
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('手机号')}:</label>
+        <div class="col-xs-6 col-sm-6">
+            {:Form::text('phone', $row.name, ['data-rule'=>''])}
+            
+        </div>
+        <a class="yui-btn y-blue btn-send-sms">获取验证码</a>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('验证码')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::text('code', '', ['data-rule'=>''])}
+        </div>
+    </div>
+   <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2" style="margin-top: 20px;">
+            <button type="button" class="yui-btn btn-start">登录</button>
+        </label>
+    </div>
+    
+    
+<div class="model-form" style="display:none"></div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        $(document).on("click", ".btn-send-sms", function () {
+            phone = $('input[name="phone"]').val();
+            if(!phone) return layer.alert('手机号不可为空');
+            
+            Fast.api.ajax({
+               url:'/sup.php/yunos/account/app_load?ids={$row.id}&page=send_sms',
+               data:{ids:'{$row.id}',phone:phone}
+            }, function(data, ret){
+                
+                layer.alert(ret.msg);
+                
+            }, function(data, ret){
+                layer.alert(ret.msg);
+            });
+            
+            
+            
+        });
+        
+        $(document).on("click", ".btn-start", function () {
+
+           phone = $('input[name="phone"]').val();
+           code  = $('input[name="code"]').val();
+           
+           if(!phone || !code) return layer.alert('手机号或验证码不可为空');
+           
+           
+        });
+        
+        
+});
+}
+</script>

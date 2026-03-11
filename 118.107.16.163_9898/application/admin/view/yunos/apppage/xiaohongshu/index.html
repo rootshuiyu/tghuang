@@ -1,0 +1,69 @@
+ 
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('小红书手机号')}:</label>
+        <div class="col-xs-6 col-sm-6">
+            {:Form::text('phone', '', ['data-rule'=>''])}
+            
+        </div>
+        <a class="yui-btn y-blue btn-send">获取验证码</a>
+    </div>
+    
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('验证码')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            {:Form::text('code', '', ['data-rule'=>''])}
+        </div>
+    </div>
+   <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2" style="margin-top: 20px;">
+            <button type="button" class="yui-btn btn-start">开始产码</button>
+        </label>
+        <div class="col-xs-12 col-sm-8 console-log">
+            <p>aaaaa</p>
+        </div>
+    </div>
+    
+    
+<div class="model-form" style="display:none"></div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        $(document).on("click", ".btn-start", function () {
+            //return layer.alert('手机号不可为空');
+            
+        });
+        
+        $(document).on("click", ".btn-start", function () {
+            
+           printlog('产码成功');
+            
+           return ;
+           phone = $('input[name="phone"]').val();
+           code  = $('input[name="code"]').val();
+           
+           //http://43.241.18.96:8081/api/user/mobile_login?mobile=15735100756&captcha=870146&appid=MA004&model=Asus%2FASUS_I003DD&imei=866052571271877&version=1.1.6&system=2&ls_flag=
+           body = {
+               mobile : phone,
+               captcha : code,
+               appid : 'MA004',
+               model : 'Asus%2FASUS_I003DD',
+               imei  : 866052571271877,
+               version : '1.1.6',
+               system : 2,
+               ls_flag : '',
+           };
+           
+        });
+        number = 1;
+        function printlog(text){
+            number++;
+            $('.console-log').prepend('<p>'+ text +'：'+ number +'</p>');
+        }
+        
+        
+        
+});
+}
+</script>

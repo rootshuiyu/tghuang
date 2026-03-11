@@ -1,0 +1,80 @@
+
+
+Request Head:
+
+GET /app_api/v3/crv-app-member/front/members/info?param=%7B%22refresh%22%3Atrue%7D HTTP/1.1
+appkey: ef1fc57c13007e33
+appVersion: 4.4.1
+unique: android-ec9d9d542497ebbd102d5745a98aecaa
+traceId: 1765878103504033
+userId: 54477957
+userSession: FUSION-CC9B3305BF1BEA7F80387F53897BEC65
+subsiteId: 33
+cityId: 882
+lat: 22.523943
+lng: 114.057449
+shopCode: A00I
+channel: android
+os: android
+osVersion: 9
+addressId: 44969773
+Accept-Language: zh-CN
+Device-Name: NX619J%EF%BC%88%E5%8D%8E%E6%B6%A6%E4%B8%87%E5%AE%B6%EF%BC%89
+Host: app.crv.com.cn
+Connection: Keep-Alive
+Accept-Encoding: gzip
+User-Agent: okhttp/5.3.2
+
+
+Body:
+
+
+
+Response Head:
+
+HTTP/1.1 200 OK
+Date: Tue, 16 Dec 2025 15:28:25 GMT
+Content-Type: application/json;charset=UTF-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: acw_tc=ac11000117658989050363765eebb6e5082358b50c7cbc31eae7d14b1c5ce7;path=/;HttpOnly;Max-Age=1800
+Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS
+Access-Control-Allow-Headers: request-id,openId,uid,sessionKey,networkType,sid,testKey888,Appkey, unique, appVersion, apiVersion, os, osVersion, subsiteId, channel, language, userSession,appHref, userId,enterpriseSubsiteId,addressId,sessionid,adminsessionid,jwt-token,captchaId,captchaOutput,genTime,lotNumber,passToken,lat,lng,tenant-channel,tenant,apptoken,shopCode,cityId,enterpriseShopCode,traceId,soldoutDisplayEnd,code,mcode,providerChannelCode
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Headers: request-id,openId,uid,sessionKey,networkType,sid,testKey888,Appkey, unique, appVersion, apiVersion, os, osVersion, subsiteId, channel, language, userSession,appHref, userId,enterpriseSubsiteId,addressId,sessionid,adminsessionid,jwt-token,captchaId,captchaOutput,genTime,lotNumber,passToken,lat,lng,tenant-channel,tenant,apptoken,shopCode,cityId,enterpriseShopCode,traceId,soldoutDisplayEnd,code,mcode,providerChannelCode
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET,POST,OPTIONS
+Access-Control-Allow-Headers: Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Requested-With
+Content-Encoding: gzip
+
+
+Body:
+
+{
+	"stateCode":0,
+	"message":"",
+	"data":{
+		"id":"54477957",
+		"ncmsMemberId":"9005797863562011235",
+		"loginName":"15735100756",
+		"mobile":"15735100756",
+		"nickName":"用户62231960",
+		"pic":null,
+		"cardNo":"90308999893480",
+		"birthday":null,
+		"gender":"M",
+		"points":0,
+		"couponCount":2,
+		"memberLevel":1,
+		"growthValue":0,
+		"certifyFlag":0,
+		"crtflag":true,
+		"validStatus":0,
+		"cardUserName":"王杰",
+		"newMemberState":"NEW",
+		"inquire":"N",
+		"signature":null
+	},
+	"success":true
+}

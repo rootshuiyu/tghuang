@@ -1,0 +1,68 @@
+<div class="panel panel-default panel-intro">
+
+    <div class="panel-body">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        <a href="javascript:;" class="yui-btn btn-refresh" title="{:__('Refresh')}" ><i class="fa fa-refresh"></i> </a>
+                        <a href="javascript:;" class="yui-btn btn-add {:$auth->check('yunos/safetoken/add')?'':'hide'}" title="{:__('Add')}" ><i class="fa fa-plus"></i> {:__('Add')}</a>
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-bordered table-hover table-nowrap"
+                           data-operate-edit="{:$auth->check('yunos/safetoken/edit')}"
+                           data-operate-del="{:$auth->check('yunos/safetoken/del')}"
+                           width="100%">
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/safetoken/index' + location.search,
+                    add_url: 'yunos/safetoken/add',
+                    edit_url: 'yunos/safetoken/edit',
+                    del_url: 'yunos/safetoken/del',
+                    multi_url: 'yunos/safetoken/multi',
+                    table: 'safetoken',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                showExport: false,
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'name', title: __('设备名称')},
+                        {field: 'status', title: __('Status'),  table: table, formatter: Table.api.formatter.toggle, searchable :false,
+                            searchList: seachlist.status,
+                            
+                        },
+                        {field: 'ua', title: __('标识'), operate: 'LIKE'},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                    ]
+                ]
+            });
+            
+            // 为表格绑定事件
+           Table.api.bindevent(table);
+    
+});
+}
+</script>

@@ -1,0 +1,52 @@
+
+
+<div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('登录账号')}:</label>
+        <div class="col-xs-12 col-sm-12">
+            <textarea name="account" class="form-control" data-rule="" data-tip="一行一个" placeholder="一行一个" style="height:500px"></textarea>
+        </div>
+</div>
+
+
+<div class="form-group">
+    <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-12">
+            <button type="button" class="yui-btn btn-send">批量添加</button>
+        </div>
+</div>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    
+        $(document).on("click", ".btn-send", function () {
+           
+           login_send()
+            
+        });
+        
+        function login_send(){
+
+            account = $('textarea[name="account"]').val();
+
+            if(!account){
+                return Toastr.error('账号ID不可为空');
+            }
+            
+            Fast.api.ajax({
+               url:'{$site.api_url}/api/make/app/uban100/upAccount',
+               data:{appkey : "{$appkey}",account:account}
+            }, function(data, ret){
+
+                return layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+            }, function(data, ret){
+                return layer.alert('操作结果<br/><code>'+ ret.msg  +'</code>');
+            });
+            
+        }
+     
+        
+        
+});
+}
+</script>

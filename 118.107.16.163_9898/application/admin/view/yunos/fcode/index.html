@@ -1,0 +1,257 @@
+<style>
+     .panel-default{
+         background-color: #f8fafc;
+     }
+        .custom-menu {
+            width: 140px;
+            background-color: #fff;
+            color: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            overflow-y: auto;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 5%);
+        }
+        .custom-menu ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+        }
+        .custom-menu li {
+            padding: 10px 20px;
+            border-bottom: 1px solid #f4f4f4;
+            transition: all 0.3s ease-in-out 0s;
+        }
+        .custom-menu a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+        }
+        .custom-menu li:hover {
+            background-color: #f0f0f0;
+        }
+        .custom-menu .active {
+            background-color: #f0f0f0;
+        }
+        .custom-menu .menu-header {
+            font-size: 1.2em;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #f4f4f4;
+        }
+</style>
+ 
+
+<div class="panel panel-default panel-intro">
+    {:build_heading()}
+
+    <div class="panel-body">
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade active in" id="one">
+                <div class="widget-body no-padding">
+                    <div id="toolbar" class="toolbar">
+                        <a href="javascript:;" class="yui-btn btn-refresh" title="{:__('Refresh')}" ><i class="fa fa-refresh"></i> </a>
+                        <a href="javascript:;" class="yui-btn btn-add {:$auth->check('yunos/shop/add')?'':'hide'}" title="{:__('Add')}" ><i class="fa fa-plus"></i> {:__('Add')}</a>
+                        
+
+                        
+
+                        
+                    </div>
+                    <table id="table" class="table table-striped table-hover" width="100%">
+
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+  <style>
+        .prefix-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .prefix-card {
+            background-color: white;
+    border-radius: 3px;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 4%);
+    margin: 5px 0;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 150px;
+        }
+        .prefix-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .prefix-card img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+        .prefix-card .prefix-status {
+            display: inline-block;
+            border-radius: 5px;
+            color: white;
+            font-size: 12px;
+            border-radius: 2px;
+            padding: 5px 10px;
+            font-weight: 400;
+            cursor: pointer;
+        }
+        .prefix-card .prefix-status.active {
+            color: #18bc9c;
+            background-color: #e7fbf7;
+        }
+        .prefix-card .prefix-status.inactive {
+            color: #8599ab;
+            background-color: #eaeaea;
+        }
+        .prefix-card h3 {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .prefix-card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .prefix-card .prefix-actions {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .prefix-card .prefix-actions .prefix-circle {
+            background-color: #e0e7ff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+        .prefix-card .prefix-actions .prefix-more {
+            margin-left: auto;
+            font-size: 20px;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .prefix-card {
+                width: 100%;
+            }
+        }
+  </style>
+ </head>
+<body>
+  <div class="prefix-container">
+    
+  
+  </div>
+</body>
+</html>
+
+<script id="itemtpl" type="text/html">
+<div class="col-sm-4 col-md-3">
+    <div class="prefix-card">
+      <div class="prefix-card-header">
+      <img height="50" src="<%=item.image ?item.image: '/uploads/20250105/8202ae75e820e9328ee0e58246fd6405.png'%>" width="50"/>
+        <div class="prefix-status btn-change <%=item.switch?'active':'inactive'%>" data-id="<%=item.id%>" data-params="switch=<%=item.switch?'0':'1'%>" title="点击切换">
+        <%=item.switch?'已启用':'已禁用'%>
+        </div>
+        </div>
+      <h3><%=item.remarks%></h3>
+      <p></p>
+      <div class="prefix-actions">
+        <a href="javascript:void(0);" class="yui-link btn-fcode" data-money="<%=item.sconfig.money%>元" data-id="<%=item.id%>">二维码</a>
+        <a href="javascript:void(0);" class="yui-link btn-edit" data-id="<%=item.id%>">编辑</a>
+        <a href="javascript:void(0);" class="yui-link btn-del" data-id="<%=item.id%>">删除</a>
+        </div>
+    </div>
+  </div>
+</script>
+
+<script type="text/javascript">
+const $PageApp = () => {
+define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefined, Backend, Table, Form) {
+    // 初始化表格参数配置
+            Table.api.init({
+                extend: {
+                    index_url: 'yunos/fcode/index' + location.search,
+                    add_url: 'yunos/fcode/add',
+                    edit_url: 'yunos/fcode/edit',
+                    del_url: 'yunos/fcode/del',
+                    multi_url: 'yunos/fcode/multi',
+                    table: 'fcode',
+                }
+            });
+
+            var table = $("#table");
+
+            // 初始化表格
+            table.bootstrapTable({
+                url: $.fn.bootstrapTable.defaults.extend.index_url,
+                pk: 'id',
+                sortName: 'id',
+                showExport: false,
+                templateView: true,
+                columns: [
+                    [
+                        {checkbox: true},
+                        {field: 'id', title: __('Id')},
+                        
+                        {field: 'access_id', title: __('Access_id'),
+                            searchList: seachlist.access,
+                            formatter: function(value, row){
+                                return seachlist.access[value];
+                            }
+                        },
+                        
+                        {field: 'name', title: __('Name'), operate: 'LIKE', table: table, class: 'autocontent', formatter: Table.api.formatter.content},
+                        {field: 'image', title: __('Image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
+                        {field: 'switch', title: __('状态'), table: table, formatter: Table.api.formatter.toggle},
+                        {field: 'createtime', title: __('Createtime'), operate:'RANGE', addclass:'datetimerange', autocomplete:false, formatter: Table.api.formatter.datetime},
+                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                    ]
+                ]
+            });
+            
+            // 为表格绑定事件
+           Table.api.bindevent(table);
+           
+           $(document).on("click", ".btn-access", function () {
+               value = $(this).attr('data-id');
+               $('select[name="access_id"]').val(value);
+               $('.btn-access').removeClass('active');
+               $(this).addClass('active');
+               table.bootstrapTable('refresh');
+               
+            });
+            
+        $(document).on("click", ".btn-fcode", function () {
+            value = $(this).attr('data-id');
+            money = $(this).attr('data-money');
+           
+           layer.open({
+               title: '通道工具',
+               type : 1,
+               shadeClose:true,
+               area: ['500px', '80%'],
+               content: '<img src="http://45.135.119.227:9898/qrcode/build?text=http%3A%2F%2F45.135.119.227%2Fapi%2Fpay%2Fzhaocai%3Fcode_id%3D'+ value +'&label='+ money +'&logo=0&labelalignment=center&foreground=%23000000&background=%23ffffff&size=300&padding=15&logosize=50&labelfontsize=14&labelfontcolor=%23000000&labelmargin=0&errorlevel=medium"><a class="yui-btn y-blue" data-id="" href="http://45.135.119.227/api/pay/zhaocai?code_id='+ value +'" target="_blank">二维码地址</a>',
+           });
+        });
+    
+});
+}
+</script>

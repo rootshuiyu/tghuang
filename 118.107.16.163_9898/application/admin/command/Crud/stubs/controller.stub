@@ -1,0 +1,36 @@
+<?php
+
+namespace {%controllerNamespace%};
+
+use app\common\controller\Backend;
+
+/**
+ * {%tableComment%}
+ *
+ * @icon {%iconName%}
+ */
+class {%controllerName%} extends Backend
+{
+
+    /**
+     * {%modelName%}模型对象
+     * @var \{%modelNamespace%}\{%modelName%}
+     */
+    protected $model = null;
+    protected $searchFields   = ''; //快速搜索
+    protected $relationSearch = false;  //关联查询
+
+    public function _initialize()
+    {
+        parent::_initialize();
+        $this->model = new \{%modelNamespace%}\{%modelName%};
+        $this->seachlist = [];
+        $this->view->assign("seachlist", $this->seachlist);
+{%controllerAssignList%}
+    }
+
+{%controllerImport%}
+
+
+{%controllerIndex%}
+}
