@@ -18,7 +18,7 @@
         <label>验证码</label>
         <div class="d-flex align-items-center" style="gap:10px;">
           <input type="text" name="captcha" class="form-control" placeholder="请输入验证码" style="flex:1;" required>
-          <img id="captcha-img" src="{:request()->root()}/index.php?s=/captcha" style="height:40px;cursor:pointer;border-radius:4px;" onclick="this.src='{:request()->root()}/index.php?s=/captcha&r='+Math.random();" title="点击刷新">
+          <img id="captcha-img" src="{:captcha_src()}" style="height:40px;cursor:pointer;border-radius:4px;" onclick="this.src=this.src.replace(/[?&]r=.*/,'')+'&r='+Math.random();" title="点击刷新">
         </div>
       </div>
       {/if}
@@ -47,7 +47,7 @@ $('#login-form').on('submit', function(e) {
                 alert(res.msg || '登录失败');
                 $btn.prop('disabled', false).text('登 录');
                 var $img = $('#captcha-img');
-                if ($img.length) $img.attr('src', $img.attr('src').replace(/&r=.*/, '') + '&r=' + Math.random());
+                if ($img.length) $img.attr('src', $img.attr('src').replace(/[?&]r=.*/, '') + '&r=' + Math.random());
             }
         },
         error: function() {
