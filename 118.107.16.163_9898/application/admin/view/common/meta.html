@@ -29,4 +29,6 @@
         seachlist :{$seachlist|json_encode},
         {include file="common/requirejs_paths" /}
     };
+    require.paths.lang = '{$config.moduleurl|htmlentities}/ajax/lang?callback=define&controllername={$config.controllername|htmlentities}&lang={$config.language|htmlentities}';
+    require.paths['backend/'] = 'backend/';
 </script>
