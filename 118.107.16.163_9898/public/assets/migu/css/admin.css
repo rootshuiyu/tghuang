@@ -58,8 +58,28 @@
 .navbar-nav .dropdown .nav-link:active { background-color: transparent !important; }
 
 /* 卡片 */
-.card { box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2); }
-.small-box { border-radius: .25rem; }
+.card { box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2); border-radius: .5rem; }
+.small-box { border-radius: .5rem; transition: transform .2s ease, box-shadow .2s ease; }
+.small-box:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.15); }
+.small-box .inner h3 { font-size: 2.2rem; font-weight: 700; }
+.small-box .icon > i { font-size: 70px; top: 10px; }
+.small-box-footer { border-radius: 0 0 .5rem .5rem; }
+
+/* 仪表盘信息卡片 */
+.info-box { border-radius: .5rem; min-height: 85px; transition: transform .2s ease; }
+.info-box:hover { transform: translateY(-2px); }
+.info-box .info-box-icon { border-radius: .5rem 0 0 .5rem; width: 70px; }
+.info-box .info-box-number { font-size: 1.4rem; font-weight: 700; }
+
+/* 游戏类型统计表 */
+#d-access-table th { background: #f8f9fa; font-weight: 600; font-size: .9rem; border-top: none; }
+#d-access-table td { vertical-align: middle; }
+
+/* 图表容器 */
+.chart-container { min-height: 250px; }
+
+/* 日期切换按钮组 */
+#dashDateBtns .btn.active { background-color: #007bff; border-color: #007bff; color: #fff; }
 
 /* 通知徽章 */
 #notificationBadge { transition: all .3s ease; }

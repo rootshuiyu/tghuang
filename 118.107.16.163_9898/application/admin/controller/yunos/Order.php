@@ -12,7 +12,7 @@ use think\Db;
  */
 class Order extends Backend
 {
-    protected $noNeedRight = ['recent_count'];
+    protected $noNeedRight = ['recent_count', 'dashboard'];
 
     /**
      * Order模型对象
@@ -283,6 +283,101 @@ class Order extends Backend
             ->whereTime('createtime', '>=', date('Y-m-d H:i:s', strtotime('-24 hours')))
             ->count();
         return json(['code' => 1, 'count' => $count, 'msg' => '']);
+    }
+
+    /**
+     * 仪表盘聚合数据（一次返回全部统计、趋势、分布）
+     */
+    public function dashboard()
+    {
+        $where = $this->limitQuery();
+        $whereQuery = $this->limitQuerySup();
+        $wheres = function ($query) use ($where, $whereQuery) {
+            $query->where($where)->whereOr($whereQuery);
+        };
+
+        $dayIn      = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', 'today')->sum('fee');
+        $yesterdayIn = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', 'yesterday')->sum('fee');
+        $dayCount   = $this->model->where($wheres)->whereTime('createtime', 'today')->count();
+        $daySuccCnt = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', 'today')->count();
+        $ydayCount  = $this->model->where($wheres)->whereTime('createtime', 'yesterday')->count();
+        $ydaySucc   = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', 'yesterday')->count();
+        $hourIn     = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', '-1 hours')->sum('fee');
+        $hourCount  = $this->model->where($wheres)->whereTime('createtime', '-1 hours')->count();
+        $hourSucc   = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', '-1 hours')->count();
+        $totalCount = $this->model->where($wheres)->count();
+        $totalSucc  = $this->model->where($wheres)->where('status', 10)->count();
+
+        $accountTotal = Db::name('account')->where($this->limitQuery())->count();
+
+        $pendingCount = $this->model->where($wheres)->where('status', 2)
+            ->whereTime('createtime', '>=', date('Y-m-d H:i:s', strtotime('-24 hours')))->count();
+
+        $dayRate  = $dayCount > 0 ? round(($daySuccCnt / $dayCount) * 100, 2) : 0;
+        $hourRate = $hourCount > 0 ? round(($hourSucc / $hourCount) * 100, 2) : 0;
+        $totalRate = $totalCount > 0 ? round(($totalSucc / $totalCount) * 100, 2) : 0;
+        $growthRate = $yesterdayIn > 0 ? round(($dayIn - $yesterdayIn) / $yesterdayIn * 100, 2) : 0;
+
+        // --- 按游戏类型（access）分组统计 ---
+        $accessStats = [];
+        $accessList = Db::name('access')->field('id,name,code,pay_type')->select();
+        foreach ($accessList as $acc) {
+            $aid = $acc['id'];
+            $tIn  = $this->model->where($wheres)->where('access_id', $aid)->where('status', 10)->whereTime('createtime', 'today')->sum('fee');
+            $tCnt = $this->model->where($wheres)->where('access_id', $aid)->where('status', 10)->whereTime('createtime', 'today')->count();
+            $yIn  = $this->model->where($wheres)->where('access_id', $aid)->where('status', 10)->whereTime('createtime', 'yesterday')->sum('fee');
+            $yCnt = $this->model->where($wheres)->where('access_id', $aid)->where('status', 10)->whereTime('createtime', 'yesterday')->count();
+            if ($tIn == 0 && $yIn == 0) continue;
+            $g = $yIn > 0 ? round(($tIn - $yIn) / $yIn * 100, 2) : ($tIn > 0 ? 100 : 0);
+            $accessStats[] = [
+                'name'          => $acc['name'],
+                'today_count'   => $tCnt,
+                'today_in'      => $tIn,
+                'yesterday_count' => $yCnt,
+                'yesterday_in'  => $yIn,
+                'growth'        => $g
+            ];
+        }
+
+        // --- 近7天订单趋势 ---
+        $trend = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = date('Y-m-d', strtotime("-{$i} days"));
+            $start = $date . ' 00:00:00';
+            $end   = $date . ' 23:59:59';
+            $cnt = $this->model->where($wheres)->whereBetweenTime('createtime', $start, $end)->count();
+            $trend[] = ['date' => date('m-d', strtotime($date)), 'count' => $cnt];
+        }
+
+        // --- 支付方式分布（今日成功订单） ---
+        $payTypes = $this->model->where($wheres)->where('status', 10)->whereTime('createtime', 'today')
+            ->group('pay_type')->field('pay_type, count(*) as cnt, sum(fee) as total_fee')->select();
+        $payStats = [];
+        foreach ($payTypes as $pt) {
+            $payStats[] = ['type' => $pt['pay_type'] ?: 'other', 'count' => (int)$pt['cnt'], 'fee' => (float)$pt['total_fee']];
+        }
+
+        return json([
+            'code' => 1,
+            'data' => [
+                'day_in'        => (float)$dayIn,
+                'yesterday_in'  => (float)$yesterdayIn,
+                'day_count'     => $dayCount,
+                'day_success'   => $daySuccCnt,
+                'yesterday_count' => $ydayCount,
+                'hour_in'       => (float)$hourIn,
+                'account_total' => $accountTotal,
+                'pending_count' => $pendingCount,
+                'day_rate'      => $dayRate,
+                'hour_rate'     => $hourRate,
+                'total_rate'    => $totalRate,
+                'growth_rate'   => $growthRate,
+                'access_stats'  => $accessStats,
+                'trend'         => $trend,
+                'pay_stats'     => $payStats,
+                'active_access' => count($accessStats)
+            ]
+        ]);
     }
 
     public function multi($ids = null)

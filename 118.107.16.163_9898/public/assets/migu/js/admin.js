@@ -128,42 +128,200 @@ window.loadPage = function(page) {
 };
 
 /* ============================
-   仪表盘
+   仪表盘（对标参考站）
    ============================ */
+var trendChart = null, payChart = null;
+
 function loadDashboard() {
-    var h = '<div class="row">' +
-        '<div class="col-lg-3 col-6"><div class="small-box bg-info"><div class="inner"><h3 id="s-day-in">-</h3><p>今日收入</p></div><div class="icon"><i class="fas fa-dollar-sign"></i></div></div></div>' +
-        '<div class="col-lg-3 col-6"><div class="small-box bg-success"><div class="inner"><h3 id="s-yesterday">-</h3><p>昨日收入</p></div><div class="icon"><i class="fas fa-chart-line"></i></div></div></div>' +
-        '<div class="col-lg-3 col-6"><div class="small-box bg-warning"><div class="inner"><h3 id="s-day-rate">-</h3><p>今日成功率</p></div><div class="icon"><i class="fas fa-chart-pie"></i></div></div></div>' +
-        '<div class="col-lg-3 col-6"><div class="small-box bg-danger"><div class="inner"><h3 id="s-hour-rate">-</h3><p>近1小时成功率</p></div><div class="icon"><i class="fas fa-clock"></i></div></div></div>' +
+    var h =
+    /* --- 顶部 4 统计卡片 --- */
+    '<div class="row">' +
+      '<div class="col-lg-3 col-6">' +
+        '<div class="small-box bg-info">' +
+          '<div class="inner"><h3 id="d-day-count">-</h3><p>今日订单</p></div>' +
+          '<div class="icon"><i class="fas fa-shopping-cart"></i></div>' +
+          '<a href="#" class="small-box-footer" onclick="loadPage(\'payment-orders\')">更多信息 <i class="fas fa-arrow-circle-right"></i></a>' +
         '</div>' +
-        '<div class="row">' +
-        '<div class="col-md-6"><div class="card"><div class="card-header"><h3 class="card-title">总体概况</h3></div>' +
-        '<div class="card-body p-0"><table class="table table-striped"><tbody>' +
-        '<tr><td>总成功率</td><td class="text-right font-weight-bold" id="s-total-rate">-</td></tr>' +
-        '<tr><td>今日收入</td><td class="text-right font-weight-bold" id="s-day-in2">-</td></tr>' +
-        '<tr><td>昨日收入</td><td class="text-right font-weight-bold" id="s-yesterday2">-</td></tr>' +
-        '<tr><td>近1小时收入</td><td class="text-right font-weight-bold" id="s-hour-in">-</td></tr>' +
-        '</tbody></table></div></div></div>' +
-        '<div class="col-md-6"><div class="card"><div class="card-header"><h3 class="card-title">快捷操作</h3></div>' +
-        '<div class="card-body">' +
-        '<button class="btn btn-primary btn-sm mr-2 mb-2" onclick="loadPage(\'game-channels\')"><i class="fas fa-th mr-1"></i>渠道管理</button>' +
-        '<button class="btn btn-success btn-sm mr-2 mb-2" onclick="loadPage(\'game-accounts\')"><i class="fas fa-plus mr-1"></i>添加账号</button>' +
-        '<button class="btn btn-info btn-sm mr-2 mb-2" onclick="loadPage(\'payment-orders\')"><i class="fas fa-credit-card mr-1"></i>订单管理</button>' +
-        '<button class="btn btn-outline-secondary btn-sm mr-2 mb-2" onclick="loadPage(\'cashier-urls\')"><i class="fas fa-link mr-1"></i>收银台</button>' +
-        '<button class="btn btn-outline-secondary btn-sm mr-2 mb-2" onclick="loadPage(\'commission-records\')"><i class="fas fa-percentage mr-1"></i>抽佣记录</button>' +
-        '</div></div></div></div>';
+      '</div>' +
+      '<div class="col-lg-3 col-6">' +
+        '<div class="small-box bg-success">' +
+          '<div class="inner"><h3 id="d-day-in">-</h3><p>今日收入</p></div>' +
+          '<div class="icon"><i class="fas fa-yen-sign"></i></div>' +
+          '<a href="#" class="small-box-footer" onclick="loadPage(\'payment-orders\')">更多信息 <i class="fas fa-arrow-circle-right"></i></a>' +
+        '</div>' +
+      '</div>' +
+      '<div class="col-lg-3 col-6">' +
+        '<div class="small-box bg-warning">' +
+          '<div class="inner"><h3 id="d-account-total">-</h3><p>游戏账号数</p></div>' +
+          '<div class="icon"><i class="fas fa-gamepad"></i></div>' +
+          '<a href="#" class="small-box-footer" onclick="loadPage(\'game-accounts-list\')">更多信息 <i class="fas fa-arrow-circle-right"></i></a>' +
+        '</div>' +
+      '</div>' +
+      '<div class="col-lg-3 col-6">' +
+        '<div class="small-box bg-danger">' +
+          '<div class="inner"><h3 id="d-pending">-</h3><p>待处理订单</p></div>' +
+          '<div class="icon"><i class="fas fa-clock"></i></div>' +
+          '<a href="#" class="small-box-footer" onclick="loadPage(\'payment-orders\')">更多信息 <i class="fas fa-arrow-circle-right"></i></a>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    /* --- 游戏类型收入统计 --- */
+    '<div class="card">' +
+      '<div class="card-header">' +
+        '<h3 class="card-title"><i class="fas fa-gamepad mr-2"></i>游戏类型收入统计</h3>' +
+        '<div class="card-tools">' +
+          '<div class="btn-group btn-group-sm" id="dashDateBtns">' +
+            '<button type="button" class="btn btn-default active" data-mode="compare">对比</button>' +
+            '<button type="button" class="btn btn-default" data-mode="today">今日</button>' +
+            '<button type="button" class="btn btn-default" data-mode="yesterday">昨日</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-body">' +
+        /* 收入概览卡片 */
+        '<div class="row mb-3" id="d-revenue-cards">' +
+          '<div class="col-lg-3 col-6"><div class="info-box bg-info"><span class="info-box-icon"><i class="fas fa-yen-sign"></i></span><div class="info-box-content"><span class="info-box-text">今日总收入</span><span class="info-box-number" id="d-rev-today">¥0</span></div></div></div>' +
+          '<div class="col-lg-3 col-6"><div class="info-box bg-secondary"><span class="info-box-icon"><i class="fas fa-yen-sign"></i></span><div class="info-box-content"><span class="info-box-text">昨日总收入</span><span class="info-box-number" id="d-rev-yesterday">¥0</span></div></div></div>' +
+          '<div class="col-lg-3 col-6"><div class="info-box" id="d-growth-box"><span class="info-box-icon bg-success"><i class="fas fa-chart-line"></i></span><div class="info-box-content"><span class="info-box-text">收入增长率</span><span class="info-box-number" id="d-growth-rate">0%</span></div></div></div>' +
+          '<div class="col-lg-3 col-6"><div class="info-box bg-warning"><span class="info-box-icon"><i class="fas fa-layer-group"></i></span><div class="info-box-content"><span class="info-box-text">活跃游戏类型</span><span class="info-box-number" id="d-active-access">0</span></div></div></div>' +
+        '</div>' +
+        /* 按游戏类型对比表 */
+        '<div class="table-responsive">' +
+          '<table class="table table-striped table-hover" id="d-access-table">' +
+            '<thead><tr><th>游戏类型</th><th class="text-center">今日 (订单/收入)</th><th class="text-center">昨日 (订单/收入)</th><th class="text-center">增长率</th></tr></thead>' +
+            '<tbody id="d-access-body"><tr><td colspan="4" class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin mr-2"></i>加载中...</td></tr></tbody>' +
+          '</table>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    /* --- 图表行 --- */
+    '<div class="row">' +
+      '<div class="col-md-8">' +
+        '<div class="card">' +
+          '<div class="card-header"><h3 class="card-title"><i class="fas fa-chart-line mr-2"></i>订单趋势</h3></div>' +
+          '<div class="card-body"><div class="chart-container" style="position:relative;height:300px;"><canvas id="trendChart"></canvas></div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="col-md-4">' +
+        '<div class="card">' +
+          '<div class="card-header"><h3 class="card-title"><i class="fas fa-chart-pie mr-2"></i>支付方式分布</h3></div>' +
+          '<div class="card-body"><div class="chart-container" style="position:relative;height:300px;"><canvas id="payChart"></canvas></div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
     $('#main-content').html(h);
+
     $.ajax({
-        url: api('yunos/order/custom'), type:'GET', dataType:'json',
+        url: api('yunos/order/dashboard'), type:'GET', dataType:'json',
         headers:{'X-Requested-With':'XMLHttpRequest'},
-        success: function(r) {
-            $('#s-day-in').text(r.day_in||'0元'); $('#s-day-in2').text(r.day_in||'0元');
-            $('#s-yesterday').text(r.yesterday_in||'0元'); $('#s-yesterday2').text(r.yesterday_in||'0元');
-            $('#s-day-rate').text(r.day_success||'0%');
-            $('#s-hour-rate').text(r.hour_success||'0%');
-            $('#s-total-rate').text(r.success||'0%');
-            $('#s-hour-in').text(r.hour_in||'0元');
+        success: function(res) {
+            if (!res || res.code !== 1) return;
+            var d = res.data;
+
+            $('#d-day-count').text(d.day_count || 0);
+            $('#d-day-in').text('¥' + (d.day_in || 0).toFixed(2));
+            $('#d-account-total').text(d.account_total || 0);
+            $('#d-pending').text(d.pending_count || 0);
+
+            $('#d-rev-today').text('¥' + (d.day_in || 0).toFixed(2));
+            $('#d-rev-yesterday').text('¥' + (d.yesterday_in || 0).toFixed(2));
+            var gr = d.growth_rate || 0;
+            var grIcon = gr >= 0 ? '<i class="fas fa-arrow-up mr-1"></i>' : '<i class="fas fa-arrow-down mr-1"></i>';
+            var grColor = gr >= 0 ? 'text-success' : 'text-danger';
+            $('#d-growth-rate').html('<span class="' + grColor + '">' + grIcon + Math.abs(gr) + '%</span>');
+            if (gr < 0) {
+                $('#d-growth-box .info-box-icon').removeClass('bg-success').addClass('bg-danger');
+            }
+            $('#d-active-access').text(d.active_access || 0);
+
+            renderAccessTable(d.access_stats || []);
+            renderTrendChart(d.trend || []);
+            renderPayChart(d.pay_stats || []);
+        },
+        error: function() {
+            $('#d-access-body').html('<tr><td colspan="4" class="text-center text-danger">加载失败</td></tr>');
+        }
+    });
+}
+
+function renderAccessTable(stats) {
+    if (!stats.length) {
+        $('#d-access-body').html('<tr><td colspan="4" class="text-center text-muted">暂无数据</td></tr>');
+        return;
+    }
+    var rows = '';
+    $.each(stats, function(i, s) {
+        var gIcon = s.growth >= 0
+            ? '<span class="text-success"><i class="fas fa-arrow-up mr-1"></i>' + s.growth + '%</span>'
+            : '<span class="text-danger"><i class="fas fa-arrow-down mr-1"></i>' + Math.abs(s.growth) + '%</span>';
+        rows += '<tr>' +
+            '<td><strong>' + escHtml(s.name) + '</strong></td>' +
+            '<td class="text-center"><span class="badge badge-success mr-1">' + s.today_count + '</span> 单 <span class="text-primary ml-2">¥' + (s.today_in || 0).toFixed(2) + '</span></td>' +
+            '<td class="text-center"><span class="badge badge-secondary mr-1">' + s.yesterday_count + '</span> 单 <span class="text-muted ml-2">¥' + (s.yesterday_in || 0).toFixed(2) + '</span></td>' +
+            '<td class="text-center">' + gIcon + '</td>' +
+            '</tr>';
+    });
+    $('#d-access-body').html(rows);
+}
+
+function renderTrendChart(trend) {
+    if (!trend.length) return;
+    var labels = [], data = [];
+    $.each(trend, function(i, t) { labels.push(t.date); data.push(t.count); });
+    if (trendChart) trendChart.destroy();
+    var ctx = document.getElementById('trendChart');
+    if (!ctx) return;
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '订单数量',
+                data: data,
+                borderColor: '#17a2b8',
+                backgroundColor: 'rgba(23,162,184,0.1)',
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4,
+                pointBackgroundColor: '#17a2b8'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
+    });
+}
+
+function renderPayChart(payStats) {
+    if (!payStats.length) {
+        $('#payChart').parent().html('<div class="d-flex align-items-center justify-content-center h-100 text-muted">暂无数据</div>');
+        return;
+    }
+    var labels = [], data = [], colors = ['#007bff','#28a745','#ffc107','#dc3545','#17a2b8','#6c757d'];
+    var nameMap = {'wxpay':'微信支付','alipay':'支付宝支付','qqpay':'QQ支付','other':'其他'};
+    $.each(payStats, function(i, p) {
+        labels.push(nameMap[p.type] || p.type);
+        data.push(p.fee);
+    });
+    if (payChart) payChart.destroy();
+    var ctx = document.getElementById('payChart');
+    if (!ctx) return;
+    payChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{ data: data, backgroundColor: colors.slice(0, data.length), borderWidth: 2 }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { position: 'bottom' } }
         }
     });
 }
